@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>👥 Inscrições — Campeonato</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Poppins',sans-serif;background:#0a0a2e;color:#fff;min-height:100vh}
+        .bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;overflow:hidden}
+        .bg .g{position:absolute;width:100%;height:100%;background:linear-gradient(135deg,#0a0a2e,#1a1a4e 30%,#0d0d35 60%,#15153f)}
+        .bg .o{position:absolute;border-radius:50%;filter:blur(80px);opacity:.3;animation:of 20s ease-in-out infinite}
+        .bg .o:nth-child(2){width:400px;height:400px;background:#f59e0b;top:-100px;right:-100px}
+        .bg .o:nth-child(3){width:500px;height:500px;background:#d97706;bottom:-150px;left:-150px;animation-delay:-7s}
+        .bg .o:nth-child(4){width:300px;height:300px;background:#fbbf24;top:50%;left:50%;animation-delay:-14s}
+        @keyframes of{0%,100%{transform:translate(0,0) scale(1)}25%{transform:translate(50px,-80px) scale(1.1)}50%{transform:translate(-30px,60px) scale(.9)}75%{transform:translate(70px,40px) scale(1.05)}}
+
+        .wrap{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:24px 16px 60px}
+        .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+        .top h1{font-size:1.6rem;font-weight:800;background:linear-gradient(135deg,#fbbf24,#f59e0b,#d97706);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .top-btns{display:flex;gap:8px;flex-wrap:wrap}
+
+        /* TABS */
+        .tabs{display:flex;gap:6px;margin-bottom:20px;overflow-x:auto;padding-bottom:4px}
+        .tab{padding:10px 22px;border-radius:14px;font-size:.85rem;font-weight:700;cursor:pointer;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:rgba(255,255,255,.5);transition:all .3s;white-space:nowrap}
+        .tab:hover{background:rgba(255,255,255,.08);color:rgba(255,255,255,.7)}
+        .tab.active{background:linear-gradient(135deg,rgba(245,158,11,.2),rgba(217,119,6,.15));border-color:rgba(245,158,11,.4);color:#fbbf24}
+        .panel{display:none;animation:fadeIn .4s ease}
+        .panel.active{display:block}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+        /* GLASS */
+        .glass{background:rgba(255,255,255,.06);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:24px;margin-bottom:20px}
+        .glass h2{font-size:1.05rem;font-weight:700;margin-bottom:16px;color:rgba(255,255,255,.85);display:flex;align-items:center;gap:8px}
+
+        /* FORM */
+        label{display:block;font-size:.75rem;font-weight:600;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+        input[type=text],input[type=email],input[type=tel],input[type=url],input[type=number],textarea,select{width:100%;padding:10px 14px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:10px;color:#fff;font-family:'Poppins',sans-serif;font-size:.9rem;outline:none;transition:border-color .3s;margin-bottom:12px}
+        input:focus,textarea:focus,select:focus{border-color:rgba(251,191,36,.6)}
+        select option{background:#1a1a4e}
+        .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+        .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+        .row4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px}
+
+        /* BUTTONS */
+        .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 18px;border:none;border-radius:10px;font-family:'Poppins',sans-serif;font-size:.82rem;font-weight:600;cursor:pointer;transition:all .3s;white-space:nowrap}
+        .btn:hover{transform:translateY(-2px)}
+        .btn-p{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;box-shadow:0 4px 15px rgba(245,158,11,.3)}
+        .btn-s{background:rgba(255,255,255,.08);color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.12)}
+        .btn-d{background:rgba(239,68,68,.15);color:#f87171;border:1px solid rgba(239,68,68,.3)}
+        .btn-ok{background:rgba(56,239,125,.15);color:#6ee7b7;border:1px solid rgba(56,239,125,.3)}
+        .btn-sm{padding:5px 12px;font-size:.75rem;border-radius:8px}
+        .btn-xs{padding:3px 8px;font-size:.7rem;border-radius:6px}
+
+        /* TABLE */
+        .tbl{width:100%;border-collapse:collapse}
+        .tbl th{text-align:left;padding:10px 12px;color:rgba(255,255,255,.4);font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid rgba(255,255,255,.08)}
+        .tbl td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.04);font-size:.88rem;vertical-align:middle}
+        .tbl tr:hover{background:rgba(255,255,255,.03)}
+        .tbl .avatar{width:32px;height:32px;border-radius:50%;object-fit:cover;background:rgba(255,255,255,.1);display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;flex-shrink:0;vertical-align:middle;margin-right:8px}
+        .tbl .avatar img{width:100%;height:100%;border-radius:50%;object-fit:cover}
+
+        /* BADGES */
+        .badge{display:inline-block;padding:3px 10px;border-radius:14px;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+        .badge-ok{background:rgba(56,239,125,.15);color:#6ee7b7;border:1px solid rgba(56,239,125,.2)}
+        .badge-wait{background:rgba(251,191,36,.15);color:#fbbf24;border:1px solid rgba(251,191,36,.2)}
+        .badge-cancel{background:rgba(239,68,68,.15);color:#f87171;border:1px solid rgba(239,68,68,.2)}
+        .badge-in{background:rgba(99,102,241,.15);color:#a5b4fc;border:1px solid rgba(99,102,241,.2)}
+        .star{cursor:pointer;font-size:1rem;transition:transform .2s}
+        .star:hover{transform:scale(1.3)}
+        .checkin-dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+        .checkin-dot.yes{background:#38ef7d}
+        .checkin-dot.no{background:rgba(255,255,255,.15)}
+
+        /* SEARCH */
+        .search-bar{position:relative;margin-bottom:16px}
+        .search-bar input{padding-left:36px;margin-bottom:0}
+        .search-bar::before{content:'🔍';position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:.9rem}
+
+        /* CONFLICT WARNING */
+        .conflict-box{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:12px;padding:12px 16px;margin-bottom:14px;font-size:.85rem;color:#fca5a5;display:none}
+        .conflict-box.show{display:block}
+
+        /* STATS */
+        .stats{display:flex;gap:16px;margin-bottom:20px;flex-wrap:wrap}
+        .stat-card{flex:1;min-width:120px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px;text-align:center}
+        .stat-card .sv{font-size:1.6rem;font-weight:800;color:#fbbf24}
+        .stat-card .sl{font-size:.7rem;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:1px;margin-top:2px}
+
+        /* MODAL */
+        .modal-overlay{display:none;position:fixed;inset:0;background:rgba(10,10,46,.85);z-index:100;align-items:center;justify-content:center}
+        .modal-overlay.show{display:flex}
+        .modal{background:#1a1a4e;border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:28px;max-width:560px;width:90%;max-height:85vh;overflow-y:auto;animation:fadeIn .3s ease}
+        .modal h3{font-size:1.1rem;font-weight:700;margin-bottom:16px;color:#fbbf24}
+        .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
+
+        /* TOAST */
+        .toast{position:fixed;bottom:30px;right:30px;z-index:999;padding:12px 24px;border-radius:12px;font-weight:600;font-size:.88rem;transform:translateY(100px);opacity:0;transition:all .4s cubic-bezier(.68,-.55,.27,1.55);pointer-events:none}
+        .toast.show{transform:translateY(0);opacity:1}
+        .toast.success{background:rgba(56,239,125,.9);color:#064e3b}
+        .toast.error{background:rgba(239,68,68,.9);color:#fff}
+
+        .empty{text-align:center;padding:30px;color:rgba(255,255,255,.2);font-style:italic;font-size:.88rem}
+        ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:rgba(255,255,255,.05);border-radius:10px}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:10px}
+        @media(max-width:700px){.row2,.row3,.row4{grid-template-columns:1fr}.top{flex-direction:column;align-items:flex-start}}
+    </style>
+</head>
+<body>
+<div class="bg"><div class="g"></div><div class="o"></div><div class="o"></div><div class="o"></div></div>
+
+<div class="wrap">
+    <div class="top">
+        <h1>👥 Inscrições & Atletas</h1>
+        <div class="top-btns">
+            <button class="btn btn-s" onclick="location.href='/campeonato.html'">⚙️ Gerenciamento</button>
+            <button class="btn btn-s" onclick="location.href='/'">← Voltar</button>
+        </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats">
+        <div class="stat-card"><div class="sv" id="st-atletas">0</div><div class="sl">Atletas</div></div>
+        <div class="stat-card"><div class="sv" id="st-duplas">0</div><div class="sl">Duplas</div></div>
+        <div class="stat-card"><div class="sv" id="st-inscritos">0</div><div class="sl">Inscrições</div></div>
+        <div class="stat-card"><div class="sv" id="st-espera">0</div><div class="sl">Lista Espera</div></div>
+        <div class="stat-card"><div class="sv" id="st-checkin">0</div><div class="sl">Check-in</div></div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+        <div class="tab active" data-tab="atletas">🏃 Atletas</div>
+        <div class="tab" data-tab="duplas">🤝 Duplas</div>
+        <div class="tab" data-tab="inscricoes">📋 Inscrições</div>
+        <div class="tab" data-tab="espera">⏳ Lista de Espera</div>
+        <div class="tab" data-tab="checkin">✅ Check-in</div>
+        <div class="tab" data-tab="ranking">🏆 Ranking</div>
+    </div>
+
+    <!-- ===== ATLETAS ===== -->
+    <div class="panel active" id="panel-atletas">
+        <div class="glass">
+            <h2>➕ Cadastrar Atleta</h2>
+            <div class="row3">
+                <div><label>Nome Completo</label><input type="text" id="a-nome" placeholder="Nome do atleta"></div>
+                <div><label>Telefone</label><input type="tel" id="a-tel" placeholder="(31) 99999-0000"></div>
+                <div><label>Email</label><input type="email" id="a-email" placeholder="email@exemplo.com"></div>
+            </div>
+            <div class="row4">
+                <div><label>Foto (URL)</label><input type="url" id="a-foto" placeholder="https://..."></div>
+                <div><label>Ranking</label><input type="number" id="a-ranking" placeholder="0" min="0"></div>
+                <div><label>Seeding</label><input type="number" id="a-seeding" placeholder="Automático" min="0"></div>
+                <div style="display:flex;align-items:flex-end;padding-bottom:12px">
+                    <button class="btn btn-p" onclick="cadastrarAtleta()" style="width:100%">＋ Cadastrar</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass">
+            <h2>📋 Atletas Cadastrados</h2>
+            <div class="search-bar"><input type="text" id="search-atletas" placeholder="Buscar atleta..." oninput="renderAtletas()"></div>
+            <div style="overflow-x:auto">
+                <table class="tbl">
+                    <thead><tr><th>Atleta</th><th>Contato</th><th>Ranking</th><th>Pontos</th><th>Seed</th><th>⭐</th><th>Check-in</th><th>Ações</th></tr></thead>
+                    <tbody id="tb-atletas"></tbody>
+                </table>
+            </div>
+            <div class="empty" id="empty-atletas">Nenhum atleta cadastrado</div>
+        </div>
+    </div>
+
+    <!-- ===== DUPLAS ===== -->
+    <div class="panel" id="panel-duplas">
+        <div class="glass">
+            <h2>➕ Cadastrar Dupla</h2>
+            <div class="row3">
+                <div><label>Atleta 1</label><select id="d-a1"><option value="">Selecione...</option></select></div>
+                <div><label>Atleta 2</label><select id="d-a2"><option value="">Selecione...</option></select></div>
+                <div><label>Categoria</label><select id="d-cat"><option value="">Selecione...</option></select></div>
+            </div>
+            <div class="row3">
+                <div><label>Nome da Dupla (opcional)</label><input type="text" id="d-nome" placeholder="Auto-gerado se vazio"></div>
+                <div><label>Seeding</label><input type="number" id="d-seeding" placeholder="Automático" min="0"></div>
+                <div style="display:flex;align-items:flex-end;padding-bottom:12px">
+                    <button class="btn btn-p" onclick="cadastrarDupla()" style="width:100%">＋ Cadastrar Dupla</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass">
+            <h2>🤝 Duplas Cadastradas</h2>
+            <div class="search-bar"><input type="text" id="search-duplas" placeholder="Buscar dupla..." oninput="renderDuplas()"></div>
+            <div style="overflow-x:auto">
+                <table class="tbl">
+                    <thead><tr><th>Dupla</th><th>Categoria</th><th>Pontos</th><th>Seed</th><th>Check-in</th><th>Ações</th></tr></thead>
+                    <tbody id="tb-duplas"></tbody>
+                </table>
+            </div>
+            <div class="empty" id="empty-duplas">Nenhuma dupla cadastrada</div>
+        </div>
+    </div>
+
+    <!-- ===== INSCRIÇÕES ===== -->
+    <div class="panel" id="panel-inscricoes">
+        <div class="glass">
+            <h2>➕ Nova Inscrição</h2>
+            <div class="conflict-box" id="conflict-box">
+                ⚠️ <strong>Conflito de horário detectado!</strong> Este atleta já tem partidas agendadas que colidem com esta categoria.
+            </div>
+            <div class="row3">
+                <div><label>Dupla</label><select id="i-dupla"><option value="">Selecione a dupla...</option></select></div>
+                <div><label>Categoria</label><select id="i-cat" onchange="verificarConflito()"><option value="">Selecione a categoria...</option></select></div>
+                <div style="display:flex;align-items:flex-end;padding-bottom:12px">
+                    <button class="btn btn-p" onclick="inscreverDupla()" style="width:100%">📋 Inscrever</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:16px">
+                <h2 style="margin-bottom:0">📋 Inscrições por Categoria</h2>
+                <select id="filter-cat-insc" onchange="renderInscricoes()" style="width:auto;margin-bottom:0;max-width:220px">
+                    <option value="">Todas as categorias</option>
+                </select>
+            </div>
+            <div style="overflow-x:auto">
+                <table class="tbl">
+                    <thead><tr><th>Dupla</th><th>Categoria</th><th>Status</th><th>Data</th><th>Ações</th></tr></thead>
+                    <tbody id="tb-inscricoes"></tbody>
+                </table>
+            </div>
+            <div class="empty" id="empty-inscricoes">Nenhuma inscrição</div>
+        </div>
+    </div>
+
+    <!-- ===== LISTA DE ESPERA ===== -->
+    <div class="panel" id="panel-espera">
+        <div class="glass">
+            <h2>⏳ Lista de Espera</h2>
+            <div style="overflow-x:auto">
+                <table class="tbl">
+                    <thead><tr><th>Dupla</th><th>Categoria</th><th>Data</th><th>Ações</th></tr></thead>
+                    <tbody id="tb-espera"></tbody>
+                </table>
+            </div>
+            <div class="empty" id="empty-espera">Lista de espera vazia</div>
+        </div>
+    </div>
+
+    <!-- ===== CHECK-IN ===== -->
+    <div class="panel" id="panel-checkin">
+        <div class="glass">
+            <h2>✅ Check-in Presencial</h2>
+            <div class="search-bar"><input type="text" id="search-checkin" placeholder="Buscar atleta ou dupla para check-in..." oninput="renderCheckin()"></div>
+            <div class="row2" style="margin-bottom:16px">
+                <div>
+                    <h2 style="font-size:.95rem">🏃 Atletas</h2>
+                    <div id="checkin-atletas"></div>
+                </div>
+                <div>
+                    <h2 style="font-size:.95rem">🤝 Duplas</h2>
+                    <div id="checkin-duplas"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== RANKING ===== -->
+    <div class="panel" id="panel-ranking">
+        <div class="glass">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:16px">
+                <h2 style="margin-bottom:0">🏆 Ranking</h2>
+                <div style="display:flex;gap:8px;">
+                    <select id="ranking-mode" onchange="renderRanking()" style="width:auto;margin-bottom:0;max-width:200px">
+                        <option value="evento">Ranking do Evento</option>
+                        <option value="circuito">Ranking do Circuito</option>
+                    </select>
+                </div>
+            </div>
+            <div style="overflow-x:auto">
+                <table class="tbl">
+                    <thead><tr><th>#</th><th>Dupla</th><th>Categoria</th><th>Pontos</th><th>V</th><th>D</th><th>Partidas</th></tr></thead>
+                    <tbody id="tb-ranking"></tbody>
+                </table>
+            </div>
+            <div class="empty" id="empty-ranking">Sem dados de ranking</div>
+        </div>
+    </div>
+</div>
+
+<!-- EDIT ATLETA MODAL -->
+<div class="modal-overlay" id="modal-atleta">
+    <div class="modal">
+        <h3>✏️ Editar Atleta</h3>
+        <input type="hidden" id="ed-a-id">
+        <div class="row2">
+            <div><label>Nome</label><input type="text" id="ed-a-nome"></div>
+            <div><label>Telefone</label><input type="tel" id="ed-a-tel"></div>
+        </div>
+        <div class="row2">
+            <div><label>Email</label><input type="email" id="ed-a-email"></div>
+            <div><label>Foto (URL)</label><input type="url" id="ed-a-foto"></div>
+        </div>
+        <div class="row3">
+            <div><label>Ranking</label><input type="number" id="ed-a-ranking" min="0"></div>
+            <div><label>Seeding</label><input type="number" id="ed-a-seeding" min="0"></div>
+            <div><label>Pontos</label><input type="number" id="ed-a-pontos" min="0"></div>
+        </div>
+        <label>Histórico de Participação</label>
+        <textarea id="ed-a-hist" rows="3" placeholder="Um item por linha: ex: 1º Lugar - Etapa 1 - 2024"></textarea>
+        <div class="modal-actions">
+            <button class="btn btn-s" onclick="fecharModal('modal-atleta')">Cancelar</button>
+            <button class="btn btn-p" onclick="salvarAtleta()">💾 Salvar</button>
+        </div>
+    </div>
+</div>
+
+<!-- EDIT DUPLA MODAL -->
+<div class="modal-overlay" id="modal-dupla">
+    <div class="modal">
+        <h3>✏️ Editar Dupla</h3>
+        <input type="hidden" id="ed-d-id">
+        <div class="row2">
+            <div><label>Nome da Dupla</label><input type="text" id="ed-d-nome"></div>
+            <div><label>Seeding</label><input type="number" id="ed-d-seeding" min="0"></div>
+        </div>
+        <div class="row2">
+            <div><label>Atleta 1</label><select id="ed-d-a1"></select></div>
+            <div><label>Atleta 2</label><select id="ed-d-a2"></select></div>
+        </div>
+        <div><label>Categoria</label><select id="ed-d-cat"></select></div>
+        <div class="modal-actions">
+            <button class="btn btn-s" onclick="fecharModal('modal-dupla')">Cancelar</button>
+            <button class="btn btn-p" onclick="salvarDupla()">💾 Salvar</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== GLOBAL STATE =====
+let D = { atletas: [], duplas: [], inscricoes: [], listaEspera: [], categorias: [], partidas: [], circuito: {} };
+
+// ===== INIT =====
+async function init() {
+    try {
+        const r = await fetch('/api/campeonato');
+        const data = await r.json();
+        D.atletas = data.atletas || [];
+        D.duplas = data.duplas || [];
+        D.inscricoes = data.inscricoes || [];
+        D.listaEspera = data.listaEspera || [];
+        D.categorias = data.categorias || [];
+        D.partidas = data.partidas || [];
+        D.circuito = data.circuito || {};
+        atualizarStats();
+        populateSelects();
+        renderAtletas();
+        renderDuplas();
+        renderInscricoes();
+        renderEspera();
+        renderCheckin();
+        renderRanking();
+    } catch (e) { toast('Erro ao carregar: ' + e.message, 'error'); }
+}
+
+// ===== TABS =====
+document.querySelectorAll('.tab').forEach(t => {
+    t.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+        document.querySelectorAll('.panel').forEach(x => x.classList.remove('active'));
+        t.classList.add('active');
+        document.getElementById('panel-' + t.dataset.tab).classList.add('active');
+    });
+});
+
+// ===== STATS =====
+function atualizarStats() {
+    document.getElementById('st-atletas').textContent = D.atletas.length;
+    document.getElementById('st-duplas').textContent = D.duplas.length;
+    document.getElementById('st-inscritos').textContent = D.inscricoes.length;
+    document.getElementById('st-espera').textContent = D.listaEspera.length;
+    const ci = D.atletas.filter(a => a.checkIn).length;
+    document.getElementById('st-checkin').textContent = ci + '/' + D.atletas.length;
+}
+
+// ===== SELECTS =====
+function populateSelects() {
+    const as = D.atletas.map(a => `<option value="${a.id}">${esc(a.nome)}</option>`).join('');
+    const cs = D.categorias.map(c => `<option value="${c.id}">${esc(c.nome)} (${c.tipo})</option>`).join('');
+    const ds = D.duplas.map(d => `<option value="${d.id}">${duplaLabel(d)}</option>`).join('');
+
+    ['d-a1','d-a2','ed-d-a1','ed-d-a2'].forEach(id => {
+        document.getElementById(id).innerHTML = '<option value="">Selecione...</option>' + as;
+    });
+    ['d-cat','ed-d-cat','i-cat','filter-cat-insc'].forEach(id => {
+        const el = document.getElementById(id);
+        const first = id === 'filter-cat-insc' ? '<option value="">Todas as categorias</option>' : '<option value="">Selecione...</option>';
+        el.innerHTML = first + cs;
+    });
+    document.getElementById('i-dupla').innerHTML = '<option value="">Selecione a dupla...</option>' + ds;
+}
+
+// ===== ATLETAS =====
+async function cadastrarAtleta() {
+    const nome = val('a-nome');
+    if (!nome) return toast('Preencha o nome', 'error');
+    const body = {
+        nome,
+        telefone: val('a-tel'),
+        email: val('a-email'),
+        foto: val('a-foto'),
+        ranking: parseInt(val('a-ranking')) || 0,
+        seeding: parseInt(val('a-seeding')) || null,
+        favorito: false
+    };
+    try {
+        const a = await api('/api/campeonato/atletas', 'POST', body);
+        D.atletas.push(a);
+        ['a-nome','a-tel','a-email','a-foto','a-ranking','a-seeding'].forEach(id => document.getElementById(id).value = '');
+        atualizarStats(); populateSelects(); renderAtletas();
+        toast('Atleta cadastrado!', 'success');
+    } catch (e) { toast('Erro: ' + e.message, 'error'); }
+}
+
+function renderAtletas() {
+    const q = val('search-atletas').toLowerCase();
+    const filtered = D.atletas.filter(a => !q || a.nome.toLowerCase().includes(q) || (a.email||'').toLowerCase().includes(q));
+    const tb = document.getElementById('tb-atletas');
+    document.getElementById('empty-atletas').style.display = filtered.length ? 'none' : 'block';
+
+    tb.innerHTML = filtered.map(a => {
+        const avt = a.foto
+            ? `<span class="avatar"><img src="${esc(a.foto)}" onerror="this.parentElement.textContent='${esc(a.nome.charAt(0))}'"></span>`
+            : `<span class="avatar" style="background:${avatarColor(a.id)}">${esc(a.nome.charAt(0).toUpperCase())}</span>`;
+        const cats = getDuplasDeAtleta(a.id).map(d => {
+            const c = D.categorias.find(c => c.id === d.categoriaId);
+            return c ? c.nome : '';
+        }).filter(Boolean);
+        const catBadge = cats.length ? `<span class="badge badge-in" style="font-size:.65rem;margin-left:4px">${cats.join(', ')}</span>` : '';
+
+        return `<tr>
+            <td>${avt} ${esc(a.nome)} ${catBadge}</td>
+            <td style="font-size:.8rem;color:rgba(255,255,255,.5)">${esc(a.telefone||'')}${a.email ? '<br>'+esc(a.email) : ''}</td>
+            <td>${a.ranking||0}</td>
+            <td>${a.pontos||0}</td>
+            <td>${a.seeding||'—'}</td>
+            <td><span class="star" onclick="toggleFav(${a.id})">${a.favorito?'⭐':'☆'}</span></td>
+            <td><span class="checkin-dot ${a.checkIn?'yes':'no'}"></span></td>
+            <td>
+                <button class="btn btn-sm btn-s" onclick="editarAtleta(${a.id})">✏️</button>
+                <button class="btn btn-sm btn-d" onclick="deletarAtleta(${a.id})">✕</button>
+            </td>
+        </tr>`;
+    }).join('');
+}
+
+function editarAtleta(id) {
+    const a = D.atletas.find(x => x.id === id); if (!a) return;
+    document.getElementById('ed-a-id').value = id;
+    document.getElementById('ed-a-nome').value = a.nome || '';
+    document.getElementById('ed-a-tel').value = a.telefone || '';
+    document.getElementById('ed-a-email').value = a.email || '';
+    document.getElementById('ed-a-foto').value = a.foto || '';
+    document.getElementById('ed-a-ranking').value = a.ranking || 0;
+    document.getElementById('ed-a-seeding').value = a.seeding || '';
+    document.getElementById('ed-a-pontos').value = a.pontos || 0;
+    document.getElementById('ed-a-hist').value = (a.historico || []).join('\n');
+    document.getElementById('modal-atleta').classList.add('show');
+}
+
+async function salvarAtleta() {
+    const id = parseInt(document.getElementById('ed-a-id').value);
+    const body = {
+        nome: val('ed-a-nome'),
+        telefone: val('ed-a-tel'),
+        email: val('ed-a-email'),
+        foto: val('ed-a-foto'),
+        ranking: parseInt(val('ed-a-ranking')) || 0,
+        seeding: parseInt(val('ed-a-seeding')) || null,
+        pontos: parseInt(val('ed-a-pontos')) || 0,
+        historico: val('ed-a-hist').split('\n').map(s => s.trim()).filter(Boolean)
+    };
+    try {
+        const updated = await api('/api/campeonato/atletas/' + id, 'PUT', body);
+        const idx = D.atletas.findIndex(a => a.id === id);
+        if (idx >= 0) D.atletas[idx] = { ...D.atletas[idx], ...updated };
+        fecharModal('modal-atleta');
+        renderAtletas(); populateSelects();
+        toast('Atleta atualizado!', 'success');
+    } catch (e) { toast('Erro: ' + e.message, 'error'); }
+}
+
+async function deletarAtleta(id) {
+    if (!confirm('Remover este atleta?')) return;
+    try {
+        await api('/api/campeonato/atletas/' + id, 'DELETE');
+        D.atletas = D.atletas.filter(a => a.id !== id);
+        atualizarStats(); populateSelects(); renderAtletas();
+        toast('Atleta removido', 'success');
+    } catch (e) { toast('Erro: ' + e.message, 'error'); }
+}
+
+async function toggleFav(id) {
+    const a = D.atletas.find(x => x.id === id); if (!a) return;
+    a.favorito = !a.favorito;
+    try {
+        await api('/api/campeonato/atletas/' + id, 'PUT', { favorito: a.favorito });
+        renderAtletas();
+    } catch (e) { toast('Erro: ' + e.message, 'error'); }
+}
+
+// ===== DUPLAS =====
+async function cadastrarDupla() {
+    const a1 = parseInt(val('d-a1')), a2 = parseInt(val('d-a2')), cat = parseInt(val('d-cat'));
+    if (!a1 || !a2) return toast('Selecione os dois atletas', 'error');
+    if (a1 === a2) return toast('Os atletas devem ser diferentes', 'error');
+    if (!cat) return toast('Selecione a categoria', 'error');
+    const at1 = D.atletas.find(a => a.id === a1), at2 = D.atletas.find(a => a.id === a2);
+    const nome = val('d-nome') || `${at1?.nome || '?'} / ${at2?.nome || '?'}`;
+    const body = { nome, atleta1Id: a1, atleta2Id: a2, categoriaId: cat, seeding: parseInt(val('d-seeding')) || null };
+    try {
+        const d = await api('/api/campeonato/duplas', 'POST', body);
+        D.duplas.push(d);
+        ['d-nome','d-seeding'].forEach(id => document.getElementById(id).value = '');
+        atualizarStats(); populateSelects(); renderDuplas();
+        toast('Dupla cadastrada!', 'success');
+    } catch (e) { toast('Erro: ' + e.message, 'error'); }
+}
+
+function renderDuplas() {
+    const q = val('search-duplas').toLowerCase();
+    const filtered = D.duplas.filter(d => !q || duplaLabel(d).toLowerCase().includes(q));
+    const tb = document.getElementById('tb-duplas');
+    document.getElementById('empty-duplas').style.display = filtered.length ? 'none' : 'block';
+
+    tb.innerHTML = filtered.map(d => {
+        const cat = D.categorias.find(c => c.id === d.categoriaId);
+        return `<tr>
+            <td><strong>${esc(duplaLabel(d))}</strong></td>
+            <td>${cat ? esc(cat.nome) : '—'}</td>
+            <td>${d.pontos || 0}</td>
+            <td>${d.seeding || '—'}</td>
+            <td><span class="checkin-dot ${d.checkIn ? 'yes' : 'no'}"></span></td>
+            <td>
+                <button class="btn btn-sm btn-s" onclick="editarDupla(${d.id})">✏️</button>
+                <button class="btn btn-sm btn-d" onclick="deletarDupla(${d.id})">✕</button>
+            </td>
+        </tr>`;
+    }).join('');
+}
+
+function editarDupla(id) {
+    const d = D.duplas.find(x => x.id === id); if (!d) return;
+    document.getElementById('ed-d-id').value = id;
+    document.getElementById('ed-d-nome').value = d.nome || '';
+    document.getElementById('ed-d-seeding').value = d.seeding || '';
+    document.getElementById('ed-d-a1').value = d.atleta1Id || '';
+    document.getElementById('ed-d-a2').value = d.atleta2Id || '';
+    document.getElementById('ed-d-cat').value = d.categoriaId || '';
+    document.getElementById('modal-dupla').classList.add('show');
+}
+
+async function salvarDupla() {
+    const id = parseInt(document.getElementById('ed-d-id').value);
+    const body = {
+        nome: val('ed-d-nome'),
+        seeding: parseInt(val('ed-d-seeding')) || null,
+        atleta1Id: parseInt(document.getElementById('ed-d-a1').value) || null,
+        atleta2Id: parseInt(document.getElementById('ed-d-a2').value) || null,
+        categoriaId: parseInt(document.getElementById('ed-d-cat').value) || null
+    };
+    if (!body.nome) {
+        const a1 = D.atletas.find(a => a.id === body.atleta1Id);
+        const a2 = D.atletas.find(a => a.id === body.atleta2Id);
+        body.nome = [a1?.nome, a2?.nome].filter(Boolean).join(' / ');
+    }
+    try {
+        const updated = await api('/api/campeonato/duplas/' + id, 'PUT', body);
+        const idx = D.duplas.findIndex(x => x.id === id);
+        if (idx >= 0) D.duplas[idx] = { ...D.duplas[idx], ...updated };
+        fecharModal('modal-dupla');
+        renderDuplas(); populateSelects();
+        toast('Dupla atualizada!', 'success');
+    } catch (e) { toast('Erro: ' + e.message, 'error'); }
+}
+
+async function deletarDupla(id) {
+    if (!confirm('Remover esta dupla?')) return;
+    try {
+        await api('/api/campeonato/duplas/' + id, 'DELETE');
+        D.duplas = D.duplas.filter(x => x.id !== id);
+        atualizarStats(); populateSelects(); renderDuplas();
+        toast('Dupla removida', 'success');
+    } catch (e) { toast('Erro: ' + e.message, 'error'); }
+}
+
+// ===== INSCRIÇÕES =====
+async function verificarConflito() {
+    const duplaId = parseInt(val('i-dupla'));
+    const catId = parseInt(val('i-cat'));
+    const box = document.getElementById('conflict-box');
+    box.classList.remove('show');
+    if (!duplaId || !catId) return;
+    const dupla = D.duplas.find(d => d.id === duplaId);
+    if (!dupla) return;
+    // Check for both athletes
+    for (const atletaId of [dupla.atleta1Id, dupla.atleta2Id]) {
+        if (!atletaId) continue;
+        try {
+            const r = await api('/api/campeonato/verificar-conflito', 'POST', { atletaId, categoriaId: catId });
+            if (r.temConflito) {
+                box.innerHTML = `⚠️ <strong>Conflito de horário!</strong> Atleta já tem partidas agendadas que colidem com esta categoria. (${r.conflitos.length} conflito(s))`;
+                box.classList.add('show');
+                return;
+            }
+        } catch (e) { /* ignore */ }
+    }
+}
+
+async function inscreverDupla() {
+    const duplaId = parseInt(val('i-dupla'));
+    const catId = parseInt(val('i-cat'));
+    if (!duplaId) return toast('Selecione a dupla', 'error');
+    if (!catId) return toast('Selecione a categoria', 'error');
+    // Check if already inscribed
+    const ja = D.inscricoes.find(i => i.duplaId === duplaId && i.categoriaId === catId);
+    if (ja) return toast('Dupla já inscrita nesta categoria', 'error');
+    try {
+        const insc = await api('/api/campeonato/inscricoes', 'POST', { duplaId, categoriaId: catId });
+        if (insc.status === 'espera') {
+            D.listaEspera.push(insc);
+            toast('Categoria lotada — dupla adicionada à lista de espera', 'error');
+        } else {
+            D.inscricoes.push(insc);
+            toast('Inscrição confirmada!', 'success');
+        }
+        atualizarStats(); renderInscricoes(); renderEspera();
+        document.getElementById('conflict-box').classList.remove('show');
+    } catch (e) { toast('Erro: ' + e.message, 'error'); }
+}
+
+function renderInscricoes() {
+    const filterCat = parseInt(document.getElementById('filter-cat-insc').value) || null;
+    const filtered = filterCat ? D.inscricoes.filter(i => i.categoriaId === filterCat) : D.inscricoes;
+    const tb = document.getElementById('tb-inscricoes');
+    document.getElementById('empty-inscricoes').style.display = filtered.length ? 'none' : 'block';
+
+    tb.innerHTML = filtered.map(i => {
+        const d = D.duplas.find(x => x.id === i.duplaId);
+        const c = D.categorias.find(x => x.id === i.categoriaId);
+        const statusCls = i.status === 'confirmado' ? 'badge-ok' : i.status === 'espera' ? 'badge-wait' : 'badge-cancel';
+        const statusLabel = i.status === 'confirmado' ? 'Confirmado' : i.status === 'espera' ? 'Espera' : 'Cancelado';
+        const dt = i.createdAt ? new Date(i.createdAt).toLocaleDateString('pt-BR') : '—';
+        return `<tr>
+            <td><strong>${d ? esc(duplaLabel(d)) : '?'}</strong></td>
+            <td>${c ? esc(c.nome) : '?'}</td>
+            <td><span class="badge ${statusCls}">${statusLabel}</span></td>
+            <td style="font-size:.8rem;color:rgba(255,255,255,.4)">${dt}</td>
+            <td>
+                <button class="btn btn-xs btn-d" onclick="cancelarInscricao(${i.id})">Cancelar</button>
+            </td>
+        </tr>`;
+    }).join('');
+}
+
+async function cancelarInscricao(id) {
+    if (!confirm('Cancelar esta inscrição?')) return;
+    try {
+        await api('/api/campeonato/inscricoes/' + id, 'DELETE');
+        D.inscricoes = D.inscricoes.filter(i => i.id !== id);
+        atualizarStats(); renderInscricoes();
+        toast('Inscrição cancelada', 'success');
+    } catch (e) { toast('Erro: ' + e.message, 'error'); }
+}
+
+// ===== LISTA DE ESPERA =====
+function renderEspera() {
+    const tb = document.getElementById('tb-espera');
+    document.getElementById('empty-espera').style.display = D.listaEspera.length ? 'none' : 'block';
+    tb.innerHTML = D.listaEspera.map(i => {
+        const d = D.duplas.find(x => x.id === i.duplaId);
+        const c = D.categorias.find(x => x.id === i.categoriaId);
+        const dt = i.createdAt ? new Date(i.createdAt).toLocaleDateString('pt-BR') : '—';
+        return `<tr>
+            <td><strong>${d ? esc(duplaLabel(d)) : '?'}</strong></td>
+            <td>${c ? esc(c.nome) : '?'}</td>
+            <td style="font-size:.8rem;color:rgba(255,255,255,.4)">${dt}</td>
+            <td>
+                <button class="btn btn-xs btn-ok" onclick="promoverEspera(${i.id})">✅ Promover</button>
+                <button class="btn btn-xs btn-d" onclick="removerEspera(${i.id})">✕</button>
+            </td>
+        </tr>`;
+    }).join('');
+}
+
+async function promoverEspera(id) {
+    try {
+        const insc = await api('/api/campeonato/promover-espera', 'POST', { id });
+        D.listaEspera = D.listaEspera.filter(i => i.id !== id);
+        D.inscricoes.push(insc);
+        atualizarStats(); renderInscricoes(); renderEspera();
+        toast('Dupla promovida para inscrição!', 'success');
+    } catch (e) { toast('Erro: ' + e.message, 'error'); }
+}
+
+async function removerEspera(id) {
+    if (!confirm('Remover da lista de espera?')) return;
+    D.listaEspera = D.listaEspera.filter(i => i.id !== id);
+    // Persist: reload full data
+    try {
+        const r = await fetch('/api/campeonato');
+        const data = await r.json();
+        data.listaEspera = data.listaEspera.filter(i => i.id !== id);
+        await api('/api/campeonato/importar', 'POST', data);
+        atualizarStats(); renderEspera();
+        toast('Removido da lista de espera', 'success');
+    } catch (e) { toast('Erro: ' + e.message, 'error'); }
+}
+
+// ===== CHECK-IN =====
+function renderCheckin() {
+    const q = val('search-checkin').toLowerCase();
+
+    // Atletas
+    const atletasFilt = D.atletas.filter(a => !q || a.nome.toLowerCase().includes(q));
+    const cA = document.getElementById('checkin-atletas');
+    cA.innerHTML = atletasFilt.length === 0 ? '<div class="empty">Nenhum atleta</div>' :
+        atletasFilt.map(a => `
+            <div class="list-item" style="margin-bottom:6px;padding:8px 14px;">
+                <span class="checkin-dot ${a.checkIn?'yes':'no'}"></span>
+                <div class="item-content"><span class="item-label" style="font-size:.88rem">${esc(a.nome)}</span></div>
+                <button class="btn btn-xs ${a.checkIn?'btn-d':'btn-ok'}" onclick="checkInAtleta(${a.id},${!a.checkIn})">
+                    ${a.checkIn?'Desfazer':'Check-in'}
+                </button>
+            </div>
+        `).join('');
+
+    // Duplas
+    const duplasFilt = D.duplas.filter(d => !q || duplaLabel(d).toLowerCase().includes(q));
+    const cD = document.getElementById('checkin-duplas');
+    cD.innerHTML = duplasFilt.length === 0 ? '<div class="empty">Nenhuma dupla</div>' :
+        duplasFilt.map(d => `
+            <div class="list-item" style="margin-bottom:6px;padding:8px 14px;">
+                <span class="checkin-dot ${d.checkIn?'yes':'no'}"></span>
+                <div class="item-content"><span class="item-label" style="font-size:.88rem">${esc(duplaLabel(d))}</span></div>
+                <button class="btn btn-xs ${d.checkIn?'btn-d':'btn-ok'}" onclick="checkInDupla(${d.id},${!d.checkIn})">
+                    ${d.checkIn?'Desfazer':'Check-in'}
+                </button>
+            </div>
+        `).join('');
+}
+
+async function checkInAtleta(id, val) {
+    const a = D.atletas.find(x => x.id === id); if (!a) return;
+    try {
+        if (val) {
+            await api('/api/campeonato/checkin', 'POST', { tipo: 'atleta', id });
+        } else {
+            await api('/api/campeonato/atletas/' + id, 'PUT', { checkIn: false });
+        }
+        a.checkIn = val;
+        atualizarStats(); renderCheckin(); renderAtletas();
+    } catch (e) { toast('Erro: ' + e.message, 'error'); }
+}
+
+async function checkInDupla(id, val) {
+    const d = D.duplas.find(x => x.id === id); if (!d) return;
+    try {
+        if (val) {
+            await api('/api/campeonato/checkin', 'POST', { tipo: 'dupla', id });
+        } else {
+            await api('/api/campeonato/duplas/' + id, 'PUT', { checkIn: false });
+        }
+        d.checkIn = val;
+        atualizarStats(); renderCheckin(); renderDuplas();
+    } catch (e) { toast('Erro: ' + e.message, 'error'); }
+}
+
+// ===== RANKING =====
+function renderRanking() {
+    const mode = document.getElementById('ranking-mode').value;
+    const tb = document.getElementById('tb-ranking');
+    document.getElementById('empty-ranking').style.display = D.duplas.length ? 'none' : 'block';
+
+    const ranking = D.duplas.map(d => {
+        const cat = D.categorias.find(c => c.id === d.categoriaId);
+        const partidas = D.partidas.filter(p => (p.dupla1Id === d.id || p.dupla2Id === d.id) && p.status === 'encerrado');
+        const vit = partidas.filter(p => p.vencedor === d.id).length;
+        let pts = d.pontos || 0;
+        if (mode === 'circuito') {
+            // Sum across circuit if available
+            const a1 = D.atletas.find(a => a.id === d.atleta1Id);
+            const a2 = D.atletas.find(a => a.id === d.atleta2Id);
+            pts = (a1?.pontos || 0) + (a2?.pontos || 0) + pts;
+        }
+        return { d, label: duplaLabel(d), cat: cat?.nome || '—', pts, total: partidas.length, vit, der: partidas.length - vit };
+    }).sort((a, b) => b.pts - a.pts);
+
+    const medals = ['🥇','🥈','🥉'];
+    tb.innerHTML = ranking.map((r, i) => `
+        <tr>
+            <td style="font-weight:800">${i < 3 ? medals[i] : '#' + (i+1)}</td>
+            <td><strong>${esc(r.label)}</strong></td>
+            <td>${esc(r.cat)}</td>
+            <td style="color:#fbbf24;font-weight:700">${r.pts}</td>
+            <td style="color:#6ee7b7">${r.vit}</td>
+            <td style="color:#f87171">${r.der}</td>
+            <td>${r.total}</td>
+        </tr>
+    `).join('');
+}
+
+// ===== HELPERS =====
+function duplaLabel(d) {
+    if (d.nome) return d.nome;
+    const a1 = D.atletas.find(a => a.id === d.atleta1Id);
+    const a2 = D.atletas.find(a => a.id === d.atleta2Id);
+    return [a1?.nome, a2?.nome].filter(Boolean).join(' / ') || 'Dupla #' + d.id;
+}
+
+function getDuplasDeAtleta(atletaId) {
+    return D.duplas.filter(d => d.atleta1Id === atletaId || d.atleta2Id === atletaId);
+}
+
+function avatarColor(id) {
+    const colors = ['#e21b3c','#1368ce','#26890c','#d89e00','#9b59b6','#e67e22','#1abc9c','#e74c3c'];
+    return colors[id % colors.length];
+}
+
+function val(id) { return document.getElementById(id).value.trim(); }
+
+function esc(t) { const d = document.createElement('div'); d.textContent = t || ''; return d.innerHTML; }
+
+async function api(url, method, body) {
+    const opts = { method, headers: { 'Content-Type': 'application/json' } };
+    if (body) opts.body = JSON.stringify(body);
+    const r = await fetch(url, opts);
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return r.json();
+}
+
+function fecharModal(id) { document.getElementById(id).classList.remove('show'); }
+
+function toast(msg, type) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.className = 'toast ' + type;
+    el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+// Close modals on overlay click
+document.querySelectorAll('.modal-overlay').forEach(m => {
+    m.addEventListener('click', e => { if (e.target === m) m.classList.remove('show'); });
+});
+
+init();
+</script>
+</body>
+</html>

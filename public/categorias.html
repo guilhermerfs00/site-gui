@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏐 Categorias & Regras — Campeonato</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Poppins',sans-serif;background:#0a0a2e;color:#fff;min-height:100vh}
+        .bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;overflow:hidden}
+        .bg .g{position:absolute;width:100%;height:100%;background:linear-gradient(135deg,#0a0a2e,#1a1a4e 30%,#0d0d35 60%,#15153f)}
+        .bg .o{position:absolute;border-radius:50%;filter:blur(80px);opacity:.3;animation:of 20s ease-in-out infinite}
+        .bg .o:nth-child(2){width:400px;height:400px;background:#f59e0b;top:-100px;right:-100px}
+        .bg .o:nth-child(3){width:500px;height:500px;background:#d97706;bottom:-150px;left:-150px;animation-delay:-7s}
+        .bg .o:nth-child(4){width:300px;height:300px;background:#fbbf24;top:50%;left:50%;animation-delay:-14s}
+        @keyframes of{0%,100%{transform:translate(0,0) scale(1)}25%{transform:translate(50px,-80px) scale(1.1)}50%{transform:translate(-30px,60px) scale(.9)}75%{transform:translate(70px,40px) scale(1.05)}}
+
+        .wrap{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:24px 16px 60px}
+        .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:12px}
+        .top h1{font-size:1.6rem;font-weight:800;background:linear-gradient(135deg,#fbbf24,#f59e0b,#d97706);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .top-btns{display:flex;gap:8px;flex-wrap:wrap}
+
+        .glass{background:rgba(255,255,255,.06);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:24px;margin-bottom:20px}
+        .glass h2{font-size:1.05rem;font-weight:700;margin-bottom:16px;color:rgba(255,255,255,.85);display:flex;align-items:center;gap:8px}
+
+        label{display:block;font-size:.72rem;font-weight:600;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+        input[type=text],input[type=number],select{width:100%;padding:10px 14px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:10px;color:#fff;font-family:'Poppins',sans-serif;font-size:.9rem;outline:none;transition:border-color .3s;margin-bottom:12px}
+        input:focus,select:focus{border-color:rgba(251,191,36,.6)}
+        select option{background:#1a1a4e}
+        .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+        .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+        .row4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px}
+
+        .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 18px;border:none;border-radius:10px;font-family:'Poppins',sans-serif;font-size:.82rem;font-weight:600;cursor:pointer;transition:all .3s;white-space:nowrap}
+        .btn:hover{transform:translateY(-2px)}
+        .btn-p{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;box-shadow:0 4px 15px rgba(245,158,11,.3)}
+        .btn-s{background:rgba(255,255,255,.08);color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.12)}
+        .btn-d{background:rgba(239,68,68,.15);color:#f87171;border:1px solid rgba(239,68,68,.3)}
+        .btn-sm{padding:5px 12px;font-size:.75rem;border-radius:8px}
+
+        /* TOGGLE */
+        .toggle-row{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+        .toggle-row .tl{font-size:.82rem;color:rgba(255,255,255,.6);flex:1}
+        .toggle{position:relative;width:46px;height:26px;cursor:pointer;flex-shrink:0}
+        .toggle input{opacity:0;width:0;height:0}
+        .toggle .slider{position:absolute;inset:0;background:rgba(255,255,255,.1);border-radius:13px;transition:all .3s}
+        .toggle .slider::before{content:'';position:absolute;width:20px;height:20px;background:#fff;border-radius:50%;top:3px;left:3px;transition:all .3s}
+        .toggle input:checked+.slider{background:linear-gradient(135deg,#f59e0b,#d97706)}
+        .toggle input:checked+.slider::before{transform:translateX(20px)}
+
+        /* CATEGORY CARD */
+        .cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+        .cat-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:20px;transition:all .3s;position:relative}
+        .cat-card:hover{border-color:rgba(245,158,11,.3);background:rgba(255,255,255,.06)}
+        .cat-card .cat-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+        .cat-card .cat-name{font-size:1.05rem;font-weight:700;color:#fbbf24}
+        .cat-card .cat-tipo{display:inline-block;padding:3px 10px;border-radius:14px;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+        .tipo-masculina{background:rgba(99,102,241,.15);color:#a5b4fc;border:1px solid rgba(99,102,241,.2)}
+        .tipo-feminina{background:rgba(244,114,182,.15);color:#f9a8d4;border:1px solid rgba(244,114,182,.2)}
+        .tipo-mista{background:rgba(56,239,125,.15);color:#6ee7b7;border:1px solid rgba(56,239,125,.2)}
+        .cat-card .cat-detail{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+        .cat-card .cat-tag{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:4px 10px;font-size:.72rem;color:rgba(255,255,255,.55)}
+        .cat-card .cat-tag strong{color:rgba(255,255,255,.8)}
+        .cat-card .cat-actions{display:flex;gap:6px;margin-top:12px;border-top:1px solid rgba(255,255,255,.06);padding-top:12px}
+        .cat-card .crit-list{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+        .cat-card .crit{background:rgba(251,191,36,.1);color:#fbbf24;border:1px solid rgba(251,191,36,.15);border-radius:6px;padding:2px 8px;font-size:.68rem;font-weight:600}
+
+        /* MODAL */
+        .modal-overlay{display:none;position:fixed;inset:0;background:rgba(10,10,46,.85);z-index:100;align-items:center;justify-content:center}
+        .modal-overlay.show{display:flex}
+        .modal{background:#1a1a4e;border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:28px;max-width:620px;width:92%;max-height:88vh;overflow-y:auto;animation:fadeIn .3s ease}
+        .modal h3{font-size:1.1rem;font-weight:700;margin-bottom:18px;color:#fbbf24}
+        .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+        .section-label{font-size:.8rem;font-weight:700;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:1px;margin:16px 0 10px;padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,.06)}
+
+        /* CRITERIA SORTABLE */
+        .crit-sort{list-style:none;padding:0}
+        .crit-sort li{display:flex;align-items:center;gap:8px;padding:8px 12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;margin-bottom:4px;cursor:grab;font-size:.85rem;user-select:none}
+        .crit-sort li:active{cursor:grabbing;background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.3)}
+        .crit-sort .grip{color:rgba(255,255,255,.25);font-size:1rem}
+        .crit-sort .crit-lbl{flex:1}
+
+        /* PRESET BUTTONS */
+        .preset-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+        .preset{padding:8px 16px;border-radius:10px;font-size:.78rem;font-weight:600;cursor:pointer;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:rgba(255,255,255,.5);transition:all .3s}
+        .preset:hover{background:rgba(255,255,255,.08);color:rgba(255,255,255,.7)}
+        .preset.active{background:linear-gradient(135deg,rgba(245,158,11,.2),rgba(217,119,6,.15));border-color:rgba(245,158,11,.4);color:#fbbf24}
+
+        /* TOAST */
+        .toast{position:fixed;bottom:30px;right:30px;z-index:999;padding:12px 24px;border-radius:12px;font-weight:600;font-size:.88rem;transform:translateY(100px);opacity:0;transition:all .4s cubic-bezier(.68,-.55,.27,1.55);pointer-events:none}
+        .toast.show{transform:translateY(0);opacity:1}
+        .toast.success{background:rgba(56,239,125,.9);color:#064e3b}
+        .toast.error{background:rgba(239,68,68,.9);color:#fff}
+
+        .empty{text-align:center;padding:40px;color:rgba(255,255,255,.2);font-style:italic;font-size:.88rem}
+        ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:rgba(255,255,255,.05);border-radius:10px}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:10px}
+        @media(max-width:700px){.row2,.row3,.row4{grid-template-columns:1fr}.cat-grid{grid-template-columns:1fr}.top{flex-direction:column;align-items:flex-start}}
+    </style>
+</head>
+<body>
+<div class="bg"><div class="g"></div><div class="o"></div><div class="o"></div><div class="o"></div></div>
+
+<div class="wrap">
+    <div class="top">
+        <h1>🏐 Categorias & Regras</h1>
+        <div class="top-btns">
+            <button class="btn btn-p" onclick="abrirModal()">＋ Nova Categoria</button>
+            <button class="btn btn-s" onclick="location.href='/campeonato.html'">⚙️ Gerenciamento</button>
+            <button class="btn btn-s" onclick="location.href='/'">← Voltar</button>
+        </div>
+    </div>
+
+    <!-- PRESETS -->
+    <div class="glass">
+        <h2>⚡ Presets Rápidos</h2>
+        <p style="font-size:.8rem;color:rgba(255,255,255,.4);margin-bottom:12px">Aplique regras padrão a todas as categorias de uma vez.</p>
+        <div class="preset-bar">
+            <div class="preset" onclick="applyPreset('competitivo')">🏆 Competitivo<br><span style="font-size:.65rem;opacity:.6">Melhor de 3, tiebreak, super TB</span></div>
+            <div class="preset" onclick="applyPreset('rapido')">⚡ Jogo Rápido<br><span style="font-size:.65rem;opacity:.6">1 set, no-ad, golden point</span></div>
+            <div class="preset" onclick="applyPreset('amistoso')">🎾 Amistoso<br><span style="font-size:.65rem;opacity:.6">1 set, tiebreak normal</span></div>
+            <div class="preset" onclick="applyPreset('profissional')">🥇 Profissional BTB<br><span style="font-size:.65rem;opacity:.6">Melhor de 3, super TB, no-ad</span></div>
+        </div>
+    </div>
+
+    <!-- CATEGORIES GRID -->
+    <div class="cat-grid" id="cat-grid"></div>
+    <div class="empty" id="empty-cats" style="display:none">Nenhuma categoria cadastrada</div>
+</div>
+
+<!-- ===== MODAL CRIAR/EDITAR CATEGORIA ===== -->
+<div class="modal-overlay" id="modal-cat">
+    <div class="modal">
+        <h3 id="modal-title">➕ Nova Categoria</h3>
+        <input type="hidden" id="f-id">
+
+        <!-- DADOS BÁSICOS -->
+        <div class="section-label">📋 Dados Básicos</div>
+        <div class="row3">
+            <div><label>Nome</label><input type="text" id="f-nome" placeholder="Ex: Masculina A"></div>
+            <div><label>Tipo</label>
+                <select id="f-tipo">
+                    <option value="masculina">♂️ Masculina</option>
+                    <option value="feminina">♀️ Feminina</option>
+                    <option value="mista">🔄 Mista</option>
+                </select>
+            </div>
+            <div><label>Máx. Duplas</label><input type="number" id="f-max" value="16" min="2" max="128"></div>
+        </div>
+
+        <!-- REGRAS DO JOGO -->
+        <div class="section-label">🎾 Regras do Jogo</div>
+        <div class="row2">
+            <div><label>Formato do Jogo</label>
+                <select id="f-formato" onchange="onFormatoChange()">
+                    <option value="1-set">1 Set</option>
+                    <option value="melhor-de-3" selected>Melhor de 3 Sets</option>
+                    <option value="melhor-de-5">Melhor de 5 Sets</option>
+                </select>
+            </div>
+            <div><label>Pontos por Set</label>
+                <select id="f-pontosSet">
+                    <option value="4">4 games</option>
+                    <option value="6" selected>6 games</option>
+                    <option value="8">8 games (pro set)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="toggle-row">
+            <span class="tl">🔄 <strong>Tiebreak</strong> — Desempate ao atingir games iguais (ex: 6×6)</span>
+            <label class="toggle"><input type="checkbox" id="f-tiebreak" checked onchange="onTiebreakChange()"><span class="slider"></span></label>
+        </div>
+        <div id="tiebreak-opts">
+            <div class="row2">
+                <div><label>Pontos do Tiebreak</label>
+                    <select id="f-pontosTB">
+                        <option value="7" selected>7 pontos</option>
+                        <option value="10">10 pontos</option>
+                        <option value="12">12 pontos</option>
+                    </select>
+                </div>
+                <div></div>
+            </div>
+        </div>
+
+        <div id="super-tb-section">
+            <div class="toggle-row">
+                <span class="tl">🚀 <strong>Super Tiebreak (3º set)</strong> — O 3º set é substituído por um super tiebreak</span>
+                <label class="toggle"><input type="checkbox" id="f-superTB" checked><span class="slider"></span></label>
+            </div>
+            <div class="row2" id="super-tb-pts">
+                <div><label>Pontos do Super Tiebreak</label>
+                    <select id="f-pontosSuperTB">
+                        <option value="10" selected>10 pontos</option>
+                        <option value="7">7 pontos</option>
+                        <option value="15">15 pontos</option>
+                    </select>
+                </div>
+                <div></div>
+            </div>
+        </div>
+
+        <div class="toggle-row">
+            <span class="tl">⚡ <strong>No-Ad (Sem Vantagem)</strong> — No deuce, ponto decisivo único</span>
+            <label class="toggle"><input type="checkbox" id="f-noAd"><span class="slider"></span></label>
+        </div>
+        <div class="toggle-row">
+            <span class="tl">🏅 <strong>Golden Point</strong> — Ponto de ouro no deuce (escolha do lado pelo receptor)</span>
+            <label class="toggle"><input type="checkbox" id="f-goldenPoint"><span class="slider"></span></label>
+        </div>
+
+        <!-- CLASSIFICAÇÃO -->
+        <div class="section-label">📊 Regra de Classificação</div>
+        <div class="row2">
+            <div><label>Formato de Classificação</label>
+                <select id="f-classifTipo">
+                    <option value="grupos+eliminatorias">Grupos + Eliminatórias</option>
+                    <option value="eliminatoria-simples">Eliminatória Simples</option>
+                    <option value="eliminatoria-dupla">Eliminatória Dupla</option>
+                    <option value="todos-contra-todos">Todos contra Todos</option>
+                </select>
+            </div>
+            <div><label>Classificados por Grupo</label>
+                <select id="f-classifQtd">
+                    <option value="1">1 por grupo</option>
+                    <option value="2" selected>2 por grupo</option>
+                    <option value="3">3 por grupo</option>
+                    <option value="4">4 por grupo</option>
+                </select>
+            </div>
+        </div>
+
+        <label>Critérios de Desempate (arraste para reordenar)</label>
+        <ul class="crit-sort" id="f-criterios">
+            <li draggable="true" data-val="vitorias"><span class="grip">⠿</span><span class="crit-lbl">🏆 Vitórias</span></li>
+            <li draggable="true" data-val="saldo-sets"><span class="grip">⠿</span><span class="crit-lbl">📊 Saldo de Sets</span></li>
+            <li draggable="true" data-val="saldo-games"><span class="grip">⠿</span><span class="crit-lbl">🎾 Saldo de Games</span></li>
+            <li draggable="true" data-val="confronto-direto"><span class="grip">⠿</span><span class="crit-lbl">🤝 Confronto Direto</span></li>
+        </ul>
+
+        <div class="modal-actions">
+            <button class="btn btn-s" onclick="fecharModal()">Cancelar</button>
+            <button class="btn btn-p" onclick="salvarCategoria()">💾 Salvar</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let categorias = [];
+
+// ===== INIT =====
+async function init() {
+    try {
+        const r = await fetch('/api/campeonato/categorias');
+        categorias = await r.json();
+        render();
+    } catch (e) { toast('Erro ao carregar: ' + e.message, 'error'); }
+}
+
+// ===== RENDER CARDS =====
+function render() {
+    const el = document.getElementById('cat-grid');
+    const empty = document.getElementById('empty-cats');
+    empty.style.display = categorias.length ? 'none' : 'block';
+
+    const formatoLabels = { '1-set': '1 Set', 'melhor-de-3': 'Melhor de 3', 'melhor-de-5': 'Melhor de 5' };
+    const classifLabels = { 'grupos+eliminatorias': 'Grupos + Elim.', 'eliminatoria-simples': 'Elim. Simples', 'eliminatoria-dupla': 'Elim. Dupla', 'todos-contra-todos': 'Todos × Todos' };
+    const critLabels = { 'vitorias': '🏆 Vitórias', 'saldo-sets': '📊 Saldo Sets', 'saldo-games': '🎾 Saldo Games', 'confronto-direto': '🤝 Confronto' };
+
+    el.innerHTML = categorias.map(c => {
+        const r = c.regras || {};
+        const cl = r.classificacao || {};
+        const tags = [];
+        tags.push(`<strong>${formatoLabels[r.formatoJogo] || r.formatoJogo || '?'}</strong>`);
+        tags.push(`${r.pontosSet || 6} games/set`);
+        if (r.tiebreak) tags.push(`TB ${r.pontosTiebreak || 7} pts`);
+        if (r.superTiebreak) tags.push(`Super TB ${r.pontosSuperTiebreak || 10} pts`);
+        if (r.noAd) tags.push('⚡ No-Ad');
+        if (r.goldenPoint) tags.push('🏅 Golden Point');
+
+        const crits = (cl.criterios || []).map(cr => `<span class="crit">${critLabels[cr] || cr}</span>`).join('');
+
+        return `
+        <div class="cat-card">
+            <div class="cat-head">
+                <span class="cat-name">${esc(c.nome)}</span>
+                <span class="cat-tipo tipo-${c.tipo}">${c.tipo}</span>
+            </div>
+            <div class="cat-detail">
+                ${tags.map(t => `<span class="cat-tag">${t}</span>`).join('')}
+                <span class="cat-tag">Máx <strong>${c.maxDuplas}</strong> duplas</span>
+            </div>
+            <div style="font-size:.75rem;color:rgba(255,255,255,.4);margin-bottom:4px">
+                📊 ${classifLabels[cl.tipo] || cl.tipo || '?'} — ${cl.classificadosPorGrupo || 2} classif./grupo
+            </div>
+            <div class="crit-list">${crits}</div>
+            <div class="cat-actions">
+                <button class="btn btn-sm btn-s" onclick="editarCategoria(${c.id})">✏️ Editar</button>
+                <button class="btn btn-sm btn-s" onclick="duplicarCategoria(${c.id})">📋 Duplicar</button>
+                <button class="btn btn-sm btn-d" onclick="deletarCategoria(${c.id})">✕ Remover</button>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+// ===== MODAL =====
+function abrirModal(cat) {
+    const m = document.getElementById('modal-cat');
+    document.getElementById('modal-title').textContent = cat ? '✏️ Editar Categoria' : '➕ Nova Categoria';
+    document.getElementById('f-id').value = cat ? cat.id : '';
+    document.getElementById('f-nome').value = cat ? cat.nome : '';
+    document.getElementById('f-tipo').value = cat ? cat.tipo : 'mista';
+    document.getElementById('f-max').value = cat ? cat.maxDuplas : 16;
+
+    const r = cat?.regras || {};
+    document.getElementById('f-formato').value = r.formatoJogo || 'melhor-de-3';
+    document.getElementById('f-pontosSet').value = r.pontosSet || 6;
+    document.getElementById('f-tiebreak').checked = r.tiebreak !== false;
+    document.getElementById('f-pontosTB').value = r.pontosTiebreak || 7;
+    document.getElementById('f-superTB').checked = r.superTiebreak !== false;
+    document.getElementById('f-pontosSuperTB').value = r.pontosSuperTiebreak || 10;
+    document.getElementById('f-noAd').checked = !!r.noAd;
+    document.getElementById('f-goldenPoint').checked = !!r.goldenPoint;
+
+    const cl = r.classificacao || {};
+    document.getElementById('f-classifTipo').value = cl.tipo || 'grupos+eliminatorias';
+    document.getElementById('f-classifQtd').value = cl.classificadosPorGrupo || 2;
+
+    // Reorder criteria list
+    const criterios = cl.criterios || ['vitorias','saldo-sets','saldo-games','confronto-direto'];
+    const ul = document.getElementById('f-criterios');
+    const items = Array.from(ul.children);
+    criterios.forEach(val => {
+        const li = items.find(i => i.dataset.val === val);
+        if (li) ul.appendChild(li);
+    });
+
+    onFormatoChange();
+    onTiebreakChange();
+    m.classList.add('show');
+}
+
+function fecharModal() { document.getElementById('modal-cat').classList.remove('show'); }
+
+function onFormatoChange() {
+    const val = document.getElementById('f-formato').value;
+    const multiSet = val === 'melhor-de-3' || val === 'melhor-de-5';
+    document.getElementById('super-tb-section').style.display = multiSet ? 'block' : 'none';
+}
+
+function onTiebreakChange() {
+    document.getElementById('tiebreak-opts').style.display = document.getElementById('f-tiebreak').checked ? 'block' : 'none';
+}
+
+function getFormRegras() {
+    const criterios = Array.from(document.getElementById('f-criterios').children).map(li => li.dataset.val);
+    return {
+        formatoJogo: document.getElementById('f-formato').value,
+        pontosSet: parseInt(document.getElementById('f-pontosSet').value),
+        tiebreak: document.getElementById('f-tiebreak').checked,
+        pontosTiebreak: parseInt(document.getElementById('f-pontosTB').value),
+        superTiebreak: document.getElementById('f-superTB').checked,
+        pontosSuperTiebreak: parseInt(document.getElementById('f-pontosSuperTB').value),
+        noAd: document.getElementById('f-noAd').checked,
+        goldenPoint: document.getElementById('f-goldenPoint').checked,
+        classificacao: {
+            tipo: document.getElementById('f-classifTipo').value,
+            classificadosPorGrupo: parseInt(document.getElementById('f-classifQtd').value),
+            criterios
+        }
+    };
+}
+
+// ===== CRUD =====
+async function salvarCategoria() {
+    const nome = document.getElementById('f-nome').value.trim();
+    if (!nome) return toast('Preencha o nome', 'error');
+    const body = {
+        nome,
+        tipo: document.getElementById('f-tipo').value,
+        maxDuplas: parseInt(document.getElementById('f-max').value) || 16,
+        regras: getFormRegras()
+    };
+    const id = document.getElementById('f-id').value;
+    try {
+        if (id) {
+            const r = await api('/api/campeonato/categorias/' + id, 'PUT', body);
+            const idx = categorias.findIndex(c => c.id === parseInt(id));
+            if (idx >= 0) categorias[idx] = r;
+            toast('Categoria atualizada!', 'success');
+        } else {
+            const r = await api('/api/campeonato/categorias', 'POST', body);
+            categorias.push(r);
+            toast('Categoria criada!', 'success');
+        }
+        fecharModal(); render();
+    } catch (e) { toast('Erro: ' + e.message, 'error'); }
+}
+
+function editarCategoria(id) {
+    const c = categorias.find(x => x.id === id);
+    if (c) abrirModal(c);
+}
+
+async function duplicarCategoria(id) {
+    const c = categorias.find(x => x.id === id); if (!c) return;
+    const body = { nome: c.nome + ' (cópia)', tipo: c.tipo, maxDuplas: c.maxDuplas, regras: JSON.parse(JSON.stringify(c.regras || {})) };
+    try {
+        const r = await api('/api/campeonato/categorias', 'POST', body);
+        categorias.push(r); render();
+        toast('Categoria duplicada!', 'success');
+    } catch (e) { toast('Erro: ' + e.message, 'error'); }
+}
+
+async function deletarCategoria(id) {
+    if (!confirm('Remover esta categoria e todos os dados vinculados?')) return;
+    try {
+        await api('/api/campeonato/categorias/' + id, 'DELETE');
+        categorias = categorias.filter(c => c.id !== id); render();
+        toast('Categoria removida', 'success');
+    } catch (e) { toast('Erro: ' + e.message, 'error'); }
+}
+
+// ===== PRESETS =====
+async function applyPreset(name) {
+    const presets = {
+        'competitivo': { formatoJogo:'melhor-de-3', pontosSet:6, tiebreak:true, pontosTiebreak:7, superTiebreak:true, pontosSuperTiebreak:10, noAd:false, goldenPoint:false },
+        'rapido':      { formatoJogo:'1-set', pontosSet:6, tiebreak:true, pontosTiebreak:7, superTiebreak:false, pontosSuperTiebreak:10, noAd:true, goldenPoint:true },
+        'amistoso':    { formatoJogo:'1-set', pontosSet:6, tiebreak:true, pontosTiebreak:7, superTiebreak:false, pontosSuperTiebreak:10, noAd:false, goldenPoint:false },
+        'profissional':{ formatoJogo:'melhor-de-3', pontosSet:6, tiebreak:true, pontosTiebreak:7, superTiebreak:true, pontosSuperTiebreak:10, noAd:true, goldenPoint:false }
+    };
+    const p = presets[name]; if (!p) return;
+    if (!confirm(`Aplicar regras "${name}" a TODAS as categorias?`)) return;
+    try {
+        for (const c of categorias) {
+            const regras = { ...(c.regras || {}), ...p };
+            if (!regras.classificacao) regras.classificacao = { tipo:'grupos+eliminatorias', classificadosPorGrupo:2, criterios:['vitorias','saldo-sets','saldo-games','confronto-direto'] };
+            const r = await api('/api/campeonato/categorias/' + c.id, 'PUT', { regras });
+            const idx = categorias.findIndex(x => x.id === c.id);
+            if (idx >= 0) categorias[idx] = r;
+        }
+        render();
+        toast(`Preset "${name}" aplicado a ${categorias.length} categorias!`, 'success');
+    } catch (e) { toast('Erro: ' + e.message, 'error'); }
+}
+
+// ===== DRAG & DROP CRITERIA =====
+(function() {
+    const ul = document.getElementById('f-criterios');
+    let dragged = null;
+    ul.addEventListener('dragstart', e => { dragged = e.target.closest('li'); e.dataTransfer.effectAllowed = 'move'; });
+    ul.addEventListener('dragover', e => {
+        e.preventDefault(); e.dataTransfer.dropEffect = 'move';
+        const li = e.target.closest('li');
+        if (li && li !== dragged) {
+            const rect = li.getBoundingClientRect();
+            const mid = rect.top + rect.height / 2;
+            if (e.clientY < mid) ul.insertBefore(dragged, li);
+            else ul.insertBefore(dragged, li.nextSibling);
+        }
+    });
+    ul.addEventListener('drop', e => e.preventDefault());
+})();
+
+// ===== HELPERS =====
+function esc(t) { const d = document.createElement('div'); d.textContent = t || ''; return d.innerHTML; }
+
+async function api(url, method, body) {
+    const opts = { method, headers: { 'Content-Type': 'application/json' } };
+    if (body) opts.body = JSON.stringify(body);
+    const r = await fetch(url, opts);
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return r.json();
+}
+
+function toast(msg, type) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.className = 'toast ' + type;
+    el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+document.getElementById('modal-cat').addEventListener('click', e => { if (e.target.id === 'modal-cat') fecharModal(); });
+
+init();
+</script>
+</body>
+</html>

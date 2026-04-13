@@ -1,0 +1,12 @@
+{
+  "name": "quiz-battle",
+  "version": "1.0.0",
+  "description": "Quiz Battle - Jogo de perguntas e respostas em tempo real",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "ws": "^8.16.0"
+  }
+}

@@ -1,0 +1,883 @@
+{
+  "evento": {
+    "nome": "Aninha do Beach",
+    "data": "2026-04-19",
+    "horaInicio": "10:00",
+    "descricao": "",
+    "cronograma": [
+      {
+        "hora": "14:00",
+        "atividade": "Inicio"
+      }
+    ],
+    "local": {
+      "nome": "",
+      "endereco": "",
+      "coordenadas": {
+        "lat": "",
+        "lng": ""
+      }
+    },
+    "banner": "",
+    "formato": "grupos + eliminatórias",
+    "status": "agendado",
+    "ativacoes": "",
+    "faq": []
+  },
+  "quadras": [],
+  "categorias": [
+    {
+      "id": 1776102238391,
+      "nome": "Mista",
+      "tipo": "mista",
+      "maxDuplas": 8,
+      "regras": {
+        "formatoJogo": "melhor-de-5",
+        "pontosSet": 4,
+        "tiebreak": true,
+        "pontosTiebreak": 7,
+        "superTiebreak": true,
+        "pontosSuperTiebreak": 10,
+        "noAd": false,
+        "goldenPoint": false,
+        "classificacao": {
+          "tipo": "grupos+eliminatorias",
+          "classificadosPorGrupo": 2,
+          "criterios": [
+            "vitorias",
+            "saldo-sets",
+            "saldo-games",
+            "confronto-direto"
+          ]
+        }
+      }
+    }
+  ],
+  "atletas": [
+    {
+      "id": 1776102250697,
+      "nome": "Ana",
+      "foto": "",
+      "telefone": "",
+      "email": "",
+      "ranking": 0,
+      "pontos": 0,
+      "historico": [],
+      "checkIn": false,
+      "seeding": null,
+      "favorito": false,
+      "createdAt": "2026-04-13T17:44:10.697Z"
+    },
+    {
+      "id": 1776102253082,
+      "nome": "Gui",
+      "foto": "",
+      "telefone": "",
+      "email": "",
+      "ranking": 0,
+      "pontos": 0,
+      "historico": [],
+      "checkIn": false,
+      "seeding": null,
+      "favorito": false,
+      "createdAt": "2026-04-13T17:44:13.082Z"
+    },
+    {
+      "id": 1776102256629,
+      "nome": "Ju",
+      "foto": "",
+      "telefone": "",
+      "email": "",
+      "ranking": 0,
+      "pontos": 0,
+      "historico": [],
+      "checkIn": false,
+      "seeding": null,
+      "favorito": false,
+      "createdAt": "2026-04-13T17:44:16.629Z"
+    },
+    {
+      "id": 1776102259351,
+      "nome": "dudu",
+      "foto": "",
+      "telefone": "",
+      "email": "",
+      "ranking": 0,
+      "pontos": 0,
+      "historico": [],
+      "checkIn": false,
+      "seeding": null,
+      "favorito": false,
+      "createdAt": "2026-04-13T17:44:19.351Z"
+    },
+    {
+      "id": 1776102261924,
+      "nome": "pedro",
+      "foto": "",
+      "telefone": "",
+      "email": "",
+      "ranking": 0,
+      "pontos": 0,
+      "historico": [],
+      "checkIn": false,
+      "seeding": null,
+      "favorito": false,
+      "createdAt": "2026-04-13T17:44:21.924Z"
+    },
+    {
+      "id": 1776102264587,
+      "nome": "romulo",
+      "foto": "",
+      "telefone": "",
+      "email": "",
+      "ranking": 0,
+      "pontos": 0,
+      "historico": [],
+      "checkIn": false,
+      "seeding": null,
+      "favorito": false,
+      "createdAt": "2026-04-13T17:44:24.587Z"
+    },
+    {
+      "id": 1776102268332,
+      "nome": "alex",
+      "foto": "",
+      "telefone": "",
+      "email": "",
+      "ranking": 0,
+      "pontos": 0,
+      "historico": [],
+      "checkIn": false,
+      "seeding": null,
+      "favorito": false,
+      "createdAt": "2026-04-13T17:44:28.332Z"
+    },
+    {
+      "id": 1776102273100,
+      "nome": "belinha",
+      "foto": "",
+      "telefone": "",
+      "email": "",
+      "ranking": 0,
+      "pontos": 0,
+      "historico": [],
+      "checkIn": false,
+      "seeding": null,
+      "favorito": false,
+      "createdAt": "2026-04-13T17:44:33.100Z"
+    },
+    {
+      "id": 1776102285605,
+      "nome": "a",
+      "foto": "",
+      "telefone": "",
+      "email": "",
+      "ranking": 0,
+      "pontos": 0,
+      "historico": [],
+      "checkIn": false,
+      "seeding": null,
+      "favorito": false,
+      "createdAt": "2026-04-13T17:44:45.605Z"
+    },
+    {
+      "id": 1776102287081,
+      "nome": "b",
+      "foto": "",
+      "telefone": "",
+      "email": "",
+      "ranking": 0,
+      "pontos": 0,
+      "historico": [],
+      "checkIn": false,
+      "seeding": null,
+      "favorito": false,
+      "createdAt": "2026-04-13T17:44:47.081Z"
+    },
+    {
+      "id": 1776102288529,
+      "nome": "c",
+      "foto": "",
+      "telefone": "",
+      "email": "",
+      "ranking": 0,
+      "pontos": 0,
+      "historico": [],
+      "checkIn": false,
+      "seeding": null,
+      "favorito": false,
+      "createdAt": "2026-04-13T17:44:48.529Z"
+    },
+    {
+      "id": 1776102289872,
+      "nome": "d",
+      "foto": "",
+      "telefone": "",
+      "email": "",
+      "ranking": 0,
+      "pontos": 0,
+      "historico": [],
+      "checkIn": false,
+      "seeding": null,
+      "favorito": false,
+      "createdAt": "2026-04-13T17:44:49.872Z"
+    },
+    {
+      "id": 1776102291070,
+      "nome": "e",
+      "foto": "",
+      "telefone": "",
+      "email": "",
+      "ranking": 0,
+      "pontos": 0,
+      "historico": [],
+      "checkIn": false,
+      "seeding": null,
+      "favorito": false,
+      "createdAt": "2026-04-13T17:44:51.070Z"
+    },
+    {
+      "id": 1776102292518,
+      "nome": "f",
+      "foto": "",
+      "telefone": "",
+      "email": "",
+      "ranking": 0,
+      "pontos": 0,
+      "historico": [],
+      "checkIn": false,
+      "seeding": null,
+      "favorito": false,
+      "createdAt": "2026-04-13T17:44:52.518Z"
+    },
+    {
+      "id": 1776102293757,
+      "nome": "g",
+      "foto": "",
+      "telefone": "",
+      "email": "",
+      "ranking": 0,
+      "pontos": 0,
+      "historico": [],
+      "checkIn": false,
+      "seeding": null,
+      "favorito": false,
+      "createdAt": "2026-04-13T17:44:53.757Z"
+    },
+    {
+      "id": 1776102295090,
+      "nome": "h",
+      "foto": "",
+      "telefone": "",
+      "email": "",
+      "ranking": 0,
+      "pontos": 0,
+      "historico": [],
+      "checkIn": false,
+      "seeding": null,
+      "favorito": false,
+      "createdAt": "2026-04-13T17:44:55.090Z"
+    }
+  ],
+  "duplas": [
+    {
+      "id": 1776102308389,
+      "nome": "Ana / Gui",
+      "atleta1Id": 1776102250697,
+      "atleta2Id": 1776102253082,
+      "categoriaId": 1776102238391,
+      "seeding": null,
+      "pontos": 190,
+      "historico": [],
+      "checkIn": true,
+      "createdAt": "2026-04-13T17:45:08.389Z"
+    },
+    {
+      "id": 1776102312311,
+      "nome": "Ju / dudu",
+      "atleta1Id": 1776102256629,
+      "atleta2Id": 1776102259351,
+      "categoriaId": 1776102238391,
+      "seeding": null,
+      "pontos": 10,
+      "historico": [],
+      "checkIn": true,
+      "createdAt": "2026-04-13T17:45:12.311Z"
+    },
+    {
+      "id": 1776102316616,
+      "nome": "pedro / romulo",
+      "atleta1Id": 1776102261924,
+      "atleta2Id": 1776102264587,
+      "categoriaId": 1776102238391,
+      "seeding": null,
+      "pontos": 0,
+      "historico": [],
+      "checkIn": true,
+      "createdAt": "2026-04-13T17:45:16.616Z"
+    },
+    {
+      "id": 1776102320823,
+      "nome": "alex / belinha",
+      "atleta1Id": 1776102268332,
+      "atleta2Id": 1776102273100,
+      "categoriaId": 1776102238391,
+      "seeding": null,
+      "pontos": 90,
+      "historico": [],
+      "checkIn": true,
+      "createdAt": "2026-04-13T17:45:20.823Z"
+    },
+    {
+      "id": 1776102326890,
+      "nome": "a / b",
+      "atleta1Id": 1776102285605,
+      "atleta2Id": 1776102287081,
+      "categoriaId": 1776102238391,
+      "seeding": null,
+      "pontos": 10,
+      "historico": [],
+      "checkIn": true,
+      "createdAt": "2026-04-13T17:45:26.891Z"
+    },
+    {
+      "id": 1776102331848,
+      "nome": "c / d",
+      "atleta1Id": 1776102288529,
+      "atleta2Id": 1776102289872,
+      "categoriaId": 1776102238391,
+      "seeding": null,
+      "pontos": 10,
+      "historico": [],
+      "checkIn": true,
+      "createdAt": "2026-04-13T17:45:31.848Z"
+    },
+    {
+      "id": 1776102335561,
+      "nome": "e / f",
+      "atleta1Id": 1776102291070,
+      "atleta2Id": 1776102292518,
+      "categoriaId": 1776102238391,
+      "seeding": null,
+      "pontos": 10,
+      "historico": [],
+      "checkIn": true,
+      "createdAt": "2026-04-13T17:45:35.561Z"
+    },
+    {
+      "id": 1776102339872,
+      "nome": "g / h",
+      "atleta1Id": 1776102293757,
+      "atleta2Id": 1776102295090,
+      "categoriaId": 1776102238391,
+      "seeding": null,
+      "pontos": 20,
+      "historico": [],
+      "checkIn": true,
+      "createdAt": "2026-04-13T17:45:39.872Z"
+    }
+  ],
+  "inscricoes": [
+    {
+      "id": 1776102348274,
+      "duplaId": 1776102308389,
+      "categoriaId": 1776102238391,
+      "status": "confirmado",
+      "createdAt": "2026-04-13T17:45:48.274Z"
+    },
+    {
+      "id": 1776102350231,
+      "duplaId": 1776102312311,
+      "categoriaId": 1776102238391,
+      "status": "confirmado",
+      "createdAt": "2026-04-13T17:45:50.231Z"
+    },
+    {
+      "id": 1776102352361,
+      "duplaId": 1776102320823,
+      "categoriaId": 1776102238391,
+      "status": "confirmado",
+      "createdAt": "2026-04-13T17:45:52.361Z"
+    },
+    {
+      "id": 1776102353845,
+      "duplaId": 1776102326890,
+      "categoriaId": 1776102238391,
+      "status": "confirmado",
+      "createdAt": "2026-04-13T17:45:53.845Z"
+    },
+    {
+      "id": 1776102355285,
+      "duplaId": 1776102331848,
+      "categoriaId": 1776102238391,
+      "status": "confirmado",
+      "createdAt": "2026-04-13T17:45:55.285Z"
+    },
+    {
+      "id": 1776102356786,
+      "duplaId": 1776102335561,
+      "categoriaId": 1776102238391,
+      "status": "confirmado",
+      "createdAt": "2026-04-13T17:45:56.786Z"
+    },
+    {
+      "id": 1776102358337,
+      "duplaId": 1776102339872,
+      "categoriaId": 1776102238391,
+      "status": "confirmado",
+      "createdAt": "2026-04-13T17:45:58.337Z"
+    },
+    {
+      "id": 1776102443696,
+      "duplaId": 1776102316616,
+      "categoriaId": 1776102238391,
+      "status": "confirmado",
+      "createdAt": "2026-04-13T17:47:23.696Z"
+    }
+  ],
+  "listaEspera": [],
+  "grupos": [
+    {
+      "id": 1776102453109,
+      "nome": "Grupo A",
+      "categoriaId": 1776102238391,
+      "duplas": [
+        1776102339872,
+        1776102320823,
+        1776102312311,
+        1776102316616
+      ],
+      "fase": "grupos",
+      "createdAt": "2026-04-13T17:47:33.109Z"
+    },
+    {
+      "id": 1776102453110,
+      "nome": "Grupo B",
+      "categoriaId": 1776102238391,
+      "duplas": [
+        1776102326890,
+        1776102331848,
+        1776102308389,
+        1776102335561
+      ],
+      "fase": "grupos",
+      "createdAt": "2026-04-13T17:47:33.109Z"
+    }
+  ],
+  "partidas": [
+    {
+      "id": 1776102453109,
+      "dupla1Id": 1776102339872,
+      "dupla2Id": 1776102320823,
+      "categoriaId": 1776102238391,
+      "grupoId": 1776102453109,
+      "fase": "grupos",
+      "quadraId": 1,
+      "horario": "2026-04-13T17:00:00.000Z",
+      "status": "encerrado",
+      "placar": {
+        "dupla1": [
+          4,
+          0,
+          0,
+          0
+        ],
+        "dupla2": [
+          1,
+          4,
+          4,
+          4
+        ]
+      },
+      "vencedor": 1776102320823,
+      "wo": false,
+      "createdAt": "2026-04-13T17:47:33.109Z"
+    },
+    {
+      "id": 1776102453110,
+      "dupla1Id": 1776102339872,
+      "dupla2Id": 1776102312311,
+      "categoriaId": 1776102238391,
+      "grupoId": 1776102453109,
+      "fase": "grupos",
+      "quadraId": 1,
+      "horario": "2026-04-13T17:40:00.000Z",
+      "status": "encerrado",
+      "placar": {
+        "dupla1": [
+          4,
+          4,
+          4
+        ],
+        "dupla2": [
+          0,
+          0,
+          0
+        ]
+      },
+      "vencedor": 1776102339872,
+      "wo": false,
+      "createdAt": "2026-04-13T17:47:33.109Z"
+    },
+    {
+      "id": 1776102453111,
+      "dupla1Id": 1776102339872,
+      "dupla2Id": 1776102316616,
+      "categoriaId": 1776102238391,
+      "grupoId": 1776102453109,
+      "fase": "grupos",
+      "quadraId": 1,
+      "horario": "2026-04-13T18:20:00.000Z",
+      "status": "encerrado",
+      "placar": {
+        "dupla1": [
+          4,
+          4,
+          4
+        ],
+        "dupla2": [
+          0,
+          0,
+          0
+        ]
+      },
+      "vencedor": 1776102339872,
+      "wo": false,
+      "createdAt": "2026-04-13T17:47:33.109Z"
+    },
+    {
+      "id": 1776102453112,
+      "dupla1Id": 1776102320823,
+      "dupla2Id": 1776102312311,
+      "categoriaId": 1776102238391,
+      "grupoId": 1776102453109,
+      "fase": "grupos",
+      "quadraId": 1,
+      "horario": "2026-04-13T19:00:00.000Z",
+      "status": "encerrado",
+      "placar": {
+        "dupla1": [
+          4,
+          4,
+          4
+        ],
+        "dupla2": [
+          0,
+          0,
+          0
+        ]
+      },
+      "vencedor": 1776102320823,
+      "wo": false,
+      "createdAt": "2026-04-13T17:47:33.109Z"
+    },
+    {
+      "id": 1776102453113,
+      "dupla1Id": 1776102320823,
+      "dupla2Id": 1776102316616,
+      "categoriaId": 1776102238391,
+      "grupoId": 1776102453109,
+      "fase": "grupos",
+      "quadraId": 1,
+      "horario": "2026-04-13T19:40:00.000Z",
+      "status": "encerrado",
+      "placar": {
+        "dupla1": [
+          4,
+          4,
+          4
+        ],
+        "dupla2": [
+          0,
+          0,
+          0
+        ]
+      },
+      "vencedor": 1776102320823,
+      "wo": false,
+      "createdAt": "2026-04-13T17:47:33.109Z"
+    },
+    {
+      "id": 1776102453114,
+      "dupla1Id": 1776102312311,
+      "dupla2Id": 1776102316616,
+      "categoriaId": 1776102238391,
+      "grupoId": 1776102453109,
+      "fase": "grupos",
+      "quadraId": 1,
+      "horario": "2026-04-13T20:20:00.000Z",
+      "status": "encerrado",
+      "placar": {
+        "dupla1": [
+          4,
+          4,
+          4
+        ],
+        "dupla2": [
+          0,
+          0,
+          0
+        ]
+      },
+      "vencedor": 1776102312311,
+      "wo": false,
+      "createdAt": "2026-04-13T17:47:33.109Z"
+    },
+    {
+      "id": 1776102453115,
+      "dupla1Id": 1776102326890,
+      "dupla2Id": 1776102331848,
+      "categoriaId": 1776102238391,
+      "grupoId": 1776102453110,
+      "fase": "grupos",
+      "quadraId": 1,
+      "horario": "2026-04-13T21:00:00.000Z",
+      "status": "encerrado",
+      "placar": {
+        "dupla1": [
+          4,
+          4,
+          4
+        ],
+        "dupla2": [
+          0,
+          0,
+          0
+        ]
+      },
+      "vencedor": 1776102326890,
+      "wo": false,
+      "createdAt": "2026-04-13T17:47:33.109Z"
+    },
+    {
+      "id": 1776102453116,
+      "dupla1Id": 1776102326890,
+      "dupla2Id": 1776102308389,
+      "categoriaId": 1776102238391,
+      "grupoId": 1776102453110,
+      "fase": "grupos",
+      "quadraId": 1,
+      "horario": "2026-04-13T21:40:00.000Z",
+      "status": "encerrado",
+      "placar": {
+        "dupla1": [
+          0,
+          0,
+          0
+        ],
+        "dupla2": [
+          4,
+          4,
+          4
+        ]
+      },
+      "vencedor": 1776102308389,
+      "wo": false,
+      "createdAt": "2026-04-13T17:47:33.109Z"
+    },
+    {
+      "id": 1776102453117,
+      "dupla1Id": 1776102326890,
+      "dupla2Id": 1776102335561,
+      "categoriaId": 1776102238391,
+      "grupoId": 1776102453110,
+      "fase": "grupos",
+      "quadraId": 1,
+      "horario": "2026-04-13T22:20:00.000Z",
+      "status": "encerrado",
+      "placar": {
+        "dupla1": [
+          0,
+          0,
+          0
+        ],
+        "dupla2": [
+          4,
+          4,
+          4
+        ]
+      },
+      "vencedor": 1776102335561,
+      "wo": false,
+      "createdAt": "2026-04-13T17:47:33.109Z"
+    },
+    {
+      "id": 1776102453118,
+      "dupla1Id": 1776102331848,
+      "dupla2Id": 1776102308389,
+      "categoriaId": 1776102238391,
+      "grupoId": 1776102453110,
+      "fase": "grupos",
+      "quadraId": 1,
+      "horario": "2026-04-13T23:00:00.000Z",
+      "status": "encerrado",
+      "placar": {
+        "dupla1": [
+          0,
+          0,
+          0
+        ],
+        "dupla2": [
+          4,
+          4,
+          4
+        ]
+      },
+      "vencedor": 1776102308389,
+      "wo": false,
+      "createdAt": "2026-04-13T17:47:33.109Z"
+    },
+    {
+      "id": 1776102453119,
+      "dupla1Id": 1776102331848,
+      "dupla2Id": 1776102335561,
+      "categoriaId": 1776102238391,
+      "grupoId": 1776102453110,
+      "fase": "grupos",
+      "quadraId": 1,
+      "horario": "2026-04-13T23:40:00.000Z",
+      "status": "encerrado",
+      "placar": {
+        "dupla1": [
+          4,
+          4,
+          4
+        ],
+        "dupla2": [
+          0,
+          0,
+          0
+        ]
+      },
+      "vencedor": 1776102331848,
+      "wo": false,
+      "createdAt": "2026-04-13T17:47:33.109Z"
+    },
+    {
+      "id": 1776102453120,
+      "dupla1Id": 1776102308389,
+      "dupla2Id": 1776102335561,
+      "categoriaId": 1776102238391,
+      "grupoId": 1776102453110,
+      "fase": "grupos",
+      "quadraId": 1,
+      "horario": "2026-04-14T00:20:00.000Z",
+      "status": "encerrado",
+      "placar": {
+        "dupla1": [
+          4,
+          4,
+          4
+        ],
+        "dupla2": [
+          1,
+          0,
+          0
+        ]
+      },
+      "vencedor": 1776102308389,
+      "wo": false,
+      "createdAt": "2026-04-13T17:47:33.109Z"
+    },
+    {
+      "id": 1776102820769,
+      "dupla1Id": 1776102320823,
+      "dupla2Id": 1776102335561,
+      "categoriaId": 1776102238391,
+      "grupoId": null,
+      "fase": "semifinal",
+      "quadraId": 1,
+      "horario": "2026-04-14T01:00:00.000Z",
+      "status": "encerrado",
+      "placar": {
+        "dupla1": [
+          4,
+          4,
+          4
+        ],
+        "dupla2": [
+          0,
+          0,
+          0
+        ]
+      },
+      "vencedor": 1776102320823,
+      "wo": false,
+      "createdAt": "2026-04-13T17:53:40.769Z"
+    },
+    {
+      "id": 1776102820770,
+      "dupla1Id": 1776102308389,
+      "dupla2Id": 1776102339872,
+      "categoriaId": 1776102238391,
+      "grupoId": null,
+      "fase": "semifinal",
+      "quadraId": 1,
+      "horario": "2026-04-14T01:40:00.000Z",
+      "status": "encerrado",
+      "placar": {
+        "dupla1": [
+          4,
+          4,
+          4
+        ],
+        "dupla2": [
+          0,
+          0,
+          0
+        ]
+      },
+      "vencedor": 1776102308389,
+      "wo": false,
+      "createdAt": "2026-04-13T17:53:40.769Z"
+    },
+    {
+      "id": 1776102820771,
+      "dupla1Id": 1776102320823,
+      "dupla2Id": 1776102308389,
+      "categoriaId": 1776102238391,
+      "grupoId": null,
+      "fase": "final",
+      "quadraId": 1,
+      "horario": "2026-04-14T02:20:00.000Z",
+      "status": "encerrado",
+      "placar": {
+        "dupla1": [
+          2,
+          2,
+          2
+        ],
+        "dupla2": [
+          4,
+          4,
+          4
+        ]
+      },
+      "vencedor": 1776102308389,
+      "wo": false,
+      "createdAt": "2026-04-13T17:53:40.769Z"
+    }
+  ],
+  "resultados": [],
+  "ranking": [],
+  "patrocinadores": [],
+  "configuracoes": {
+    "formatoJogo": "melhor-de-3",
+    "tipoTiebreak": "super-tiebreak",
+    "goldenPoint": true,
+    "intervaloMinimo": 30,
+    "duracaoEstimadaPartida": 40,
+    "pontosSet": 4,
+    "pontosTiebreak": 10
+  },
+  "mensagens": [],
+  "contingencia": {
+    "planosChuva": [],
+    "planosVento": []
+  },
+  "circuito": {
+    "nome": "",
+    "etapas": [],
+    "rankingGeral": []
+  }
+}

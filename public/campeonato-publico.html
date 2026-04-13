@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏖️ Aninha do Beach — Campeonato</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Poppins',sans-serif;background:#0a0a2e;color:#fff;min-height:100vh}
+        .bg{position:fixed;inset:0;z-index:0;overflow:hidden}
+        .bg .g{position:absolute;inset:0;background:linear-gradient(135deg,#0a0a2e,#1a1a4e 30%,#0d0d35 60%,#15153f)}
+        .bg .o{position:absolute;border-radius:50%;filter:blur(80px);opacity:.25;animation:of 20s ease-in-out infinite}
+        .bg .o:nth-child(2){width:450px;height:450px;background:#f59e0b;top:-120px;right:-120px}
+        .bg .o:nth-child(3){width:500px;height:500px;background:#d97706;bottom:-160px;left:-160px;animation-delay:-7s}
+        .bg .o:nth-child(4){width:350px;height:350px;background:#fbbf24;top:40%;left:60%;animation-delay:-14s}
+        @keyframes of{0%,100%{transform:translate(0) scale(1)}25%{transform:translate(50px,-80px) scale(1.1)}50%{transform:translate(-30px,60px) scale(.9)}75%{transform:translate(70px,40px) scale(1.05)}}
+        .wrap{position:relative;z-index:1;max-width:1000px;margin:0 auto;padding:0 16px 60px}
+        a{color:#fbbf24;text-decoration:none}
+        a:hover{text-decoration:underline}
+
+        /* HERO */
+        .hero{text-align:center;padding:40px 0 30px;position:relative}
+        .hero-banner{width:100%;max-height:280px;object-fit:cover;border-radius:20px;margin-bottom:20px;display:none}
+        .hero-banner.loaded{display:block}
+        .hero-icon{font-size:3.5rem;margin-bottom:8px}
+        .hero h1{font-size:2rem;font-weight:900;background:linear-gradient(135deg,#fbbf24,#f59e0b,#d97706);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .hero-meta{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin-top:12px;font-size:.9rem;color:rgba(255,255,255,.5)}
+        .hero-meta span{display:flex;align-items:center;gap:5px}
+        .hero-desc{max-width:600px;margin:14px auto 0;font-size:.88rem;color:rgba(255,255,255,.45);line-height:1.6}
+        /* COUNTDOWN */
+        .countdown{display:flex;gap:12px;justify-content:center;margin-top:18px;flex-wrap:wrap}
+        .cd-box{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:14px 18px;min-width:70px;text-align:center}
+        .cd-box .cv{font-size:1.8rem;font-weight:900;color:#fbbf24}
+        .cd-box .cl{font-size:.65rem;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:1px}
+
+        /* STATUS BADGE */
+        .status-badge{display:inline-block;padding:5px 16px;border-radius:20px;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-top:12px}
+        .sb-agendado{background:rgba(165,180,252,.15);color:#a5b4fc;border:1px solid rgba(165,180,252,.2)}
+        .sb-inscricoes_abertas{background:rgba(110,231,183,.15);color:#6ee7b7;border:1px solid rgba(110,231,183,.2)}
+        .sb-em_andamento{background:rgba(251,191,36,.15);color:#fbbf24;border:1px solid rgba(251,191,36,.3);animation:blink 2s infinite}
+        .sb-finalizado{background:rgba(255,255,255,.06);color:rgba(255,255,255,.35);border:1px solid rgba(255,255,255,.1)}
+        @keyframes blink{50%{opacity:.7}}
+
+        /* NAV TABS */
+        .nav{display:flex;gap:4px;margin-bottom:20px;overflow-x:auto;padding:4px 0;justify-content:center;flex-wrap:wrap}
+        .nav-tab{padding:8px 18px;border-radius:12px;font-size:.82rem;font-weight:600;cursor:pointer;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.04);color:rgba(255,255,255,.4);transition:all .3s;white-space:nowrap}
+        .nav-tab:hover{background:rgba(255,255,255,.07);color:rgba(255,255,255,.6)}
+        .nav-tab.active{background:linear-gradient(135deg,rgba(245,158,11,.2),rgba(217,119,6,.15));border-color:rgba(245,158,11,.4);color:#fbbf24}
+        .panel{display:none;animation:fadeIn .4s ease}
+        .panel.active{display:block}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+        .glass{background:rgba(255,255,255,.06);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:20px;margin-bottom:18px}
+        .glass h2{font-size:1rem;font-weight:700;margin-bottom:14px;color:rgba(255,255,255,.8);display:flex;align-items:center;gap:6px}
+
+        /* FILTERS */
+        .filters{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+        select,.search-input{padding:8px 12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;color:#fff;font-family:'Poppins',sans-serif;font-size:.82rem;outline:none}
+        select option{background:#1a1a4e}
+        .search-input{flex:1;min-width:180px}
+
+        .btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:7px 14px;border:none;border-radius:9px;font-family:'Poppins',sans-serif;font-size:.78rem;font-weight:600;cursor:pointer;transition:all .25s;white-space:nowrap}
+        .btn:hover{transform:translateY(-1px)}
+        .btn-p{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff}
+        .btn-s{background:rgba(255,255,255,.08);color:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.1)}
+        .btn-sm{padding:4px 10px;font-size:.72rem;border-radius:7px}
+        .btn-fav{background:transparent;border:none;font-size:1.1rem;cursor:pointer;transition:transform .2s}
+        .btn-fav:hover{transform:scale(1.3)}
+
+        /* MATCH CARD */
+        .match-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:14px;margin-bottom:10px;transition:all .3s}
+        .match-card:hover{background:rgba(255,255,255,.06)}
+        .match-card.em_jogo{border-color:rgba(56,239,125,.3);background:rgba(56,239,125,.04)}
+        .match-card.chamando{border-color:rgba(99,102,241,.4);background:rgba(99,102,241,.06)}
+        .mc-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+        .mc-teams{font-size:.95rem;font-weight:700;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+        .mc-vs{color:rgba(255,255,255,.2);font-size:.8rem;font-weight:400}
+        .mc-placar{font-size:1.1rem;font-weight:800;color:#fbbf24;letter-spacing:1px}
+        .mc-meta{font-size:.72rem;color:rgba(255,255,255,.3);display:flex;gap:12px;flex-wrap:wrap}
+        .mc-badge{display:inline-block;padding:2px 8px;border-radius:8px;font-size:.65rem;font-weight:700;text-transform:uppercase}
+        .mb-em_jogo{background:rgba(56,239,125,.15);color:#6ee7b7}
+        .mb-agendado{background:rgba(255,255,255,.06);color:rgba(255,255,255,.3)}
+        .mb-encerrado{background:rgba(255,255,255,.04);color:rgba(255,255,255,.2)}
+        .mb-chamando{background:rgba(99,102,241,.2);color:#a5b4fc}
+        .mb-wo{background:rgba(239,68,68,.15);color:#f87171}
+
+        /* GRUPO TABLE */
+        .grupo-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:16px;margin-bottom:14px}
+        .grupo-card h3{font-size:.9rem;font-weight:700;color:#fbbf24;margin-bottom:10px}
+        .tbl{width:100%;border-collapse:collapse;font-size:.82rem}
+        .tbl th{text-align:left;padding:6px 8px;color:rgba(255,255,255,.35);font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid rgba(255,255,255,.06)}
+        .tbl td{padding:6px 8px;border-bottom:1px solid rgba(255,255,255,.03);vertical-align:middle}
+        .tbl tr.classified{background:rgba(56,239,125,.04)}
+        .tbl tr:hover{background:rgba(255,255,255,.03)}
+
+        /* ATLETA CARD */
+        .atleta-card{display:flex;gap:14px;align-items:center;padding:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:14px;margin-bottom:10px;cursor:pointer;transition:all .3s}
+        .atleta-card:hover{background:rgba(255,255,255,.06);border-color:rgba(245,158,11,.2)}
+        .atleta-foto{width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.1rem;flex-shrink:0;overflow:hidden}
+        .atleta-foto img{width:100%;height:100%;object-fit:cover}
+        .atleta-info{flex:1;min-width:0}
+        .atleta-nome{font-weight:700;font-size:.92rem}
+        .atleta-sub{font-size:.72rem;color:rgba(255,255,255,.35)}
+        .atleta-stats{display:flex;gap:14px;font-size:.75rem;color:rgba(255,255,255,.4)}
+        .atleta-stats strong{color:rgba(255,255,255,.7)}
+
+        /* PROGRAMACAO */
+        .prog-quadra{margin-bottom:18px}
+        .prog-quadra h3{font-size:.9rem;font-weight:700;color:#fbbf24;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+        .prog-item{display:flex;gap:10px;align-items:center;padding:8px 10px;border-left:3px solid rgba(255,255,255,.06);margin-bottom:4px;transition:all .3s}
+        .prog-item.em_jogo{border-left-color:#38ef7d}
+        .prog-item.encerrado{opacity:.5}
+        .prog-item.chamando{border-left-color:#6366f1}
+        .prog-hora{font-size:.78rem;font-weight:700;color:rgba(255,255,255,.35);min-width:50px}
+        .prog-info{flex:1;font-size:.82rem}
+        .prog-info strong{color:rgba(255,255,255,.7)}
+
+        /* RESULTADOS */
+        .podium{display:flex;justify-content:center;gap:16px;margin-bottom:24px;flex-wrap:wrap;align-items:flex-end}
+        .podium-item{text-align:center;padding:16px;border-radius:16px;min-width:140px}
+        .podium-item.gold{background:linear-gradient(135deg,rgba(251,191,36,.15),rgba(245,158,11,.1));border:1px solid rgba(251,191,36,.3);order:2}
+        .podium-item.silver{background:rgba(192,192,192,.08);border:1px solid rgba(192,192,192,.15);order:1}
+        .podium-item.bronze{background:rgba(205,127,50,.08);border:1px solid rgba(205,127,50,.15);order:3}
+        .podium-medal{font-size:2rem}
+        .podium-name{font-weight:700;font-size:.9rem;margin-top:4px}
+        .podium-cat{font-size:.7rem;color:rgba(255,255,255,.35)}
+
+        /* FAQ */
+        .faq-item{margin-bottom:8px}
+        .faq-q{padding:12px 16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:10px;cursor:pointer;font-weight:600;font-size:.88rem;display:flex;justify-content:space-between;align-items:center;transition:all .3s}
+        .faq-q:hover{background:rgba(255,255,255,.06)}
+        .faq-a{padding:10px 16px;font-size:.85rem;color:rgba(255,255,255,.45);line-height:1.6;display:none}
+        .faq-item.open .faq-a{display:block}
+        .faq-item.open .faq-q{border-color:rgba(245,158,11,.3)}
+
+        /* MAP */
+        .map-frame{width:100%;height:250px;border-radius:14px;border:1px solid rgba(255,255,255,.1);overflow:hidden;margin-top:10px}
+        .map-frame iframe{width:100%;height:100%;border:0}
+
+        /* SPONSOR */
+        .sponsor-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}
+        .sponsor-card{text-align:center;padding:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:12px}
+        .sponsor-card img{max-width:80px;max-height:50px;object-fit:contain;margin-bottom:6px}
+        .sponsor-card .sn{font-size:.8rem;font-weight:600}
+        .sponsor-card .sl{font-size:.65rem;color:rgba(255,255,255,.3);text-transform:uppercase}
+
+        /* DETAIL MODAL */
+        .modal-overlay{display:none;position:fixed;inset:0;background:rgba(10,10,46,.88);z-index:100;align-items:center;justify-content:center}
+        .modal-overlay.show{display:flex}
+        .modal{background:#1a1a4e;border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:24px;max-width:520px;width:92%;max-height:85vh;overflow-y:auto;animation:fadeIn .3s ease}
+        .modal h3{font-size:1.1rem;font-weight:700;margin-bottom:14px;color:#fbbf24}
+
+        .empty{text-align:center;padding:24px;color:rgba(255,255,255,.15);font-style:italic;font-size:.85rem}
+        ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:rgba(255,255,255,.03)}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:10px}
+        @media(max-width:600px){.hero h1{font-size:1.5rem}.countdown{gap:8px}.cd-box{padding:10px 12px;min-width:60px}.cd-box .cv{font-size:1.3rem}}
+    </style>
+</head>
+<body>
+<div class="bg"><div class="g"></div><div class="o"></div><div class="o"></div><div class="o"></div></div>
+
+<div class="wrap">
+    <!-- HERO -->
+    <div class="hero">
+        <img class="hero-banner" id="hero-banner" src="" alt="Banner">
+        <div class="hero-icon">🏖️</div>
+        <h1 id="h-nome">Aninha do Beach</h1>
+        <div class="hero-meta">
+            <span>📅 <span id="h-data">19/04/2025</span></span>
+            <span>⏰ <span id="h-hora">11:00</span></span>
+            <span>📍 <span id="h-local">Arena Beach Tennis</span></span>
+        </div>
+        <div class="hero-desc" id="h-desc"></div>
+        <div id="h-status"></div>
+        <div class="countdown" id="countdown"></div>
+    </div>
+
+    <!-- NAV -->
+    <div class="nav">
+        <div class="nav-tab active" data-tab="aovivo">🔴 Ao Vivo</div>
+        <div class="nav-tab" data-tab="chave">🏆 Chave</div>
+        <div class="nav-tab" data-tab="atletas">👥 Atletas</div>
+        <div class="nav-tab" data-tab="programacao">📅 Programação</div>
+        <div class="nav-tab" data-tab="resultados">🏅 Resultados</div>
+        <div class="nav-tab" data-tab="info">ℹ️ Info</div>
+    </div>
+
+    <!-- ===== AO VIVO ===== -->
+    <div class="panel active" id="panel-aovivo">
+        <div class="glass" id="chamada-box" style="display:none;border-color:rgba(99,102,241,.4);background:rgba(99,102,241,.08)">
+            <h2>📣 Chamada para Quadra</h2>
+            <div id="chamada-content" style="font-size:1rem;font-weight:700;text-align:center;padding:10px"></div>
+        </div>
+
+        <div class="glass">
+            <h2>🔴 Jogos em Andamento</h2>
+            <div id="av-emjogo"></div>
+        </div>
+        <div class="glass">
+            <h2>⏳ Próximos Jogos</h2>
+            <div id="av-proximos"></div>
+        </div>
+        <div class="glass">
+            <h2>✅ Últimos Resultados</h2>
+            <div id="av-resultados"></div>
+        </div>
+    </div>
+
+    <!-- ===== CHAVE & GRUPOS ===== -->
+    <div class="panel" id="panel-chave">
+        <div class="filters">
+            <select id="filt-chave-cat" onchange="renderChave()"><option value="">Todas categorias</option></select>
+            <select id="filt-chave-fase" onchange="renderChave()">
+                <option value="">Todas fases</option>
+                <option value="grupos">Grupos</option>
+                <option value="oitavas">Oitavas</option>
+                <option value="quartas">Quartas</option>
+                <option value="semifinal">Semifinal</option>
+                <option value="final">Final</option>
+            </select>
+        </div>
+        <div id="chave-grupos"></div>
+        <div id="chave-eliminatorias"></div>
+    </div>
+
+    <!-- ===== ATLETAS ===== -->
+    <div class="panel" id="panel-atletas">
+        <div class="filters">
+            <input type="text" class="search-input" id="search-atleta" placeholder="🔍 Buscar atleta..." oninput="renderAtletas()">
+            <select id="filt-atleta-cat" onchange="renderAtletas()"><option value="">Todas categorias</option></select>
+        </div>
+        <div id="atletas-list"></div>
+    </div>
+
+    <!-- ===== PROGRAMAÇÃO ===== -->
+    <div class="panel" id="panel-programacao">
+        <div class="filters">
+            <input type="text" class="search-input" id="search-prog" placeholder="🔍 Buscar atleta..." oninput="renderProgramacao()">
+            <select id="filt-prog-quadra" onchange="renderProgramacao()"><option value="">Todas quadras</option></select>
+        </div>
+        <div id="prog-list"></div>
+    </div>
+
+    <!-- ===== RESULTADOS ===== -->
+    <div class="panel" id="panel-resultados">
+        <div id="podium-section"></div>
+        <div class="glass">
+            <h2>📊 Resultados Completos</h2>
+            <div class="filters">
+                <select id="filt-res-cat" onchange="renderResultados()"><option value="">Todas categorias</option></select>
+            </div>
+            <div id="resultados-list"></div>
+        </div>
+        <div class="glass" style="text-align:center">
+            <h2>📱 Compartilhar</h2>
+            <div id="qr-section">
+                <p style="font-size:.85rem;color:rgba(255,255,255,.4);margin-bottom:10px">Escaneie o QR Code para acompanhar o campeonato</p>
+                <div id="qr-code" style="display:inline-block;border-radius:12px;background:#fff;padding:12px"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== INFO ===== -->
+    <div class="panel" id="panel-info">
+        <div class="glass">
+            <h2>🏐 Formato da Competição</h2>
+            <div id="info-formato"></div>
+        </div>
+        <div class="glass">
+            <h2>📅 Cronograma</h2>
+            <div id="info-cronograma"></div>
+        </div>
+        <div class="glass">
+            <h2>📍 Local</h2>
+            <div id="info-local"></div>
+        </div>
+        <div class="glass">
+            <h2>❓ FAQ</h2>
+            <div id="info-faq"></div>
+        </div>
+        <div class="glass">
+            <h2>🤝 Patrocinadores</h2>
+            <div id="info-sponsors"></div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL ATLETA DETALHE -->
+<div class="modal-overlay" id="modal-atleta">
+    <div class="modal">
+        <div style="display:flex;gap:14px;align-items:center;margin-bottom:16px">
+            <div class="atleta-foto" id="ma-foto" style="width:60px;height:60px;font-size:1.4rem"></div>
+            <div>
+                <h3 id="ma-nome" style="margin:0"></h3>
+                <div id="ma-cats" style="font-size:.78rem;color:rgba(255,255,255,.4)"></div>
+            </div>
+            <button class="btn-fav" id="ma-fav" onclick="toggleFav()" style="margin-left:auto">☆</button>
+        </div>
+        <div id="ma-stats" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px"></div>
+        <div id="ma-parceiros"></div>
+        <div id="ma-prox"></div>
+        <div id="ma-hist"></div>
+        <div style="text-align:right;margin-top:12px"><button class="btn btn-s" onclick="fecharModal('modal-atleta')">Fechar</button></div>
+    </div>
+</div>
+
+<script>
+let D = {};
+let favs = JSON.parse(localStorage.getItem('beach-favs') || '[]');
+
+async function init() {
+    try {
+        const r = await fetch('/api/campeonato');
+        D = await r.json();
+        renderHero();
+        populateFilters();
+        renderAoVivo();
+        renderChave();
+        renderAtletas();
+        renderProgramacao();
+        renderResultados();
+        renderInfo();
+        connectWS();
+    } catch(e) { console.error(e); }
+}
+
+function connectWS() {
+    const ws = new WebSocket('ws://'+location.host);
+    ws.onmessage = e => {
+        try {
+            const msg = JSON.parse(e.data);
+            if (msg.type === 'partida-update') {
+                const idx = D.partidas.findIndex(p=>p.id===msg.partida.id);
+                if (idx>=0) D.partidas[idx]=msg.partida; else D.partidas.push(msg.partida);
+                renderAoVivo(); renderChave(); renderProgramacao(); renderResultados();
+            }
+            if (msg.type === 'chamada-quadra') {
+                const box = document.getElementById('chamada-box');
+                box.style.display = 'block';
+                document.getElementById('chamada-content').innerHTML = `<div style="margin-bottom:6px">📣 ${esc(msg.quadra?.nome||'')}</div>${esc(dLabel(msg.dupla1))} <span style="color:rgba(255,255,255,.3)">vs</span> ${esc(dLabel(msg.dupla2))}<div style="font-size:.78rem;color:rgba(255,255,255,.4);margin-top:4px">${esc(msg.categoria?.nome||'')}</div>`;
+                setTimeout(()=>{ box.style.display='none'; }, 30000);
+            }
+            if (msg.type === 'camp-mensagem') {
+                alert('📢 ' + msg.msg?.texto);
+            }
+        } catch(err){}
+    };
+    ws.onclose = () => setTimeout(connectWS, 3000);
+}
+
+// ===== TABS =====
+document.querySelectorAll('.nav-tab').forEach(t=>t.addEventListener('click',()=>{
+    document.querySelectorAll('.nav-tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById('panel-'+t.dataset.tab).classList.add('active');
+}));
+
+// ===== HERO =====
+function renderHero() {
+    const e = D.evento || {};
+    document.getElementById('h-nome').textContent = e.nome || 'Campeonato';
+    document.getElementById('h-data').textContent = formatDate(e.data);
+    document.getElementById('h-hora').textContent = e.horaInicio || '';
+    document.getElementById('h-local').textContent = e.local?.nome || '';
+    document.getElementById('h-desc').textContent = e.descricao || '';
+    if (e.banner) { const img = document.getElementById('hero-banner'); img.src = e.banner; img.onload=()=>img.classList.add('loaded'); }
+
+    const statusMap = {agendado:'⏳ Planejado',inscricoes_abertas:'📝 Inscrições Abertas',em_andamento:'🔴 Em Andamento',finalizado:'🏁 Finalizado'};
+    document.getElementById('h-status').innerHTML = `<span class="status-badge sb-${e.status||'agendado'}">${statusMap[e.status]||e.status||'Planejado'}</span>`;
+
+    updateCountdown(e.data, e.horaInicio);
+}
+
+function updateCountdown(data, hora) {
+    if (!data) return;
+    const target = new Date(`${data}T${hora||'00:00'}:00`);
+    const el = document.getElementById('countdown');
+    function tick() {
+        const diff = target - new Date();
+        if (diff <= 0) { el.innerHTML = '<div style="color:#6ee7b7;font-weight:700;font-size:.9rem">🏐 Evento em andamento ou encerrado!</div>'; return; }
+        const d=Math.floor(diff/86400000), h=Math.floor(diff%86400000/3600000), m=Math.floor(diff%3600000/60000), s=Math.floor(diff%60000/1000);
+        el.innerHTML = `<div class="cd-box"><div class="cv">${d}</div><div class="cl">Dias</div></div><div class="cd-box"><div class="cv">${h}</div><div class="cl">Horas</div></div><div class="cd-box"><div class="cv">${m}</div><div class="cl">Min</div></div><div class="cd-box"><div class="cv">${s}</div><div class="cl">Seg</div></div>`;
+    }
+    tick(); setInterval(tick, 1000);
+}
+
+// ===== FILTERS =====
+function populateFilters() {
+    const cats = D.categorias||[];
+    const opts = cats.map(c=>`<option value="${c.id}">${esc(c.nome)}</option>`).join('');
+    ['filt-chave-cat','filt-atleta-cat','filt-res-cat'].forEach(id=>{ document.getElementById(id).innerHTML='<option value="">Todas categorias</option>'+opts; });
+    const qopts = (D.quadras||[]).map(q=>`<option value="${q.id}">${esc(q.nome)}</option>`).join('');
+    document.getElementById('filt-prog-quadra').innerHTML = '<option value="">Todas quadras</option>'+qopts;
+}
+
+// ===== AO VIVO =====
+function renderAoVivo() {
+    const partidas = D.partidas||[];
+    const emJogo = partidas.filter(p=>p.status==='em_jogo'||p.status==='chamando');
+    const proximos = partidas.filter(p=>p.status==='agendado').sort((a,b)=>(a.horario||'').localeCompare(b.horario||'')).slice(0,8);
+    const ultimos = partidas.filter(p=>p.status==='encerrado'||p.status==='wo').sort((a,b)=>(b.horario||'').localeCompare(a.horario||'')).slice(0,8);
+
+    document.getElementById('av-emjogo').innerHTML = emJogo.length ? emJogo.map(p=>matchCard(p)).join('') : '<div class="empty">Nenhum jogo em andamento</div>';
+    document.getElementById('av-proximos').innerHTML = proximos.length ? proximos.map(p=>matchCard(p)).join('') : '<div class="empty">Sem próximos jogos</div>';
+    document.getElementById('av-resultados').innerHTML = ultimos.length ? ultimos.map(p=>matchCard(p)).join('') : '<div class="empty">Sem resultados ainda</div>';
+}
+
+function matchCard(p) {
+    const d1=findDupla(p.dupla1Id), d2=findDupla(p.dupla2Id), cat=findCat(p.categoriaId);
+    const q=D.quadras.find(qq=>qq.id===p.quadraId);
+    const hora = p.horario ? new Date(p.horario).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}) : '--:--';
+    const placar = formatPlacar(p);
+    const winner = p.vencedor;
+    const n1 = dLabel(d1), n2 = dLabel(d2);
+    return `<div class="match-card ${p.status}">
+        <div class="mc-header">
+            <div class="mc-teams">
+                <span${winner===p.dupla1Id?' style="color:#6ee7b7"':''}>${esc(n1)}</span>
+                <span class="mc-vs">vs</span>
+                <span${winner===p.dupla2Id?' style="color:#6ee7b7"':''}>${esc(n2)}</span>
+            </div>
+            ${placar?`<span class="mc-placar">${placar}</span>`:''}
+        </div>
+        <div class="mc-meta">
+            <span>${cat?esc(cat.nome):''}</span>
+            <span>${p.fase||''}</span>
+            <span>🕐 ${hora}</span>
+            <span>${q?esc(q.nome):''}</span>
+            <span class="mc-badge mb-${p.status}">${statusLabel(p.status)}</span>
+        </div>
+    </div>`;
+}
+
+// ===== CHAVE =====
+function renderChave() {
+    const catF = parseInt(document.getElementById('filt-chave-cat').value)||null;
+    const faseF = document.getElementById('filt-chave-fase').value;
+
+    // Grupos
+    const grupos = (D.grupos||[]).filter(g=>(!catF||g.categoriaId===catF)&&(!faseF||faseF==='grupos'));
+    const gEl = document.getElementById('chave-grupos');
+    if (grupos.length && (!faseF || faseF==='grupos')) {
+        gEl.innerHTML = grupos.map(g => {
+            const cat = findCat(g.categoriaId);
+            const dups = (g.duplas||[]).map(did=>{
+                const d = findDupla(did); if(!d) return null;
+                const pars = (D.partidas||[]).filter(p=>p.grupoId===g.id&&(p.dupla1Id===did||p.dupla2Id===did)&&p.status==='encerrado');
+                const v = pars.filter(p=>p.vencedor===did).length;
+                return { dupla:d, partidas:pars.length, vitorias:v, derrotas:pars.length-v, pontos:d.pontos||0 };
+            }).filter(Boolean).sort((a,b)=>b.pontos-a.pontos||b.vitorias-a.vitorias);
+            const classQtd = cat?.regras?.classificacao?.classificadosPorGrupo || 2;
+            return `<div class="grupo-card">
+                <h3>${esc(g.nome)} — ${cat?esc(cat.nome):''}</h3>
+                <table class="tbl"><thead><tr><th>#</th><th>Dupla</th><th>J</th><th>V</th><th>D</th><th>Pts</th></tr></thead><tbody>
+                ${dups.map((d,i)=>`<tr${i<classQtd?' class="classified"':''}><td style="font-weight:700">${i+1}</td><td>${esc(dLabel(d.dupla))}</td><td>${d.partidas}</td><td style="color:#6ee7b7">${d.vitorias}</td><td style="color:#f87171">${d.derrotas}</td><td style="color:#fbbf24;font-weight:700">${d.pontos}</td></tr>`).join('')}
+                </tbody></table>
+            </div>`;
+        }).join('');
+    } else { gEl.innerHTML = ''; }
+
+    // Eliminatórias
+    const elims = (D.partidas||[]).filter(p=>p.fase!=='grupos'&&(!catF||p.categoriaId===catF)&&(!faseF||p.fase===faseF)).sort((a,b)=>{
+        const order={oitavas:1,quartas:2,semifinal:3,final:4};
+        return (order[a.fase]||0)-(order[b.fase]||0);
+    });
+    const eEl = document.getElementById('chave-eliminatorias');
+    eEl.innerHTML = elims.length ? elims.map(p=>matchCard(p)).join('') : (grupos.length ? '' : '<div class="empty">Chave não gerada ainda</div>');
+}
+
+// ===== ATLETAS =====
+function renderAtletas() {
+    const q = (document.getElementById('search-atleta').value||'').toLowerCase();
+    const catF = parseInt(document.getElementById('filt-atleta-cat').value)||null;
+    const atletas = (D.atletas||[]).filter(a=>{
+        if (q && !a.nome.toLowerCase().includes(q)) return false;
+        if (catF) {
+            const dups = (D.duplas||[]).filter(d=>(d.atleta1Id===a.id||d.atleta2Id===a.id)&&d.categoriaId===catF);
+            if (!dups.length) return false;
+        }
+        return true;
+    });
+    const el = document.getElementById('atletas-list');
+    if (!atletas.length) { el.innerHTML='<div class="empty">Nenhum atleta encontrado</div>'; return; }
+    el.innerHTML = atletas.map(a=>{
+        const dups = (D.duplas||[]).filter(d=>d.atleta1Id===a.id||d.atleta2Id===a.id);
+        const cats = [...new Set(dups.map(d=>d.categoriaId))].map(cid=>findCat(cid)?.nome).filter(Boolean);
+        const parceiros = dups.map(d=>{ const pid=d.atleta1Id===a.id?d.atleta2Id:d.atleta1Id; return D.atletas.find(aa=>aa.id===pid)?.nome; }).filter(Boolean);
+        const isFav = favs.includes(a.id);
+        return `<div class="atleta-card" onclick="abrirAtleta(${a.id})">
+            ${avatarHTML(a)}
+            <div class="atleta-info">
+                <div class="atleta-nome">${isFav?'⭐ ':''}${esc(a.nome)}</div>
+                <div class="atleta-sub">${cats.join(', ')||'Sem categoria'}${parceiros.length?' · 🤝 '+parceiros.join(', '):''}</div>
+                <div class="atleta-stats"><span>🏆 <strong>${a.pontos||0}</strong> pts</span><span>📊 Rank <strong>#${a.ranking||'—'}</strong></span></div>
+            </div>
+            <button class="btn-fav" onclick="event.stopPropagation();toggleFavId(${a.id},this)">${isFav?'⭐':'☆'}</button>
+        </div>`;
+    }).join('');
+}
+
+async function abrirAtleta(id) {
+    try {
+        const r = await fetch('/api/campeonato/atletas/'+id+'/stats');
+        const s = await r.json();
+        const a = s.atleta;
+        document.getElementById('ma-foto').innerHTML = a.foto ? `<img src="${esc(a.foto)}" onerror="this.parentElement.textContent='${esc(a.nome.charAt(0))}'">` : esc(a.nome.charAt(0).toUpperCase());
+        document.getElementById('ma-foto').style.background = a.foto ? 'transparent' : avatarColor(a.id);
+        document.getElementById('ma-nome').textContent = a.nome;
+        document.getElementById('ma-cats').textContent = s.categorias.map(c=>c.nome).join(', ');
+        document.getElementById('ma-fav').textContent = favs.includes(a.id) ? '⭐' : '☆';
+        document.getElementById('ma-fav').dataset.id = a.id;
+
+        document.getElementById('ma-stats').innerHTML = `
+            <div style="text-align:center;padding:10px;background:rgba(255,255,255,.04);border-radius:10px"><div style="font-size:1.2rem;font-weight:800;color:#fbbf24">${a.pontos||0}</div><div style="font-size:.65rem;color:rgba(255,255,255,.3)">PONTOS</div></div>
+            <div style="text-align:center;padding:10px;background:rgba(255,255,255,.04);border-radius:10px"><div style="font-size:1.2rem;font-weight:800;color:#6ee7b7">${s.vitorias}</div><div style="font-size:.65rem;color:rgba(255,255,255,.3)">VITÓRIAS</div></div>
+            <div style="text-align:center;padding:10px;background:rgba(255,255,255,.04);border-radius:10px"><div style="font-size:1.2rem;font-weight:800;color:#f87171">${s.derrotas}</div><div style="font-size:.65rem;color:rgba(255,255,255,.3)">DERROTAS</div></div>`;
+
+        document.getElementById('ma-parceiros').innerHTML = s.parceiros.length ? `<div style="font-size:.78rem;font-weight:600;color:rgba(255,255,255,.5);margin-bottom:6px">🤝 Parceiro(s)</div>${s.parceiros.map(p=>`<span style="display:inline-block;padding:4px 10px;background:rgba(255,255,255,.04);border-radius:8px;font-size:.82rem;margin:2px">${esc(p.nome)}</span>`).join('')}` : '';
+
+        document.getElementById('ma-prox').innerHTML = s.proximas.length ? `<div style="font-size:.78rem;font-weight:600;color:rgba(255,255,255,.5);margin:10px 0 6px">📅 Próximos Jogos</div>${s.proximas.map(p=>{const d1n=dLabel(findDupla(p.dupla1Id)),d2n=dLabel(findDupla(p.dupla2Id)),hora=p.horario?new Date(p.horario).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}):''; return `<div style="font-size:.82rem;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.04)">${hora} — ${esc(d1n)} vs ${esc(d2n)}</div>`;}).join('')}` : '';
+
+        document.getElementById('ma-hist').innerHTML = s.historico.length ? `<div style="font-size:.78rem;font-weight:600;color:rgba(255,255,255,.5);margin:10px 0 6px">📜 Histórico</div>${s.historico.map(h=>`<div style="font-size:.8rem;color:rgba(255,255,255,.4);padding:2px 0">• ${esc(h)}</div>`).join('')}` : '';
+
+        document.getElementById('modal-atleta').classList.add('show');
+    } catch(e) { console.error(e); }
+}
+
+// ===== PROGRAMAÇÃO =====
+function renderProgramacao() {
+    const q = (document.getElementById('search-prog').value||'').toLowerCase();
+    const qF = parseInt(document.getElementById('filt-prog-quadra').value)||null;
+    const quadras = (D.quadras||[]).filter(qq=>!qF||qq.id===qF);
+    const el = document.getElementById('prog-list');
+
+    el.innerHTML = quadras.map(qq=>{
+        let partidas = (D.partidas||[]).filter(p=>p.quadraId===qq.id).sort((a,b)=>(a.horario||'').localeCompare(b.horario||''));
+        if (q) partidas = partidas.filter(p=>{
+            const d1=findDupla(p.dupla1Id), d2=findDupla(p.dupla2Id);
+            return dLabel(d1).toLowerCase().includes(q) || dLabel(d2).toLowerCase().includes(q);
+        });
+        if (!partidas.length) return '';
+        let prevEnd = null;
+        return `<div class="prog-quadra"><h3>🏟️ ${esc(qq.nome)} <span style="font-size:.7rem;font-weight:400;color:rgba(255,255,255,.3)">${partidas.length} partidas</span></h3>
+        ${partidas.map(p=>{
+            const d1=findDupla(p.dupla1Id), d2=findDupla(p.dupla2Id), cat=findCat(p.categoriaId);
+            const hora = p.horario ? new Date(p.horario).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}) : '--:--';
+            let atraso = '';
+            if (p.horario && prevEnd) { const diff = new Date(p.horario)-prevEnd; if(diff<0) atraso=`<span style="color:#f87171;font-size:.7rem;margin-left:6px">⚠️ ${Math.abs(Math.round(diff/60000))}min atraso</span>`; }
+            if (p.horario) prevEnd = new Date(new Date(p.horario).getTime()+(D.configuracoes?.duracaoEstimadaPartida||40)*60000);
+            return `<div class="prog-item ${p.status}">
+                <span class="prog-hora">${hora}</span>
+                <span class="prog-info"><strong>${esc(dLabel(d1))}</strong> vs <strong>${esc(dLabel(d2))}</strong> <span style="color:rgba(255,255,255,.25)">· ${cat?esc(cat.nome):''} · ${p.fase||''}</span>${atraso}</span>
+                <span class="mc-badge mb-${p.status}" style="flex-shrink:0">${statusLabel(p.status)}</span>
+            </div>`;
+        }).join('')}</div>`;
+    }).join('') || '<div class="empty">Sem partidas na programação</div>';
+}
+
+// ===== RESULTADOS =====
+function renderResultados() {
+    const catF = parseInt(document.getElementById('filt-res-cat').value)||null;
+    const encerradas = (D.partidas||[]).filter(p=>(p.status==='encerrado'||p.status==='wo')&&(!catF||p.categoriaId===catF));
+
+    // Podium (finals only)
+    const finals = encerradas.filter(p=>p.fase==='final');
+    const podiumEl = document.getElementById('podium-section');
+    if (finals.length) {
+        podiumEl.innerHTML = finals.map(f=>{
+            const winner = findDupla(f.vencedor);
+            const loserId = f.dupla1Id===f.vencedor ? f.dupla2Id : f.dupla1Id;
+            const second = findDupla(loserId);
+            const cat = findCat(f.categoriaId);
+            // Find 3rd place (semifinal losers)
+            const semis = encerradas.filter(p=>p.fase==='semifinal'&&p.categoriaId===f.categoriaId);
+            const thirds = semis.map(s=>findDupla(s.dupla1Id===s.vencedor?s.dupla2Id:s.dupla1Id)).filter(Boolean);
+            return `<div style="margin-bottom:24px"><h2 style="text-align:center;font-size:1rem;color:#fbbf24;margin-bottom:12px">🏆 ${cat?esc(cat.nome):''}</h2>
+            <div class="podium">
+                ${second?`<div class="podium-item silver"><div class="podium-medal">🥈</div><div class="podium-name">${esc(dLabel(second))}</div><div class="podium-cat">2º Lugar</div></div>`:''}
+                ${winner?`<div class="podium-item gold"><div class="podium-medal">🥇</div><div class="podium-name">${esc(dLabel(winner))}</div><div class="podium-cat">Campeão</div></div>`:''}
+                ${thirds[0]?`<div class="podium-item bronze"><div class="podium-medal">🥉</div><div class="podium-name">${esc(dLabel(thirds[0]))}</div><div class="podium-cat">3º Lugar</div></div>`:''}
+            </div></div>`;
+        }).join('');
+    } else { podiumEl.innerHTML = ''; }
+
+    const el = document.getElementById('resultados-list');
+    el.innerHTML = encerradas.length ? encerradas.sort((a,b)=>(b.horario||'').localeCompare(a.horario||'')).map(p=>matchCard(p)).join('') : '<div class="empty">Sem resultados ainda</div>';
+
+    // QR Code
+    generateQR();
+}
+
+// ===== INFO =====
+function renderInfo() {
+    const e = D.evento||{};
+
+    // Formato
+    const cats = D.categorias||[];
+    document.getElementById('info-formato').innerHTML = `<p style="font-size:.88rem;color:rgba(255,255,255,.5);margin-bottom:10px">${esc(e.formato||'Grupos + Eliminatórias')}</p>
+    <div style="display:flex;flex-wrap:wrap;gap:8px">${cats.map(c=>`<span style="display:inline-block;padding:6px 14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;font-size:.82rem"><strong style="color:#fbbf24">${esc(c.nome)}</strong> <span style="color:rgba(255,255,255,.3)">(${c.tipo}, máx ${c.maxDuplas} duplas)</span></span>`).join('')}</div>`;
+
+    // Cronograma
+    document.getElementById('info-cronograma').innerHTML = (e.cronograma||[]).map(c=>`<div style="display:flex;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04)"><span style="font-weight:700;color:#fbbf24;min-width:50px">${esc(c.hora)}</span><span style="color:rgba(255,255,255,.55)">${esc(c.atividade)}</span></div>`).join('') || '<div class="empty">Sem cronograma</div>';
+
+    // Local
+    const loc = e.local||{};
+    let localHTML = `<p style="font-size:.9rem;font-weight:600">${esc(loc.nome||'')}</p>`;
+    if (loc.endereco) localHTML += `<p style="font-size:.82rem;color:rgba(255,255,255,.4)">${esc(loc.endereco)}</p>`;
+    if (loc.coordenadas?.lat && loc.coordenadas?.lng) {
+        localHTML += `<div class="map-frame"><iframe src="https://www.openstreetmap.org/export/embed.html?bbox=${loc.coordenadas.lng-0.005}%2C${loc.coordenadas.lat-0.005}%2C${loc.coordenadas.lng+0.005}%2C${loc.coordenadas.lat+0.005}&layer=mapnik&marker=${loc.coordenadas.lat}%2C${loc.coordenadas.lng}" loading="lazy"></iframe></div>`;
+    }
+    document.getElementById('info-local').innerHTML = localHTML;
+
+    // FAQ
+    document.getElementById('info-faq').innerHTML = (e.faq||[]).map((f,i)=>`<div class="faq-item" id="faq-${i}"><div class="faq-q" onclick="document.getElementById('faq-${i}').classList.toggle('open')">${esc(f.pergunta)}<span>▼</span></div><div class="faq-a">${esc(f.resposta)}</div></div>`).join('') || '<div class="empty">Sem FAQ</div>';
+
+    // Sponsors
+    const pats = D.patrocinadores||[];
+    document.getElementById('info-sponsors').innerHTML = pats.length ? `<div class="sponsor-grid">${pats.map(p=>`<div class="sponsor-card">${p.logo?`<img src="${esc(p.logo)}" onerror="this.style.display='none'">`:''}<div class="sn">${esc(p.nome)}</div><div class="sl">${esc(p.nivel||'')}</div></div>`).join('')}</div>` : '<div class="empty">Sem patrocinadores</div>';
+}
+
+// ===== QR CODE =====
+function generateQR() {
+    const el = document.getElementById('qr-code');
+    if (!el) return;
+    el.innerHTML = '';
+    const url = location.origin + '/campeonato-publico.html';
+    try {
+        new QRCode(el, { text: url, width: 160, height: 160, colorDark: '#1a1a4e', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M });
+    } catch(e) { el.textContent = url; }
+}
+
+// ===== FAVORITOS =====
+function toggleFavId(id, el) {
+    const idx = favs.indexOf(id);
+    if (idx >= 0) { favs.splice(idx,1); el.textContent='☆'; } else { favs.push(id); el.textContent='⭐'; }
+    localStorage.setItem('beach-favs', JSON.stringify(favs));
+    renderAtletas();
+}
+function toggleFav() {
+    const btn = document.getElementById('ma-fav');
+    const id = parseInt(btn.dataset.id);
+    if (!id) return;
+    toggleFavId(id, btn);
+}
+
+// ===== HELPERS =====
+function findDupla(id) { return (D.duplas||[]).find(d=>d.id===id); }
+function findCat(id) { return (D.categorias||[]).find(c=>c.id===id); }
+function dLabel(d) { if(!d) return '?'; return d.nome || 'Dupla #'+d.id; }
+function esc(t) { const d=document.createElement('div'); d.textContent=t||''; return d.innerHTML; }
+function formatDate(d) { if(!d) return ''; const [y,m,dd]=d.split('-'); return `${dd}/${m}/${y}`; }
+function formatPlacar(p) { if(!p.placar) return ''; const s1=p.placar.dupla1||[],s2=p.placar.dupla2||[]; return s1.map((v,i)=>`${v}×${s2[i]||0}`).join(' '); }
+function statusLabel(s) { return {agendado:'Agendado',chamando:'📣 Chamando',em_jogo:'🔴 Em Jogo',encerrado:'Encerrado',wo:'WO',pausado:'⏸ Pausado'}[s]||s; }
+function avatarColor(id) { const c=['#e21b3c','#1368ce','#26890c','#d89e00','#9b59b6','#e67e22','#1abc9c']; return c[id%c.length]; }
+function avatarHTML(a) { return a.foto ? `<div class="atleta-foto"><img src="${esc(a.foto)}" onerror="this.parentElement.textContent='${esc(a.nome.charAt(0))}'"></div>` : `<div class="atleta-foto" style="background:${avatarColor(a.id)}">${esc(a.nome.charAt(0).toUpperCase())}</div>`; }
+function fecharModal(id) { document.getElementById(id).classList.remove('show'); }
+document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',e=>{if(e.target===m) m.classList.remove('show')}));
+
+init();
+setInterval(async()=>{try{const r=await fetch('/api/campeonato');D=await r.json();renderAoVivo();renderChave();renderProgramacao();renderResultados();}catch(e){}},20000);
+</script>
+</body>
+</html>

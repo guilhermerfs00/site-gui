@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏖️ Telão — Aninha do Beach</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Poppins',sans-serif;background:#0a0a1e;color:#fff;height:100vh;overflow:hidden}
+        .bg{position:fixed;inset:0;z-index:0;overflow:hidden}
+        .bg .g{position:absolute;inset:0;background:linear-gradient(135deg,#0a0a1e,#12123a 40%,#0d0d28 70%,#10102e)}
+        .bg .o{position:absolute;border-radius:50%;filter:blur(120px);opacity:.2;animation:of 25s ease-in-out infinite}
+        .bg .o:nth-child(2){width:600px;height:600px;background:#f59e0b;top:-200px;right:-200px}
+        .bg .o:nth-child(3){width:700px;height:700px;background:#d97706;bottom:-250px;left:-250px;animation-delay:-8s}
+        .bg .o:nth-child(4){width:400px;height:400px;background:#fbbf24;top:30%;left:50%;animation-delay:-16s}
+        @keyframes of{0%,100%{transform:translate(0) scale(1)}25%{transform:translate(60px,-100px) scale(1.1)}50%{transform:translate(-40px,70px) scale(.9)}75%{transform:translate(80px,50px) scale(1.05)}}
+
+        .wrap{position:relative;z-index:1;height:100vh;display:grid;grid-template-rows:auto 1fr auto;padding:24px 32px;gap:16px}
+
+        /* HEADER */
+        .header{display:flex;justify-content:space-between;align-items:center}
+        .header h1{font-size:1.8rem;font-weight:900;background:linear-gradient(135deg,#fbbf24,#f59e0b,#d97706);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .header-right{display:flex;align-items:center;gap:16px}
+        .clock{font-size:2rem;font-weight:800;color:rgba(255,255,255,.25)}
+        .status-badge{padding:6px 18px;border-radius:20px;font-size:.85rem;font-weight:700;text-transform:uppercase;animation:blink 2s infinite}
+        .sb-live{background:rgba(239,68,68,.2);color:#f87171;border:1px solid rgba(239,68,68,.3)}
+        @keyframes blink{50%{opacity:.6}}
+
+        /* MAIN AREA */
+        .main{display:grid;grid-template-columns:2fr 1fr;gap:20px;overflow:hidden}
+
+        /* LEFT - jogos em andamento */
+        .left{display:flex;flex-direction:column;gap:12px;overflow-y:auto}
+        .section-title{font-size:1rem;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:2px;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+
+        .live-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:20px 24px;display:flex;align-items:center;gap:20px;animation:fadeIn .5s ease}
+        .live-card.chamando{border-color:rgba(99,102,241,.5);background:rgba(99,102,241,.06);animation:chamadaPulse 2s infinite}
+        @keyframes fadeIn{from{opacity:0;transform:scale(.98)}to{opacity:1;transform:scale(1)}}
+        @keyframes chamadaPulse{0%,100%{opacity:1}50%{opacity:.7}}
+
+        .lc-quadra{font-size:.75rem;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:1px;min-width:90px;text-align:center}
+        .lc-quadra .qn{font-size:1.1rem;font-weight:800;color:#fbbf24}
+        .lc-teams{flex:1;display:flex;flex-direction:column;gap:4px}
+        .lc-team{display:flex;align-items:center;gap:10px;font-size:1.2rem;font-weight:700}
+        .lc-team.winner{color:#6ee7b7}
+        .lc-vs{font-size:.7rem;color:rgba(255,255,255,.15);text-align:center;font-weight:400}
+        .lc-score{font-size:2rem;font-weight:900;color:#fbbf24;letter-spacing:2px;text-align:right;min-width:140px}
+        .lc-meta{font-size:.7rem;color:rgba(255,255,255,.2);text-align:center}
+        .lc-badge{display:inline-block;padding:3px 10px;border-radius:10px;font-size:.7rem;font-weight:700;text-transform:uppercase;margin-top:4px}
+        .lb-em_jogo{background:rgba(56,239,125,.12);color:#6ee7b7}
+        .lb-chamando{background:rgba(99,102,241,.2);color:#a5b4fc;font-size:.85rem}
+
+        /* RIGHT - sidebar */
+        .right{display:flex;flex-direction:column;gap:12px;overflow-y:auto}
+        .next-card{padding:12px 16px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:14px;display:flex;align-items:center;gap:12px}
+        .nc-hora{font-size:.8rem;font-weight:700;color:rgba(255,255,255,.25);min-width:44px}
+        .nc-info{flex:1;font-size:.88rem;font-weight:600}
+        .nc-cat{font-size:.7rem;color:rgba(255,255,255,.2)}
+
+        .result-card{padding:10px 14px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.05);border-radius:12px;font-size:.82rem}
+        .rc-teams{font-weight:600;display:flex;justify-content:space-between;align-items:center}
+        .rc-score{font-weight:800;color:#fbbf24}
+        .rc-meta{font-size:.68rem;color:rgba(255,255,255,.2);margin-top:2px}
+
+        /* CHAMADA BANNER */
+        .chamada-banner{display:none;position:fixed;bottom:0;left:0;right:0;z-index:10;background:linear-gradient(135deg,rgba(99,102,241,.95),rgba(139,92,246,.95));padding:20px 32px;text-align:center;animation:slideUp .5s ease}
+        .chamada-banner.show{display:block}
+        @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+        .chamada-banner .cb-title{font-size:1.5rem;font-weight:800;margin-bottom:4px}
+        .chamada-banner .cb-detail{font-size:1rem;color:rgba(255,255,255,.7)}
+
+        /* FOOTER (ticker) */
+        .footer{border-top:1px solid rgba(255,255,255,.06);padding-top:8px;overflow:hidden;white-space:nowrap}
+        .ticker{display:inline-block;animation:ticker 30s linear infinite}
+        @keyframes ticker{0%{transform:translateX(100%)}100%{transform:translateX(-100%)}}
+        .ticker span{margin-right:40px;font-size:.82rem;color:rgba(255,255,255,.3)}
+
+        .empty{color:rgba(255,255,255,.1);font-style:italic;padding:20px;text-align:center;font-size:.9rem}
+    </style>
+</head>
+<body>
+<div class="bg"><div class="g"></div><div class="o"></div><div class="o"></div><div class="o"></div></div>
+
+<div class="wrap">
+    <div class="header">
+        <h1>🏖️ <span id="t-nome">Aninha do Beach</span></h1>
+        <div class="header-right">
+            <div class="status-badge sb-live" id="t-status">🔴 AO VIVO</div>
+            <div class="clock" id="t-clock">00:00</div>
+        </div>
+    </div>
+
+    <div class="main">
+        <div class="left">
+            <div class="section-title">🔴 Jogos em Andamento</div>
+            <div id="live-games"></div>
+        </div>
+        <div class="right">
+            <div class="section-title">⏳ Próximos</div>
+            <div id="next-games"></div>
+            <div class="section-title" style="margin-top:8px">✅ Últimos Resultados</div>
+            <div id="results"></div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="ticker" id="ticker"></div>
+    </div>
+</div>
+
+<div class="chamada-banner" id="chamada-banner">
+    <div class="cb-title" id="cb-title"></div>
+    <div class="cb-detail" id="cb-detail"></div>
+</div>
+
+<script>
+let D = {};
+
+async function load() {
+    try {
+        const r = await fetch('/api/campeonato');
+        D = await r.json();
+        render();
+    } catch(e) { console.error(e); }
+}
+
+function connectWS() {
+    const ws = new WebSocket('ws://'+location.host);
+    ws.onmessage = e => {
+        try {
+            const msg = JSON.parse(e.data);
+            if (msg.type === 'partida-update') {
+                const idx = D.partidas.findIndex(p=>p.id===msg.partida.id);
+                if (idx>=0) D.partidas[idx]=msg.partida; else D.partidas.push(msg.partida);
+                render();
+            }
+            if (msg.type === 'chamada-quadra') {
+                showChamada(msg);
+            }
+        } catch(err){}
+    };
+    ws.onclose = () => setTimeout(connectWS, 3000);
+}
+
+function render() {
+    document.getElementById('t-nome').textContent = D.evento?.nome || 'Aninha do Beach';
+    renderLive();
+    renderNext();
+    renderResults();
+    renderTicker();
+}
+
+function renderLive() {
+    const el = document.getElementById('live-games');
+    const partidas = (D.partidas||[]).filter(p=>p.status==='em_jogo'||p.status==='chamando');
+    if (!partidas.length) { el.innerHTML = '<div class="empty">Nenhum jogo em andamento</div>'; return; }
+    el.innerHTML = partidas.map(p=>{
+        const d1 = findDupla(p.dupla1Id), d2 = findDupla(p.dupla2Id);
+        const q = (D.quadras||[]).find(qq=>qq.id===p.quadraId);
+        const cat = findCat(p.categoriaId);
+        const placar = formatPlacar(p);
+        const w = p.vencedor;
+        return `<div class="live-card ${p.status}">
+            <div class="lc-quadra">
+                <div class="qn">${esc(q?.nome||'—')}</div>
+                <div class="lc-badge lb-${p.status}">${p.status==='chamando'?'📣 CHAMANDO':'AO VIVO'}</div>
+            </div>
+            <div class="lc-teams">
+                <div class="lc-team${w===p.dupla1Id?' winner':''}">${esc(dLabel(d1))}</div>
+                <div class="lc-vs">vs</div>
+                <div class="lc-team${w===p.dupla2Id?' winner':''}">${esc(dLabel(d2))}</div>
+                <div class="lc-meta">${cat?esc(cat.nome):''} · ${p.fase||''}</div>
+            </div>
+            <div class="lc-score">${placar||'0×0'}</div>
+        </div>`;
+    }).join('');
+}
+
+function renderNext() {
+    const el = document.getElementById('next-games');
+    const partidas = (D.partidas||[]).filter(p=>p.status==='agendado').sort((a,b)=>(a.horario||'').localeCompare(b.horario||'')).slice(0,6);
+    if (!partidas.length) { el.innerHTML = '<div class="empty">—</div>'; return; }
+    el.innerHTML = partidas.map(p=>{
+        const d1 = findDupla(p.dupla1Id), d2 = findDupla(p.dupla2Id);
+        const cat = findCat(p.categoriaId);
+        const hora = p.horario ? new Date(p.horario).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}) : '--:--';
+        return `<div class="next-card">
+            <span class="nc-hora">${hora}</span>
+            <div>
+                <div class="nc-info">${esc(dLabel(d1))} vs ${esc(dLabel(d2))}</div>
+                <div class="nc-cat">${cat?esc(cat.nome):''} · ${p.fase||''}</div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function renderResults() {
+    const el = document.getElementById('results');
+    const partidas = (D.partidas||[]).filter(p=>p.status==='encerrado'||p.status==='wo').sort((a,b)=>(b.horario||'').localeCompare(a.horario||'')).slice(0,6);
+    if (!partidas.length) { el.innerHTML = '<div class="empty">—</div>'; return; }
+    el.innerHTML = partidas.map(p=>{
+        const d1 = findDupla(p.dupla1Id), d2 = findDupla(p.dupla2Id);
+        const cat = findCat(p.categoriaId);
+        const w = p.vencedor;
+        return `<div class="result-card">
+            <div class="rc-teams">
+                <span>${esc(dLabel(d1))}${w===p.dupla1Id?' 🏆':''} vs ${esc(dLabel(d2))}${w===p.dupla2Id?' 🏆':''}</span>
+                <span class="rc-score">${formatPlacar(p)}</span>
+            </div>
+            <div class="rc-meta">${cat?esc(cat.nome):''} · ${p.fase||''} ${p.status==='wo'?'· WO':''}</div>
+        </div>`;
+    }).join('');
+}
+
+function renderTicker() {
+    const msgs = (D.mensagens||[]).map(m=>m.texto);
+    const cats = (D.categorias||[]).map(c=>'🏐 '+c.nome);
+    const items = [...msgs, ...cats];
+    if (!items.length) items.push('🏖️ Aninha do Beach — Beach Tennis');
+    document.getElementById('ticker').innerHTML = items.map(i=>`<span>${esc(i)}</span>`).join('');
+}
+
+function showChamada(msg) {
+    const banner = document.getElementById('chamada-banner');
+    document.getElementById('cb-title').textContent = `📣 ${msg.quadra?.nome||'Quadra'} — Apresentar-se!`;
+    document.getElementById('cb-detail').textContent = `${dLabel(msg.dupla1)} vs ${dLabel(msg.dupla2)} — ${msg.categoria?.nome||''}`;
+    banner.classList.add('show');
+    setTimeout(()=>banner.classList.remove('show'), 15000);
+}
+
+// Clock
+function updateClock() {
+    const now = new Date();
+    document.getElementById('t-clock').textContent = now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
+setInterval(updateClock, 1000); updateClock();
+
+// Helpers
+function findDupla(id){return(D.duplas||[]).find(d=>d.id===id)}
+function findCat(id){return(D.categorias||[]).find(c=>c.id===id)}
+function dLabel(d){return d?.nome||'?'}
+function esc(t){const d=document.createElement('div');d.textContent=t||'';return d.innerHTML}
+function formatPlacar(p){if(!p.placar)return'';const s1=p.placar.dupla1||[],s2=p.placar.dupla2||[];return s1.map((v,i)=>`${v}×${s2[i]||0}`).join(' ')}
+
+load();
+connectWS();
+setInterval(load, 15000);
+</script>
+</body>
+</html>

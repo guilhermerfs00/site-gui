@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚙️ Gerenciamento — Campeonato</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #0a0a2e;
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        /* ===== BACKGROUND ===== */
+        .bg-animation {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%; z-index: 0; overflow: hidden;
+        }
+        .bg-animation .gradient {
+            position: absolute; width: 100%; height: 100%;
+            background: linear-gradient(135deg, #0a0a2e 0%, #1a1a4e 30%, #0d0d35 60%, #15153f 100%);
+        }
+        .bg-animation .orb {
+            position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.3;
+            animation: orbFloat 20s ease-in-out infinite;
+        }
+        .bg-animation .orb:nth-child(2) { width: 400px; height: 400px; background: #f59e0b; top: -100px; right: -100px; }
+        .bg-animation .orb:nth-child(3) { width: 500px; height: 500px; background: #d97706; bottom: -150px; left: -150px; animation-delay: -7s; }
+        .bg-animation .orb:nth-child(4) { width: 300px; height: 300px; background: #fbbf24; top: 50%; left: 50%; animation-delay: -14s; }
+        @keyframes orbFloat {
+            0%, 100% { transform: translate(0,0) scale(1); }
+            25% { transform: translate(50px,-80px) scale(1.1); }
+            50% { transform: translate(-30px,60px) scale(0.9); }
+            75% { transform: translate(70px,40px) scale(1.05); }
+        }
+
+        /* ===== LAYOUT ===== */
+        .container {
+            position: relative; z-index: 1;
+            max-width: 960px; margin: 0 auto; padding: 30px 20px 60px;
+        }
+
+        .top-bar {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 30px; flex-wrap: wrap; gap: 12px;
+        }
+        .top-bar h1 {
+            font-size: 1.8rem; font-weight: 800;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b, #d97706);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .top-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+        /* ===== GLASS CARD ===== */
+        .glass {
+            background: rgba(255,255,255,0.06);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px; padding: 28px;
+            margin-bottom: 24px;
+        }
+        .glass h2 {
+            font-size: 1.15rem; font-weight: 700; margin-bottom: 18px;
+            color: rgba(255,255,255,0.85); display: flex; align-items: center; gap: 10px;
+        }
+
+        /* ===== FORM ELEMENTS ===== */
+        label {
+            display: block; font-size: 0.8rem; font-weight: 600;
+            color: rgba(255,255,255,0.5); text-transform: uppercase;
+            letter-spacing: 1px; margin-bottom: 6px;
+        }
+        input[type=text], input[type=date], input[type=time], input[type=url],
+        input[type=number], textarea, select {
+            width: 100%; padding: 12px 16px;
+            background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 12px; color: #fff; font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem; outline: none; transition: border-color 0.3s;
+            margin-bottom: 16px;
+        }
+        input:focus, textarea:focus, select:focus {
+            border-color: rgba(251,191,36,0.6);
+        }
+        textarea { resize: vertical; min-height: 80px; }
+        select option { background: #1a1a4e; }
+
+        .form-row {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+        }
+        .form-row-3 {
+            display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            padding: 10px 22px; border: none; border-radius: 12px;
+            font-family: 'Poppins', sans-serif; font-size: 0.85rem; font-weight: 600;
+            cursor: pointer; transition: all 0.3s ease; white-space: nowrap;
+        }
+        .btn:hover { transform: translateY(-2px); }
+        .btn-primary {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: #fff; box-shadow: 0 4px 15px rgba(245,158,11,0.3);
+        }
+        .btn-primary:hover { box-shadow: 0 6px 20px rgba(245,158,11,0.5); }
+        .btn-secondary {
+            background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.7);
+            border: 1px solid rgba(255,255,255,0.12);
+        }
+        .btn-secondary:hover { background: rgba(255,255,255,0.14); }
+        .btn-danger {
+            background: rgba(239,68,68,0.15); color: #f87171;
+            border: 1px solid rgba(239,68,68,0.3);
+        }
+        .btn-danger:hover { background: rgba(239,68,68,0.25); }
+        .btn-success {
+            background: rgba(56,239,125,0.15); color: #6ee7b7;
+            border: 1px solid rgba(56,239,125,0.3);
+        }
+        .btn-success:hover { background: rgba(56,239,125,0.25); }
+        .btn-sm { padding: 6px 14px; font-size: 0.78rem; border-radius: 8px; }
+
+        /* ===== DYNAMIC LISTS ===== */
+        .list-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 16px; background: rgba(255,255,255,0.04);
+            border-radius: 12px; margin-bottom: 8px;
+            border: 1px solid rgba(255,255,255,0.06);
+            transition: background 0.2s;
+        }
+        .list-item:hover { background: rgba(255,255,255,0.08); }
+        .list-item .item-content { flex: 1; }
+        .list-item .item-label { font-weight: 600; font-size: 0.95rem; }
+        .list-item .item-sub { font-size: 0.8rem; color: rgba(255,255,255,0.45); }
+        .list-item .item-actions { display: flex; gap: 6px; flex-shrink: 0; }
+
+        .empty-msg {
+            text-align: center; padding: 30px; color: rgba(255,255,255,0.25);
+            font-style: italic; font-size: 0.9rem;
+        }
+
+        /* ===== STATUS SELECT ===== */
+        .status-select { max-width: 280px; }
+
+        /* ===== MAP PREVIEW ===== */
+        .map-preview {
+            width: 100%; height: 220px; border-radius: 14px;
+            background: rgba(255,255,255,0.04); border: 1px dashed rgba(255,255,255,0.15);
+            display: flex; align-items: center; justify-content: center;
+            color: rgba(255,255,255,0.25); font-size: 0.9rem;
+            margin-bottom: 16px; overflow: hidden;
+        }
+        .map-preview iframe {
+            width: 100%; height: 100%; border: 0; border-radius: 14px;
+        }
+
+        /* ===== BANNER PREVIEW ===== */
+        .banner-preview {
+            width: 100%; max-height: 200px; border-radius: 14px;
+            object-fit: cover; margin-bottom: 12px; display: none;
+        }
+        .banner-preview.visible { display: block; }
+
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed; bottom: 30px; right: 30px; z-index: 999;
+            padding: 14px 28px; border-radius: 14px;
+            font-weight: 600; font-size: 0.9rem;
+            transform: translateY(100px); opacity: 0;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            pointer-events: none;
+        }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast.success { background: rgba(56,239,125,0.9); color: #064e3b; }
+        .toast.error { background: rgba(239,68,68,0.9); color: #fff; }
+
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 10px; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 700px) {
+            .form-row, .form-row-3 { grid-template-columns: 1fr; }
+            .top-bar { flex-direction: column; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation">
+        <div class="gradient"></div>
+        <div class="orb"></div>
+        <div class="orb"></div>
+        <div class="orb"></div>
+    </div>
+
+    <div class="container">
+        <!-- TOP BAR -->
+        <div class="top-bar">
+            <h1>🏐 Gerenciamento do Campeonato</h1>
+            <div class="top-actions">
+                <button class="btn btn-primary" onclick="salvarTudo()">💾 Salvar Tudo</button>
+                <button class="btn btn-success" onclick="duplicarConfig()">📋 Duplicar Config</button>
+                <button class="btn btn-primary" onclick="window.location.href='/categorias.html'">🏐 Categorias</button>
+                <button class="btn btn-primary" onclick="window.location.href='/inscricoes.html'">👥 Inscrições</button>
+                <button class="btn btn-secondary" onclick="window.location.href='/'">← Voltar</button>
+            </div>
+        </div>
+
+        <!-- 1. DADOS DO EVENTO -->
+        <div class="glass">
+            <h2>📝 Dados do Evento</h2>
+            <div class="form-row">
+                <div>
+                    <label>Nome do Evento</label>
+                    <input type="text" id="ev-nome" placeholder="Ex: Aninha do Beach">
+                </div>
+                <div>
+                    <label>Status</label>
+                    <select id="ev-status" class="status-select">
+                        <option value="agendado">📅 Planejado</option>
+                        <option value="inscricoes_abertas">📝 Inscrições Abertas</option>
+                        <option value="em_andamento">🔥 Em Andamento</option>
+                        <option value="finalizado">✅ Finalizado</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row-3">
+                <div>
+                    <label>Data</label>
+                    <input type="date" id="ev-data">
+                </div>
+                <div>
+                    <label>Horário de Início</label>
+                    <input type="time" id="ev-hora">
+                </div>
+                <div>
+                    <label>Formato da Competição</label>
+                    <input type="text" id="ev-formato" placeholder="Ex: grupos + eliminatórias">
+                </div>
+            </div>
+            <label>Descrição do Campeonato</label>
+            <textarea id="ev-descricao" rows="3" placeholder="Descrição geral do evento..."></textarea>
+        </div>
+
+        <!-- 2. BANNER -->
+        <div class="glass">
+            <h2>🖼️ Banner do Evento</h2>
+            <img class="banner-preview" id="banner-preview" alt="Banner">
+            <label>URL do Banner</label>
+            <input type="url" id="ev-banner" placeholder="https://exemplo.com/banner.jpg" oninput="updateBannerPreview()">
+        </div>
+
+        <!-- 3. LOCAL + MAPA -->
+        <div class="glass">
+            <h2>📍 Local</h2>
+            <div class="form-row">
+                <div>
+                    <label>Nome do Local</label>
+                    <input type="text" id="ev-local-nome" placeholder="Ex: Arena Beach Tennis">
+                </div>
+                <div>
+                    <label>Endereço</label>
+                    <input type="text" id="ev-local-endereco" placeholder="Rua, número, bairro, cidade">
+                </div>
+            </div>
+            <div class="form-row">
+                <div>
+                    <label>Latitude</label>
+                    <input type="text" id="ev-local-lat" placeholder="-19.9167">
+                </div>
+                <div>
+                    <label>Longitude</label>
+                    <input type="text" id="ev-local-lng" placeholder="-43.9345">
+                </div>
+            </div>
+            <div class="map-preview" id="map-preview">
+                Preencha as coordenadas para visualizar o mapa
+            </div>
+            <button class="btn btn-sm btn-secondary" onclick="atualizarMapa()">🗺️ Atualizar Mapa</button>
+        </div>
+
+        <!-- 4. CRONOGRAMA -->
+        <div class="glass">
+            <h2>🕐 Cronograma Oficial</h2>
+            <div id="cronograma-list"></div>
+            <div class="form-row" style="margin-top: 12px;">
+                <div>
+                    <input type="time" id="crono-hora" placeholder="Hora">
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    <input type="text" id="crono-atividade" placeholder="Descrição da atividade" style="margin-bottom:0;">
+                    <button class="btn btn-sm btn-primary" onclick="addCronograma()" style="flex-shrink:0;">+ Adicionar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. QUADRAS -->
+        <div class="glass">
+            <h2>🏟️ Quadras Disponíveis</h2>
+            <div id="quadras-list"></div>
+            <div style="display: flex; gap: 8px; margin-top: 12px;">
+                <input type="text" id="quadra-nome" placeholder="Nome/número da quadra" style="margin-bottom:0;">
+                <button class="btn btn-sm btn-primary" onclick="addQuadra()" style="flex-shrink:0;">+ Adicionar</button>
+            </div>
+        </div>
+
+        <!-- 6. FAQ -->
+        <div class="glass">
+            <h2>❓ FAQ</h2>
+            <div id="faq-list"></div>
+            <div style="margin-top: 12px;">
+                <input type="text" id="faq-pergunta" placeholder="Pergunta">
+                <textarea id="faq-resposta" rows="2" placeholder="Resposta"></textarea>
+                <button class="btn btn-sm btn-primary" onclick="addFaq()">+ Adicionar FAQ</button>
+            </div>
+        </div>
+
+        <!-- 7. PATROCINADORES -->
+        <div class="glass">
+            <h2>🤝 Patrocinadores Locais</h2>
+            <div id="patrocinadores-list"></div>
+            <div class="form-row" style="margin-top: 12px;">
+                <div>
+                    <input type="text" id="pat-nome" placeholder="Nome do patrocinador">
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    <select id="pat-nivel" style="margin-bottom:0;">
+                        <option value="bronze">🥉 Bronze</option>
+                        <option value="prata">🥈 Prata</option>
+                        <option value="ouro">🥇 Ouro</option>
+                    </select>
+                    <button class="btn btn-sm btn-primary" onclick="addPatrocinador()" style="flex-shrink:0;">+ Adicionar</button>
+                </div>
+            </div>
+            <div style="margin-top: 8px;">
+                <input type="text" id="pat-descricao" placeholder="Descrição / ativação do patrocinador (opcional)" style="margin-bottom:0;">
+            </div>
+        </div>
+
+        <!-- 8. ATIVAÇÕES E BRINDES -->
+        <div class="glass">
+            <h2>🎁 Ativações e Brindes</h2>
+            <textarea id="ev-ativacoes" rows="4" placeholder="Descreva aqui as ativações, brindes, sorteios e experiências planejadas para o evento..."></textarea>
+        </div>
+
+        <!-- 9. CONTINGÊNCIA -->
+        <div class="glass">
+            <h2>🌧️ Plano de Contingência</h2>
+            <label>Planos para Chuva (um por linha)</label>
+            <textarea id="cont-chuva" rows="3" placeholder="Adiamento de partidas&#10;Pausar e continuar quando possível"></textarea>
+            <label>Planos para Vento (um por linha)</label>
+            <textarea id="cont-vento" rows="3" placeholder="Troca de lados a cada 7 pontos&#10;Pausar se vento forte"></textarea>
+        </div>
+
+        <!-- 10. GERAR CHAVE / BRACKET -->
+        <div class="glass" id="sec-gerar-chave">
+            <h2>🏆 Gerar Chave / Bracket</h2>
+            <p style="font-size:.85rem;color:rgba(255,255,255,.45);margin-bottom:14px;">Selecione uma categoria para gerar automaticamente os grupos e partidas. As duplas com inscrição <strong style="color:#6ee7b7">confirmada</strong> serão distribuídas nos grupos respeitando o seeding.</p>
+
+            <div class="form-row">
+                <div>
+                    <label>Categoria</label>
+                    <select id="chave-categoria">
+                        <option value="">Selecione a categoria...</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Modo</label>
+                    <select id="chave-modo">
+                        <option value="automatico">🎲 Automático (seeded + sorteio)</option>
+                        <option value="manual">📋 Manual (apenas seeding)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="chave-info" style="margin-top:10px;"></div>
+
+            <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;">
+                <button class="btn btn-primary" onclick="gerarChave()" style="padding:10px 28px;">🏆 Gerar Chave</button>
+                <button class="btn btn-secondary" onclick="sortearGrupos()">🎲 Sortear Grupos</button>
+                <button class="btn btn-secondary" onclick="visualizarChave()">👁️ Visualizar Chave Atual</button>
+            </div>
+
+            <!-- Resultado da geração -->
+            <div id="chave-resultado" style="margin-top:16px;"></div>
+        </div>
+
+        <!-- 11. CLASSIFICAÇÃO DOS GRUPOS -->
+        <div class="glass" id="sec-classificacao">
+            <h2>📊 Classificação dos Grupos</h2>
+            <p style="font-size:.85rem;color:rgba(255,255,255,.45);margin-bottom:14px;">Classificação automática baseada nos resultados das partidas de grupo. Atualiza em tempo real conforme os jogos são finalizados.</p>
+            <div style="margin-bottom:12px;">
+                <label>Categoria</label>
+                <select id="class-categoria" onchange="renderClassificacao()">
+                    <option value="">Selecione a categoria...</option>
+                </select>
+            </div>
+            <div id="classificacao-resultado"></div>
+        </div>
+
+        <!-- 12. MATA-MATA / BRACKET -->
+        <div class="glass" id="sec-mata-mata">
+            <h2>⚔️ Mata-Mata</h2>
+            <p style="font-size:.85rem;color:rgba(255,255,255,.45);margin-bottom:14px;">Após a fase de grupos, gere o bracket eliminatório. Os classificados de cada grupo se enfrentam no mata-mata (1º do Grupo A vs 2º do Grupo B e vice-versa).</p>
+            <div style="margin-bottom:12px;">
+                <label>Categoria</label>
+                <select id="mm-categoria" onchange="renderMataMata()">
+                    <option value="">Selecione a categoria...</option>
+                </select>
+            </div>
+            <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;">
+                <button class="btn btn-primary" onclick="gerarMataMata()" style="padding:10px 28px;">⚔️ Gerar Mata-Mata</button>
+            </div>
+            <div id="mata-mata-resultado"></div>
+        </div>
+
+        <!-- BOTTOM ACTIONS -->
+        <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+            <button class="btn btn-primary" onclick="salvarTudo()" style="padding: 14px 40px; font-size: 1rem;">💾 Salvar Todas as Alterações</button>
+            <button class="btn btn-success" onclick="duplicarConfig()">📋 Duplicar para Nova Edição</button>
+            <button class="btn btn-danger" onclick="resetarDados()" style="background:rgba(239,68,68,.15);color:#f87171;border:1px solid rgba(239,68,68,.25);">🗑️ Reiniciar Todos os Dados</button>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+    // ===== STATE =====
+    let campData = null;
+
+    // ===== LOAD =====
+    async function carregarDados() {
+        try {
+            const res = await fetch('/api/campeonato');
+            campData = await res.json();
+            if (!campData) throw new Error('Dados não encontrados');
+            preencherFormulario();
+        } catch (e) {
+            toast('Erro ao carregar dados: ' + e.message, 'error');
+        }
+    }
+
+    function preencherFormulario() {
+        const ev = campData.evento || {};
+
+        document.getElementById('ev-nome').value = ev.nome || '';
+        document.getElementById('ev-data').value = ev.data || '';
+        document.getElementById('ev-hora').value = ev.horaInicio || '';
+        document.getElementById('ev-status').value = ev.status || 'agendado';
+        document.getElementById('ev-formato').value = ev.formato || '';
+        document.getElementById('ev-descricao').value = ev.descricao || '';
+        document.getElementById('ev-banner').value = ev.banner || '';
+        document.getElementById('ev-ativacoes').value = ev.ativacoes || '';
+        updateBannerPreview();
+
+        // Local
+        const local = ev.local || {};
+        document.getElementById('ev-local-nome').value = local.nome || '';
+        document.getElementById('ev-local-endereco').value = local.endereco || '';
+        document.getElementById('ev-local-lat').value = local.coordenadas?.lat || '';
+        document.getElementById('ev-local-lng').value = local.coordenadas?.lng || '';
+        atualizarMapa();
+
+        // Cronograma
+        renderCronograma();
+
+        // Quadras
+        renderQuadras();
+
+        // FAQ
+        renderFaq();
+
+        // Patrocinadores
+        renderPatrocinadores();
+
+        // Contingência
+        const cont = campData.contingencia || {};
+        document.getElementById('cont-chuva').value = (cont.planosChuva || []).join('\n');
+        document.getElementById('cont-vento').value = (cont.planosVento || []).join('\n');
+    }
+
+    // ===== SAVE ALL =====
+    async function salvarTudo() {
+        try {
+            // Collect evento
+            const evento = {
+                nome: val('ev-nome'),
+                data: val('ev-data'),
+                horaInicio: val('ev-hora'),
+                status: val('ev-status'),
+                formato: val('ev-formato'),
+                descricao: val('ev-descricao'),
+                banner: val('ev-banner'),
+                ativacoes: val('ev-ativacoes'),
+                cronograma: campData.evento?.cronograma || [],
+                local: {
+                    nome: val('ev-local-nome'),
+                    endereco: val('ev-local-endereco'),
+                    coordenadas: {
+                        lat: val('ev-local-lat'),
+                        lng: val('ev-local-lng')
+                    }
+                },
+                faq: campData.evento?.faq || []
+            };
+
+            // Save evento
+            await apiFetch('/api/campeonato/evento', 'PUT', evento);
+
+            // Save contingência
+            const contingencia = {
+                planosChuva: val('cont-chuva').split('\n').map(s => s.trim()).filter(Boolean),
+                planosVento: val('cont-vento').split('\n').map(s => s.trim()).filter(Boolean)
+            };
+            await apiFetch('/api/campeonato/contingencia', 'PUT', contingencia);
+
+            toast('Tudo salvo com sucesso!', 'success');
+
+            // Refresh local data
+            await carregarDados();
+        } catch (e) {
+            toast('Erro ao salvar: ' + e.message, 'error');
+        }
+    }
+
+    // ===== CRONOGRAMA =====
+    function renderCronograma() {
+        const list = document.getElementById('cronograma-list');
+        const cronograma = campData.evento?.cronograma || [];
+        if (cronograma.length === 0) {
+            list.innerHTML = '<div class="empty-msg">Nenhum item no cronograma</div>';
+            return;
+        }
+        list.innerHTML = cronograma.map((c, i) => `
+            <div class="list-item">
+                <div class="item-content">
+                    <span class="item-label">${esc(c.hora)}</span>
+                    <span class="item-sub" style="margin-left:12px;">${esc(c.atividade)}</span>
+                </div>
+                <div class="item-actions">
+                    <button class="btn btn-sm btn-danger" onclick="removeCronograma(${i})">✕</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function addCronograma() {
+        const hora = val('crono-hora');
+        const atividade = val('crono-atividade');
+        if (!hora || !atividade) return;
+        if (!campData.evento.cronograma) campData.evento.cronograma = [];
+        campData.evento.cronograma.push({ hora, atividade });
+        campData.evento.cronograma.sort((a, b) => a.hora.localeCompare(b.hora));
+        document.getElementById('crono-hora').value = '';
+        document.getElementById('crono-atividade').value = '';
+        renderCronograma();
+    }
+
+    function removeCronograma(idx) {
+        campData.evento.cronograma.splice(idx, 1);
+        renderCronograma();
+    }
+
+    // ===== QUADRAS =====
+    function renderQuadras() {
+        const list = document.getElementById('quadras-list');
+        const quadras = campData.quadras || [];
+        if (quadras.length === 0) {
+            list.innerHTML = '<div class="empty-msg">Nenhuma quadra cadastrada</div>';
+            return;
+        }
+        list.innerHTML = quadras.map(q => `
+            <div class="list-item">
+                <div class="item-content">
+                    <span class="item-label">🏟️ ${esc(q.nome)}</span>
+                    <span class="item-sub" style="margin-left:12px;">Status: ${q.status}</span>
+                </div>
+                <div class="item-actions">
+                    <button class="btn btn-sm btn-danger" onclick="removeQuadra(${q.id})">✕</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    async function addQuadra() {
+        const nome = val('quadra-nome');
+        if (!nome) return;
+        try {
+            const quadra = await apiFetch('/api/campeonato/quadras', 'POST', { nome });
+            campData.quadras.push(quadra);
+            document.getElementById('quadra-nome').value = '';
+            renderQuadras();
+            toast('Quadra adicionada', 'success');
+        } catch (e) { toast('Erro: ' + e.message, 'error'); }
+    }
+
+    async function removeQuadra(id) {
+        try {
+            await apiFetch('/api/campeonato/quadras/' + id, 'DELETE');
+            campData.quadras = campData.quadras.filter(q => q.id !== id);
+            renderQuadras();
+        } catch (e) { toast('Erro: ' + e.message, 'error'); }
+    }
+
+    // ===== FAQ =====
+    function renderFaq() {
+        const list = document.getElementById('faq-list');
+        const faq = campData.evento?.faq || [];
+        if (faq.length === 0) {
+            list.innerHTML = '<div class="empty-msg">Nenhuma FAQ cadastrada</div>';
+            return;
+        }
+        list.innerHTML = faq.map((f, i) => `
+            <div class="list-item" style="flex-direction:column; align-items:flex-start;">
+                <div style="display:flex; width:100%; justify-content:space-between; align-items:center;">
+                    <span class="item-label">❓ ${esc(f.pergunta)}</span>
+                    <button class="btn btn-sm btn-danger" onclick="removeFaq(${i})">✕</button>
+                </div>
+                <div class="item-sub" style="margin-top:4px;">${esc(f.resposta)}</div>
+            </div>
+        `).join('');
+    }
+
+    function addFaq() {
+        const pergunta = val('faq-pergunta');
+        const resposta = val('faq-resposta');
+        if (!pergunta || !resposta) return;
+        if (!campData.evento.faq) campData.evento.faq = [];
+        campData.evento.faq.push({ pergunta, resposta });
+        document.getElementById('faq-pergunta').value = '';
+        document.getElementById('faq-resposta').value = '';
+        renderFaq();
+    }
+
+    function removeFaq(idx) {
+        campData.evento.faq.splice(idx, 1);
+        renderFaq();
+    }
+
+    // ===== PATROCINADORES =====
+    function renderPatrocinadores() {
+        const list = document.getElementById('patrocinadores-list');
+        const pats = campData.patrocinadores || [];
+        if (pats.length === 0) {
+            list.innerHTML = '<div class="empty-msg">Nenhum patrocinador cadastrado</div>';
+            return;
+        }
+        const nivelIcons = { bronze: '🥉', prata: '🥈', ouro: '🥇' };
+        list.innerHTML = pats.map(p => `
+            <div class="list-item">
+                <div class="item-content">
+                    <span class="item-label">${nivelIcons[p.nivel] || '🤝'} ${esc(p.nome)}</span>
+                    <span class="item-sub" style="margin-left:12px;">${p.nivel?.toUpperCase() || ''} ${p.descricao ? '— ' + esc(p.descricao) : ''}</span>
+                </div>
+                <div class="item-actions">
+                    <button class="btn btn-sm btn-danger" onclick="removePatrocinador(${p.id})">✕</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    async function addPatrocinador() {
+        const nome = val('pat-nome');
+        if (!nome) return;
+        const nivel = val('pat-nivel');
+        const descricao = val('pat-descricao');
+        try {
+            const pat = await apiFetch('/api/campeonato/patrocinadores', 'POST', { nome, nivel, descricao });
+            campData.patrocinadores.push(pat);
+            document.getElementById('pat-nome').value = '';
+            document.getElementById('pat-descricao').value = '';
+            renderPatrocinadores();
+            toast('Patrocinador adicionado', 'success');
+        } catch (e) { toast('Erro: ' + e.message, 'error'); }
+    }
+
+    async function removePatrocinador(id) {
+        try {
+            await apiFetch('/api/campeonato/patrocinadores/' + id, 'DELETE');
+            campData.patrocinadores = campData.patrocinadores.filter(p => p.id !== id);
+            renderPatrocinadores();
+        } catch (e) { toast('Erro: ' + e.message, 'error'); }
+    }
+
+    // ===== BANNER =====
+    function updateBannerPreview() {
+        const url = val('ev-banner');
+        const img = document.getElementById('banner-preview');
+        if (url) {
+            img.src = url;
+            img.classList.add('visible');
+            img.onerror = () => img.classList.remove('visible');
+        } else {
+            img.classList.remove('visible');
+        }
+    }
+
+    // ===== MAPA =====
+    function atualizarMapa() {
+        const lat = val('ev-local-lat');
+        const lng = val('ev-local-lng');
+        const container = document.getElementById('map-preview');
+        if (lat && lng) {
+            container.innerHTML = `<iframe src="https://www.openstreetmap.org/export/embed.html?bbox=${lng-0.005}%2C${lat-0.003}%2C${lng-(-0.005)}%2C${lat-(-0.003)}&layer=mapnik&marker=${lat}%2C${lng}" allowfullscreen></iframe>`;
+        } else {
+            container.innerHTML = 'Preencha as coordenadas para visualizar o mapa';
+        }
+    }
+
+    // ===== DUPLICATE =====
+    async function duplicarConfig() {
+        try {
+            const res = await fetch('/api/campeonato');
+            const data = await res.json();
+            // Clear match data but keep structure
+            const dup = {
+                ...data,
+                evento: {
+                    ...data.evento,
+                    nome: data.evento.nome + ' (cópia)',
+                    data: '',
+                    status: 'agendado'
+                },
+                atletas: [],
+                duplas: [],
+                inscricoes: [],
+                listaEspera: [],
+                grupos: [],
+                partidas: [],
+                resultados: [],
+                ranking: [],
+                mensagens: []
+            };
+            const blob = new Blob([JSON.stringify(dup, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `campeonato_template_${new Date().toISOString().slice(0,10)}.json`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(url);
+            toast('Template duplicado e baixado!', 'success');
+        } catch (e) {
+            toast('Erro ao duplicar: ' + e.message, 'error');
+        }
+    }
+
+    // ===== UTILS =====
+    function val(id) { return document.getElementById(id).value.trim(); }
+
+    function esc(text) {
+        const d = document.createElement('div');
+        d.textContent = text || '';
+        return d.innerHTML;
+    }
+
+    async function apiFetch(url, method, body) {
+        const opts = { method, headers: { 'Content-Type': 'application/json' } };
+        if (body) opts.body = JSON.stringify(body);
+        const res = await fetch(url, opts);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.json();
+    }
+
+    function toast(msg, type) {
+        const el = document.getElementById('toast');
+        el.textContent = msg;
+        el.className = 'toast ' + type;
+        el.classList.add('show');
+        setTimeout(() => el.classList.remove('show'), 3000);
+    }
+
+    // ===== GERAR CHAVE =====
+    function populateChaveCategorias() {
+        const sel = document.getElementById('chave-categoria');
+        const cats = campData.categorias || [];
+        sel.innerHTML = '<option value="">Selecione a categoria...</option>' + cats.map(c => `<option value="${c.id}">${esc(c.nome)} (${c.tipo || ''}, máx ${c.maxDuplas || '?'})</option>`).join('');
+        sel.onchange = () => mostrarInfoCategoria();
+    }
+
+    function mostrarInfoCategoria() {
+        const catId = parseInt(document.getElementById('chave-categoria').value);
+        const info = document.getElementById('chave-info');
+        if (!catId) { info.innerHTML = ''; return; }
+
+        const cat = (campData.categorias || []).find(c => c.id === catId);
+        const inscritas = (campData.inscricoes || []).filter(i => i.categoriaId === catId && i.status === 'confirmado');
+        const gruposExistentes = (campData.grupos || []).filter(g => g.categoriaId === catId);
+        const partidasExistentes = (campData.partidas || []).filter(p => p.categoriaId === catId);
+
+        const duplas = inscritas.map(i => (campData.duplas || []).find(d => d.id === i.duplaId)).filter(Boolean);
+        const seeded = duplas.filter(d => d.seeding).length;
+
+        let html = `<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:8px;">`;
+        html += `<span style="padding:5px 12px;background:rgba(110,231,183,.1);border:1px solid rgba(110,231,183,.2);border-radius:8px;font-size:.82rem;">✅ ${inscritas.length} duplas confirmadas</span>`;
+        html += `<span style="padding:5px 12px;background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.2);border-radius:8px;font-size:.82rem;">🌟 ${seeded} com seeding</span>`;
+        if (gruposExistentes.length) {
+            html += `<span style="padding:5px 12px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);border-radius:8px;font-size:.82rem;">⚠️ ${gruposExistentes.length} grupos já existem (${partidasExistentes.length} partidas)</span>`;
+        }
+        html += `</div>`;
+
+        if (inscritas.length < 4) {
+            html += `<div style="color:#f87171;font-size:.82rem;">⚠️ Mínimo de 4 duplas confirmadas para gerar a chave.</div>`;
+        }
+
+        if (cat?.regras) {
+            const r = cat.regras;
+            html += `<div style="font-size:.78rem;color:rgba(255,255,255,.35);margin-top:4px;">Regras: ${r.formatoJogo || '1set'} · ${r.pontosPorSet || 6} games · ${r.classificacao?.formato || 'grupos_eliminatorias'}</div>`;
+        }
+
+        info.innerHTML = html;
+    }
+
+    async function gerarChave() {
+        const catId = parseInt(document.getElementById('chave-categoria').value);
+        if (!catId) { toast('Selecione uma categoria', 'error'); return; }
+
+        const inscritas = (campData.inscricoes || []).filter(i => i.categoriaId === catId && i.status === 'confirmado');
+        if (inscritas.length < 4) { toast('Mínimo de 4 duplas confirmadas necessário', 'error'); return; }
+
+        const gruposExistentes = (campData.grupos || []).filter(g => g.categoriaId === catId);
+        if (gruposExistentes.length > 0) {
+            if (!confirm('⚠️ Já existem grupos e partidas para esta categoria. Gerar novamente irá SUBSTITUIR tudo. Deseja continuar?')) return;
+        }
+
+        const modo = document.getElementById('chave-modo').value;
+
+        try {
+            const result = await apiFetch('/api/campeonato/gerar-chave', 'POST', { categoriaId: catId, modo });
+            await carregarDados();
+            populateChaveCategorias();
+            mostrarInfoCategoria();
+            renderChaveResultado(result, catId);
+            toast(`Chave gerada! ${result.grupos.length} grupos, ${result.partidas.length} partidas`, 'success');
+        } catch (e) {
+            toast('Erro ao gerar chave: ' + e.message, 'error');
+        }
+    }
+
+    async function sortearGrupos() {
+        const catId = parseInt(document.getElementById('chave-categoria').value);
+        if (!catId) { toast('Selecione uma categoria', 'error'); return; }
+
+        const gruposExistentes = (campData.grupos || []).filter(g => g.categoriaId === catId);
+        if (!gruposExistentes.length) { toast('Gere a chave primeiro antes de sortear', 'error'); return; }
+
+        if (!confirm('Isso irá embaralhar aleatoriamente as duplas dentro dos grupos existentes. Continuar?')) return;
+
+        try {
+            const grupos = await apiFetch('/api/campeonato/sortear', 'POST', { categoriaId: catId });
+            await carregarDados();
+            visualizarChave();
+            toast(`Sorteio realizado! ${grupos.length} grupos embaralhados`, 'success');
+        } catch (e) {
+            toast('Erro ao sortear: ' + e.message, 'error');
+        }
+    }
+
+    function visualizarChave() {
+        const catId = parseInt(document.getElementById('chave-categoria').value);
+        if (!catId) { toast('Selecione uma categoria', 'error'); return; }
+
+        const grupos = (campData.grupos || []).filter(g => g.categoriaId === catId);
+        const partidas = (campData.partidas || []).filter(p => p.categoriaId === catId);
+
+        if (!grupos.length && !partidas.length) {
+            document.getElementById('chave-resultado').innerHTML = '<div style="text-align:center;padding:16px;color:rgba(255,255,255,.2);font-style:italic;">Nenhuma chave gerada para esta categoria</div>';
+            return;
+        }
+
+        renderChaveResultado({ grupos, partidas }, catId);
+    }
+
+    function renderChaveResultado(result, catId) {
+        const el = document.getElementById('chave-resultado');
+        const cat = (campData.categorias || []).find(c => c.id === catId);
+
+        let html = `<div style="border-top:1px solid rgba(255,255,255,.06);padding-top:14px;"><h3 style="font-size:.9rem;font-weight:700;color:#fbbf24;margin-bottom:10px;">📊 Chave: ${esc(cat?.nome || '')}</h3>`;
+
+        // Render groups
+        result.grupos.forEach(g => {
+            const dups = (g.duplas || []).map(did => (campData.duplas || []).find(d => d.id === did)).filter(Boolean);
+            html += `<div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:12px;margin-bottom:10px;">`;
+            html += `<div style="font-weight:700;font-size:.85rem;color:#fbbf24;margin-bottom:8px;">${esc(g.nome)}</div>`;
+            html += `<table style="width:100%;border-collapse:collapse;font-size:.82rem;"><thead><tr style="color:rgba(255,255,255,.35);font-size:.7rem;text-transform:uppercase;"><th style="text-align:left;padding:4px 8px;">#</th><th style="text-align:left;padding:4px 8px;">Dupla</th><th style="text-align:left;padding:4px 8px;">Seed</th></tr></thead><tbody>`;
+            dups.forEach((d, i) => {
+                const nomes = getNomesDupla(d);
+                html += `<tr style="border-top:1px solid rgba(255,255,255,.04);"><td style="padding:4px 8px;color:rgba(255,255,255,.4);">${i + 1}</td><td style="padding:4px 8px;">${esc(nomes)}</td><td style="padding:4px 8px;color:#fbbf24;">${d.seeding ? '⭐' + d.seeding : '—'}</td></tr>`;
+            });
+            html += `</tbody></table></div>`;
+        });
+
+        // Partidas summary
+        const agendadas = result.partidas.filter(p => p.status === 'agendado').length;
+        const emJogo = result.partidas.filter(p => p.status === 'em_jogo').length;
+        const encerradas = result.partidas.filter(p => p.status === 'encerrado' || p.status === 'wo').length;
+
+        html += `<div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:8px;font-size:.82rem;">`;
+        html += `<span style="padding:4px 10px;background:rgba(255,255,255,.04);border-radius:8px;">📋 ${result.partidas.length} partidas total</span>`;
+        html += `<span style="padding:4px 10px;background:rgba(165,180,252,.08);border-radius:8px;color:#a5b4fc;">⏳ ${agendadas} agendadas</span>`;
+        if (emJogo) html += `<span style="padding:4px 10px;background:rgba(56,239,125,.08);border-radius:8px;color:#6ee7b7;">🔴 ${emJogo} em jogo</span>`;
+        if (encerradas) html += `<span style="padding:4px 10px;background:rgba(255,255,255,.04);border-radius:8px;color:rgba(255,255,255,.35);">✅ ${encerradas} encerradas</span>`;
+        html += `</div></div>`;
+
+        el.innerHTML = html;
+    }
+
+    function getNomesDupla(d) {
+        if (d.nome) return d.nome;
+        const a1 = (campData.atletas || []).find(a => a.id === d.atleta1Id);
+        const a2 = (campData.atletas || []).find(a => a.id === d.atleta2Id);
+        return (a1?.nome || '?') + ' / ' + (a2?.nome || '?');
+    }
+
+    // ===== CLASSIFICAÇÃO DOS GRUPOS =====
+    function populateClassCategorias() {
+        const cats = campData.categorias || [];
+        ['class-categoria', 'mm-categoria'].forEach(sid => {
+            const sel = document.getElementById(sid);
+            if (sel) sel.innerHTML = '<option value="">Selecione a categoria...</option>' + cats.map(c => `<option value="${c.id}">${esc(c.nome)}</option>`).join('');
+        });
+    }
+
+    function calcularClassificacao(catId) {
+        const grupos = (campData.grupos || []).filter(g => g.categoriaId === catId);
+        const partidas = (campData.partidas || []).filter(p => p.categoriaId === catId && p.fase === 'grupos');
+        return grupos.map(grupo => {
+            const standings = (grupo.duplas || []).map(duplaId => {
+                const pts = partidas.filter(p => p.grupoId === grupo.id && (p.dupla1Id === duplaId || p.dupla2Id === duplaId) && (p.status === 'encerrado' || p.status === 'wo'));
+                let v = 0, d = 0, sg = 0, sp = 0, gg = 0, gp = 0;
+                pts.forEach(p => {
+                    if (p.vencedor === duplaId) v++; else d++;
+                    const s1 = p.placar?.dupla1 || []; const s2 = p.placar?.dupla2 || [];
+                    const mine = p.dupla1Id === duplaId ? s1 : s2;
+                    const opp = p.dupla1Id === duplaId ? s2 : s1;
+                    mine.forEach((g, i) => {
+                        gg += g; gp += (opp[i] || 0);
+                        if (g > (opp[i] || 0)) sg++; else if (g < (opp[i] || 0)) sp++;
+                    });
+                });
+                const dupla = (campData.duplas || []).find(dd => dd.id === duplaId);
+                return { duplaId, nome: getNomesDupla(dupla || { id: duplaId }), v, d, sg, sp, saldoSets: sg - sp, gg, gp, saldoGames: gg - gp, jogos: pts.length };
+            });
+            standings.sort((a, b) => {
+                if (b.v !== a.v) return b.v - a.v;
+                if (b.saldoSets !== a.saldoSets) return b.saldoSets - a.saldoSets;
+                if (b.saldoGames !== a.saldoGames) return b.saldoGames - a.saldoGames;
+                return 0;
+            });
+            return { grupo, standings };
+        });
+    }
+
+    function renderClassificacao() {
+        const catId = parseInt(document.getElementById('class-categoria').value);
+        const el = document.getElementById('classificacao-resultado');
+        if (!catId) { el.innerHTML = ''; return; }
+        const classif = calcularClassificacao(catId);
+        if (!classif.length) { el.innerHTML = '<div style="text-align:center;padding:16px;color:rgba(255,255,255,.2);font-style:italic;">Nenhum grupo encontrado</div>'; return; }
+        const cat = (campData.categorias || []).find(c => c.id === catId);
+        const classificadosPorGrupo = cat?.regras?.classificacao?.classificadosPorGrupo || 2;
+        el.innerHTML = classif.map(({ grupo, standings }) => {
+            return `<div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:12px;margin-bottom:12px;">
+                <div style="font-weight:700;font-size:.9rem;color:#fbbf24;margin-bottom:8px;">${esc(grupo.nome)}</div>
+                <div style="overflow-x:auto;">
+                <table style="width:100%;border-collapse:collapse;font-size:.8rem;">
+                    <thead><tr style="color:rgba(255,255,255,.35);font-size:.68rem;text-transform:uppercase;">
+                        <th style="text-align:left;padding:6px 8px;">#</th>
+                        <th style="text-align:left;padding:6px 8px;">Dupla</th>
+                        <th style="padding:6px 4px;">J</th>
+                        <th style="padding:6px 4px;">V</th>
+                        <th style="padding:6px 4px;">D</th>
+                        <th style="padding:6px 4px;">SG</th>
+                        <th style="padding:6px 4px;">SJ</th>
+                    </tr></thead>
+                    <tbody>${standings.map((s, i) => {
+                        const isClass = i < classificadosPorGrupo;
+                        return `<tr style="border-top:1px solid rgba(255,255,255,.04);${isClass ? 'background:rgba(56,239,125,.04)' : ''}">
+                            <td style="padding:6px 8px;color:${isClass ? '#6ee7b7' : 'rgba(255,255,255,.3)'};font-weight:700;">${i + 1}º</td>
+                            <td style="padding:6px 8px;font-weight:600;${isClass ? 'color:#fff' : ''}">${esc(s.nome)}</td>
+                            <td style="padding:6px 4px;text-align:center;">${s.jogos}</td>
+                            <td style="padding:6px 4px;text-align:center;color:#6ee7b7;font-weight:700;">${s.v}</td>
+                            <td style="padding:6px 4px;text-align:center;color:#f87171;">${s.d}</td>
+                            <td style="padding:6px 4px;text-align:center;color:${s.saldoSets > 0 ? '#6ee7b7' : s.saldoSets < 0 ? '#f87171' : 'rgba(255,255,255,.4)'};">${s.saldoSets > 0 ? '+' : ''}${s.saldoSets}</td>
+                            <td style="padding:6px 4px;text-align:center;color:${s.saldoGames > 0 ? '#6ee7b7' : s.saldoGames < 0 ? '#f87171' : 'rgba(255,255,255,.4)'};">${s.saldoGames > 0 ? '+' : ''}${s.saldoGames}</td>
+                        </tr>`;
+                    }).join('')}</tbody>
+                </table></div>
+                <div style="font-size:.68rem;color:rgba(255,255,255,.25);margin-top:6px;">✅ Top ${classificadosPorGrupo} classificam para o mata-mata</div>
+            </div>`;
+        }).join('');
+    }
+
+    // ===== MATA-MATA =====
+    async function gerarMataMata() {
+        const catId = parseInt(document.getElementById('mm-categoria').value);
+        if (!catId) { toast('Selecione uma categoria', 'error'); return; }
+        const existentes = (campData.partidas || []).filter(p => p.categoriaId === catId && p.fase !== 'grupos');
+        if (existentes.length > 0) {
+            if (!confirm('⚠️ Já existem partidas de mata-mata. Gerar novamente irá SUBSTITUIR. Continuar?')) return;
+        }
+        try {
+            const result = await apiFetch('/api/campeonato/gerar-mata-mata', 'POST', { categoriaId: catId });
+            await carregarDados();
+            renderMataMata();
+            toast(`Mata-mata gerado! ${result.partidas.length} partidas criadas`, 'success');
+        } catch (e) {
+            toast('Erro: ' + e.message, 'error');
+        }
+    }
+
+    function renderMataMata() {
+        const catId = parseInt(document.getElementById('mm-categoria').value);
+        const el = document.getElementById('mata-mata-resultado');
+        if (!catId) { el.innerHTML = ''; return; }
+        const partidas = (campData.partidas || []).filter(p => p.categoriaId === catId && p.fase !== 'grupos');
+        if (!partidas.length) { el.innerHTML = '<div style="text-align:center;padding:16px;color:rgba(255,255,255,.2);font-style:italic;">Nenhuma partida de mata-mata gerada</div>'; return; }
+
+        const fases = ['oitavas', 'quartas', 'semifinal', 'final'];
+        const porFase = {};
+        partidas.forEach(p => { if (!porFase[p.fase]) porFase[p.fase] = []; porFase[p.fase].push(p); });
+
+        let html = '<div style="display:flex;gap:16px;overflow-x:auto;padding-bottom:8px;">';
+        fases.forEach(fase => {
+            if (!porFase[fase]) return;
+            const label = { oitavas: 'Oitavas', quartas: 'Quartas', semifinal: 'Semifinais', final: '🏆 Final' }[fase] || fase;
+            html += `<div style="min-width:220px;flex-shrink:0;">
+                <div style="font-weight:700;font-size:.82rem;color:#fbbf24;text-align:center;margin-bottom:10px;text-transform:uppercase;letter-spacing:1px;">${label}</div>`;
+            porFase[fase].forEach(p => {
+                const d1 = (campData.duplas || []).find(d => d.id === p.dupla1Id);
+                const d2 = (campData.duplas || []).find(d => d.id === p.dupla2Id);
+                const n1 = d1 ? getNomesDupla(d1) : (p.dupla1Id ? '?' : '⏳ A definir');
+                const n2 = d2 ? getNomesDupla(d2) : (p.dupla2Id ? '?' : '⏳ A definir');
+                const enc = p.status === 'encerrado' || p.status === 'wo';
+                const v1 = p.vencedor === p.dupla1Id;
+                const v2 = p.vencedor === p.dupla2Id;
+                const placar = enc && p.placar ? (p.placar.dupla1 || []).map((g, i) => `${g}×${(p.placar.dupla2 || [])[i] || 0}`).join(' ') : '';
+                html += `<div style="background:rgba(255,255,255,.04);border:1px solid ${enc ? 'rgba(56,239,125,.2)' : 'rgba(255,255,255,.08)'};border-radius:10px;padding:10px;margin-bottom:8px;">
+                    <div style="display:flex;align-items:center;gap:6px;padding:4px 0;">
+                        <span style="font-size:.65rem;color:rgba(255,255,255,.25);width:12px;">◀</span>
+                        <span style="font-size:.78rem;font-weight:${v1?'800':'600'};flex:1;color:${v1?'#6ee7b7':'rgba(255,255,255,.7)'};">${esc(n1)}</span>
+                        ${v1 ? '<span style="font-size:.65rem;color:#6ee7b7;">🏆</span>' : ''}
+                    </div>
+                    <div style="text-align:center;font-size:.6rem;color:rgba(255,255,255,.15);margin:2px 0;letter-spacing:2px;">VS</div>
+                    <div style="display:flex;align-items:center;gap:6px;padding:4px 0;">
+                        ${v2 ? '<span style="font-size:.65rem;color:#6ee7b7;">🏆</span>' : ''}
+                        <span style="font-size:.78rem;font-weight:${v2?'800':'600'};flex:1;color:${v2?'#6ee7b7':'rgba(255,255,255,.7)'};text-align:right;">${esc(n2)}</span>
+                        <span style="font-size:.65rem;color:rgba(255,255,255,.25);width:12px;">▶</span>
+                    </div>
+                    ${placar ? `<div style="text-align:center;font-size:.72rem;color:rgba(255,255,255,.3);margin-top:4px;border-top:1px solid rgba(255,255,255,.05);padding-top:4px;">${placar}</div>` : ''}
+                </div>`;
+            });
+            html += `</div>`;
+        });
+        html += '</div>';
+        el.innerHTML = html;
+    }
+
+    // ===== RESETAR DADOS =====
+    async function resetarDados() {
+        if (!confirm('⚠️ ATENÇÃO: Isso irá APAGAR TODOS os dados do campeonato (atletas, duplas, inscrições, partidas, grupos, etc).\n\nEssa ação NÃO pode ser desfeita!')) return;
+        if (!confirm('Tem certeza ABSOLUTA? Digite OK para confirmar.')) return;
+        try {
+            await apiFetch('/api/campeonato/resetar', 'POST', {});
+            toast('Todos os dados foram reiniciados!', 'success');
+            await carregarDados();
+            populateChaveCategorias();
+            populateClassCategorias();
+        } catch (e) {
+            toast('Erro ao reiniciar: ' + e.message, 'error');
+        }
+    }
+
+    // ===== INIT =====
+    carregarDados().then(() => { populateChaveCategorias(); populateClassCategorias(); });
+    </script>
+</body>
+</html>

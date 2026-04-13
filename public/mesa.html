@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏐 Mesa Organizadora — Aninha do Beach</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Poppins',sans-serif;background:#0a0a2e;color:#fff;min-height:100vh}
+        .bg{position:fixed;inset:0;z-index:0;overflow:hidden}
+        .bg .g{position:absolute;inset:0;background:linear-gradient(135deg,#0a0a2e,#1a1a4e 30%,#0d0d35 60%,#15153f)}
+        .bg .o{position:absolute;border-radius:50%;filter:blur(80px);opacity:.3;animation:of 20s ease-in-out infinite}
+        .bg .o:nth-child(2){width:400px;height:400px;background:#f59e0b;top:-100px;right:-100px}
+        .bg .o:nth-child(3){width:500px;height:500px;background:#d97706;bottom:-150px;left:-150px;animation-delay:-7s}
+        @keyframes of{0%,100%{transform:translate(0) scale(1)}50%{transform:translate(-30px,60px) scale(.9)}}
+
+        .wrap{position:relative;z-index:1;max-width:1400px;margin:0 auto;padding:16px 12px 40px}
+        .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+        .top h1{font-size:1.3rem;font-weight:800;background:linear-gradient(135deg,#fbbf24,#f59e0b,#d97706);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .top-btns{display:flex;gap:6px;flex-wrap:wrap}
+
+        .glass{background:rgba(255,255,255,.06);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:16px;margin-bottom:14px}
+        .glass h2{font-size:.92rem;font-weight:700;margin-bottom:12px;color:rgba(255,255,255,.8);display:flex;align-items:center;gap:6px}
+
+        .btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:7px 14px;border:none;border-radius:8px;font-family:'Poppins',sans-serif;font-size:.78rem;font-weight:600;cursor:pointer;transition:all .25s;white-space:nowrap}
+        .btn:hover{transform:translateY(-1px)}
+        .btn-p{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff}
+        .btn-s{background:rgba(255,255,255,.08);color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.1)}
+        .btn-d{background:rgba(239,68,68,.15);color:#f87171;border:1px solid rgba(239,68,68,.25)}
+        .btn-ok{background:rgba(56,239,125,.15);color:#6ee7b7;border:1px solid rgba(56,239,125,.25)}
+        .btn-warn{background:rgba(251,191,36,.15);color:#fbbf24;border:1px solid rgba(251,191,36,.25)}
+        .btn-call{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;animation:pulse 2s infinite}
+        @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(99,102,241,.4)}50%{box-shadow:0 0 0 8px rgba(99,102,241,0)}}
+        .btn-sm{padding:4px 10px;font-size:.72rem;border-radius:6px}
+
+        /* LAYOUT 3-COL */
+        .grid3{display:grid;grid-template-columns:300px 1fr 300px;gap:14px}
+        @media(max-width:1100px){.grid3{grid-template-columns:1fr}}
+
+        /* QUADRAS */
+        .quadra-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:14px;margin-bottom:10px;transition:all .3s}
+        .quadra-card.em_uso{border-color:rgba(56,239,125,.3);background:rgba(56,239,125,.06)}
+        .quadra-card.chamando{border-color:rgba(99,102,241,.5);background:rgba(99,102,241,.08);animation:pulse-card 1.5s infinite}
+        .quadra-card.disponivel{border-color:rgba(255,255,255,.1)}
+        @keyframes pulse-card{0%,100%{box-shadow:0 0 0 0 rgba(99,102,241,.3)}50%{box-shadow:0 0 0 6px rgba(99,102,241,0)}}
+        .quadra-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+        .quadra-name{font-weight:700;font-size:.95rem}
+        .quadra-status{padding:2px 8px;border-radius:10px;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+        .qs-disponivel{background:rgba(255,255,255,.08);color:rgba(255,255,255,.4)}
+        .qs-em_uso{background:rgba(56,239,125,.15);color:#6ee7b7}
+        .qs-chamando{background:rgba(99,102,241,.2);color:#a5b4fc}
+        .quadra-match{font-size:.82rem;color:rgba(255,255,255,.55);margin-bottom:8px}
+        .quadra-match strong{color:#fbbf24}
+        .quadra-actions{display:flex;gap:4px;flex-wrap:wrap}
+
+        /* PARTIDAS FILA */
+        .match-item{display:flex;align-items:center;gap:10px;padding:10px 12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:10px;margin-bottom:6px;transition:all .3s;cursor:pointer}
+        .match-item:hover{background:rgba(255,255,255,.06)}
+        .match-item.em_jogo{border-color:rgba(56,239,125,.3);background:rgba(56,239,125,.04)}
+        .match-item.chamando{border-color:rgba(99,102,241,.4);background:rgba(99,102,241,.06)}
+        .match-order{width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;color:rgba(255,255,255,.3);flex-shrink:0}
+        .match-info{flex:1;min-width:0}
+        .match-teams{font-size:.82rem;font-weight:600;color:rgba(255,255,255,.75);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .match-meta{font-size:.68rem;color:rgba(255,255,255,.35)}
+        .match-status{font-size:.65rem;font-weight:700;padding:2px 8px;border-radius:8px;white-space:nowrap}
+        .ms-agendado{background:rgba(255,255,255,.06);color:rgba(255,255,255,.35)}
+        .ms-chamando{background:rgba(99,102,241,.2);color:#a5b4fc}
+        .ms-em_jogo{background:rgba(56,239,125,.15);color:#6ee7b7}
+        .ms-encerrado{background:rgba(255,255,255,.04);color:rgba(255,255,255,.2)}
+        .ms-wo{background:rgba(239,68,68,.15);color:#f87171}
+
+        /* PLACAR MODAL */
+        .modal-overlay{display:none;position:fixed;inset:0;background:rgba(10,10,46,.88);z-index:100;align-items:center;justify-content:center}
+        .modal-overlay.show{display:flex}
+        .modal{background:#1a1a4e;border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:24px;max-width:500px;width:92%;max-height:88vh;overflow-y:auto;animation:fadeIn .3s ease}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+        .modal h3{font-size:1.1rem;font-weight:700;margin-bottom:14px;color:#fbbf24}
+        .modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
+
+        /* PLACAR BOARD */
+        .placar-board{display:flex;flex-direction:column;gap:12px;margin-bottom:14px}
+        .placar-dupla{display:flex;align-items:center;gap:10px;padding:10px;background:rgba(255,255,255,.04);border-radius:10px}
+        .placar-dupla.winner{background:rgba(56,239,125,.08);border:1px solid rgba(56,239,125,.2)}
+        .placar-name{flex:1;font-weight:600;font-size:.9rem}
+        .placar-sets{display:flex;gap:6px}
+        .set-score{width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:.95rem;font-weight:700;cursor:pointer;transition:all .2s;user-select:none}
+        .set-score:hover{border-color:rgba(251,191,36,.4)}
+        .set-score.active{border-color:#fbbf24;background:rgba(251,191,36,.12)}
+
+        /* SCOREBOARD BEACH TENNIS */
+        .score-table{width:100%;border-collapse:collapse;margin-bottom:8px}
+        .score-table th{font-size:.65rem;font-weight:700;text-transform:uppercase;color:rgba(255,255,255,.3);padding:4px 8px;text-align:center}
+        .score-table th:first-child{text-align:left}
+        .score-table td{padding:8px;text-align:center;font-weight:700;font-size:1rem}
+        .placar-team-name{text-align:left!important;font-size:.85rem;font-weight:600;color:rgba(255,255,255,.8);max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .set-cell{font-size:1.1rem;color:rgba(255,255,255,.5);min-width:44px}
+        .set-cell.set-active{color:#fff;background:rgba(251,191,36,.08);border-radius:6px}
+        .set-cell.set-won{color:#6ee7b7}
+        .game-score-cell{font-size:1.3rem;color:#fbbf24;min-width:44px;background:rgba(251,191,36,.06);border-radius:8px}
+        .game-score-cell.at-forty{color:#f87171;text-shadow:0 0 8px rgba(248,113,113,.4)}
+        .game-col{color:#fbbf24!important}
+        .placar-row.winner td{background:rgba(56,239,125,.06)}
+        .placar-row.winner .placar-team-name{color:#6ee7b7}
+        .ponto-btn{width:100%;padding:16px 20px;border:none;border-radius:14px;font-family:'Poppins',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;transition:all .25s;display:flex;align-items:center;gap:10px}
+        .ponto-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.3)}
+        .ponto-btn:active{transform:scale(.97)}
+        .ponto-team0{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff}
+        .ponto-team1{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff}
+        .match-result-box{text-align:center;padding:10px;font-size:1.1rem;font-weight:800;color:#6ee7b7;background:rgba(56,239,125,.08);border:1px solid rgba(56,239,125,.2);border-radius:12px;margin-bottom:10px}
+        .match-deuce{text-align:center;padding:8px;font-size:.9rem;font-weight:700;color:#f87171;background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.2);border-radius:10px;margin-bottom:8px;animation:pulse-deuce 1s infinite}
+        @keyframes pulse-deuce{0%,100%{opacity:1}50%{opacity:.7}}
+        .match-info-line{text-align:center;padding:6px;font-size:.8rem;color:rgba(255,255,255,.35);margin-bottom:8px}
+
+        /* LOG */
+        .log{max-height:280px;overflow-y:auto;font-size:.75rem;color:rgba(255,255,255,.35)}
+        .log-item{padding:4px 0;border-bottom:1px solid rgba(255,255,255,.03)}
+        .log-item .log-time{color:rgba(251,191,36,.5);margin-right:6px}
+
+        select{padding:6px 10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:8px;color:#fff;font-family:'Poppins',sans-serif;font-size:.82rem;outline:none}
+        select option{background:#1a1a4e}
+
+        .toast{position:fixed;bottom:20px;right:20px;z-index:999;padding:10px 20px;border-radius:10px;font-weight:600;font-size:.85rem;transform:translateY(80px);opacity:0;transition:all .4s cubic-bezier(.68,-.55,.27,1.55);pointer-events:none}
+        .toast.show{transform:translateY(0);opacity:1}
+        .toast.success{background:rgba(56,239,125,.9);color:#064e3b}
+        .toast.error{background:rgba(239,68,68,.9);color:#fff}
+        .toast.info{background:rgba(99,102,241,.9);color:#fff}
+
+        .empty{text-align:center;padding:20px;color:rgba(255,255,255,.15);font-style:italic;font-size:.82rem}
+        ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:rgba(255,255,255,.03)}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:10px}
+    </style>
+</head>
+<body>
+<div class="bg"><div class="g"></div><div class="o"></div><div class="o"></div></div>
+
+<div class="wrap">
+    <div class="top">
+        <h1>🏐 Mesa Organizadora</h1>
+        <div class="top-btns">
+            <select id="filter-cat" onchange="renderAll()" style="margin-right:4px"><option value="">Todas categorias</option></select>
+            <button class="btn btn-s" onclick="location.href='/telao.html'" title="Telão">📺 Telão</button>
+            <button class="btn btn-s" onclick="location.href='/campeonato.html'">⚙️ Config</button>
+            <button class="btn btn-s" onclick="location.href='/'">← Voltar</button>
+        </div>
+    </div>
+
+    <div class="grid3">
+        <!-- COL 1: QUADRAS -->
+        <div>
+            <div class="glass">
+                <h2>🏟️ Quadras</h2>
+                <div id="quadras-list"></div>
+            </div>
+            <div class="glass">
+                <h2>📢 Ações Rápidas</h2>
+                <button class="btn btn-p" onclick="chamarProxima()" style="width:100%;margin-bottom:8px">📣 Chamar Próxima Partida</button>
+                <button class="btn btn-warn" onclick="enviarMensagem()" style="width:100%;margin-bottom:8px">💬 Enviar Mensagem</button>
+                <button class="btn btn-s" onclick="abrirModoContingencia()" style="width:100%">🌧️ Contingência</button>
+            </div>
+            <div class="glass">
+                <h2>📝 Log de Atividades</h2>
+                <div class="log" id="log-list"></div>
+            </div>
+        </div>
+
+        <!-- COL 2: FILA DE PARTIDAS -->
+        <div>
+            <div class="glass">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+                    <h2 style="margin:0">🎾 Partidas</h2>
+                    <div style="display:flex;gap:4px">
+                        <button class="btn btn-sm btn-s tab-btn active" data-filter="todos" onclick="setFilter(this,'todos')">Todos</button>
+                        <button class="btn btn-sm btn-s tab-btn" data-filter="agendado" onclick="setFilter(this,'agendado')">Agendados</button>
+                        <button class="btn btn-sm btn-s tab-btn" data-filter="em_jogo" onclick="setFilter(this,'em_jogo')">Em Jogo</button>
+                        <button class="btn btn-sm btn-s tab-btn" data-filter="encerrado" onclick="setFilter(this,'encerrado')">Encerrados</button>
+                    </div>
+                </div>
+                <div id="partidas-list"></div>
+            </div>
+        </div>
+
+        <!-- COL 3: EM JOGO AGORA -->
+        <div>
+            <div class="glass">
+                <h2>🔴 Em Jogo Agora</h2>
+                <div id="emjogo-list"></div>
+            </div>
+            <div class="glass">
+                <h2>📊 Resumo</h2>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px" id="resumo-stats">
+                    <div style="text-align:center;padding:10px;background:rgba(255,255,255,.03);border-radius:10px"><div style="font-size:1.4rem;font-weight:800;color:#fbbf24" id="rs-total">0</div><div style="font-size:.65rem;color:rgba(255,255,255,.3)">TOTAL</div></div>
+                    <div style="text-align:center;padding:10px;background:rgba(255,255,255,.03);border-radius:10px"><div style="font-size:1.4rem;font-weight:800;color:#6ee7b7" id="rs-enc">0</div><div style="font-size:.65rem;color:rgba(255,255,255,.3)">ENCERRADAS</div></div>
+                    <div style="text-align:center;padding:10px;background:rgba(255,255,255,.03);border-radius:10px"><div style="font-size:1.4rem;font-weight:800;color:#a5b4fc" id="rs-jogo">0</div><div style="font-size:.65rem;color:rgba(255,255,255,.3)">EM JOGO</div></div>
+                    <div style="text-align:center;padding:10px;background:rgba(255,255,255,.03);border-radius:10px"><div style="font-size:1.4rem;font-weight:800;color:rgba(255,255,255,.4)" id="rs-agd">0</div><div style="font-size:.65rem;color:rgba(255,255,255,.3)">AGENDADAS</div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL PLACAR -->
+<div class="modal-overlay" id="modal-placar">
+    <div class="modal" style="max-width:520px;">
+        <h3 id="mp-title">🎾 Placar ao Vivo</h3>
+        <div id="mp-info" style="font-size:.8rem;color:rgba(255,255,255,.4);margin-bottom:12px"></div>
+        <input type="hidden" id="mp-id">
+        <div class="placar-board" id="mp-board"></div>
+        <div id="mp-btns"></div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;margin-top:8px">
+            <button class="btn btn-sm btn-s" onclick="desfazerPonto()">↩️ Desfazer</button>
+            <button class="btn btn-sm btn-d" onclick="registrarWO()">🚫 WO / Desistência</button>
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-s" onclick="fecharModal('modal-placar')">Cancelar</button>
+            <button class="btn btn-ok" onclick="salvarPlacar()">✅ Confirmar Resultado</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL MENSAGEM -->
+<div class="modal-overlay" id="modal-msg">
+    <div class="modal">
+        <h3>💬 Enviar Mensagem</h3>
+        <label style="display:block;font-size:.72rem;font-weight:600;color:rgba(255,255,255,.4);text-transform:uppercase;margin-bottom:4px">Mensagem</label>
+        <textarea id="msg-texto" rows="3" style="width:100%;padding:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:10px;color:#fff;font-family:'Poppins',sans-serif;font-size:.9rem;outline:none;resize:vertical;margin-bottom:8px" placeholder="Atenção: próxima rodada em 5 minutos..."></textarea>
+        <div class="modal-actions">
+            <button class="btn btn-s" onclick="fecharModal('modal-msg')">Cancelar</button>
+            <button class="btn btn-p" onclick="confirmarMensagem()">📢 Enviar</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let D = { quadras:[], categorias:[], duplas:[], partidas:[], atletas:[], configuracoes:{} };
+let statusFilter = 'todos';
+let logs = [];
+
+async function init() {
+    try {
+        const r = await fetch('/api/campeonato');
+        const data = await r.json();
+        Object.assign(D, data);
+        populateCatFilter();
+        renderAll();
+        connectWS();
+        addLog('Sistema iniciado');
+    } catch(e) { toast('Erro: '+e.message,'error'); }
+}
+
+function connectWS() {
+    const ws = new WebSocket('ws://'+location.host);
+    ws.onmessage = e => {
+        try {
+            const msg = JSON.parse(e.data);
+            if (msg.type === 'partida-update') {
+                const idx = D.partidas.findIndex(p => p.id === msg.partida.id);
+                if (idx >= 0) D.partidas[idx] = msg.partida; else D.partidas.push(msg.partida);
+                addLog(`Partida atualizada: ${msg.partida.status}`);
+                if (msg.mataMataGerado) {
+                    addLog('⚔️ MATA-MATA gerado automaticamente!');
+                    toast('⚔️ Fase de grupos encerrada — Mata-mata gerado!', 'success');
+                    // Reload full data to get new matches
+                    fetch('/api/campeonato').then(r=>r.json()).then(data=>{Object.assign(D,data);renderAll();}).catch(()=>{});
+                }
+                renderAll();
+            }
+            if (msg.type === 'chamada-quadra') {
+                addLog(`📣 Chamada: ${msg.dupla1?.nome||'?'} vs ${msg.dupla2?.nome||'?'} → ${msg.quadra?.nome||'?'}`);
+                renderAll();
+            }
+        } catch(err){}
+    };
+    ws.onclose = () => setTimeout(connectWS, 3000);
+}
+
+function populateCatFilter() {
+    const sel = document.getElementById('filter-cat');
+    sel.innerHTML = '<option value="">Todas categorias</option>' + D.categorias.map(c=>`<option value="${c.id}">${esc(c.nome)}</option>`).join('');
+}
+
+function getCatFilter() { return parseInt(document.getElementById('filter-cat').value) || null; }
+function setFilter(el, f) { statusFilter=f; document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); el.classList.add('active'); renderAll(); }
+
+function renderAll() {
+    renderQuadras();
+    renderPartidas();
+    renderEmJogo();
+    renderResumo();
+}
+
+// ===== QUADRAS =====
+function renderQuadras() {
+    const el = document.getElementById('quadras-list');
+    el.innerHTML = D.quadras.map(q => {
+        const p = D.partidas.find(pp => pp.id === q.partidaAtual);
+        const d1 = p ? D.duplas.find(d=>d.id===p.dupla1Id) : null;
+        const d2 = p ? D.duplas.find(d=>d.id===p.dupla2Id) : null;
+        const st = q.status || 'disponivel';
+        return `<div class="quadra-card ${st}">
+            <div class="quadra-head">
+                <span class="quadra-name">${esc(q.nome)}</span>
+                <span class="quadra-status qs-${st}">${st==='em_uso'?'Em Jogo':st==='chamando'?'Chamando':'Disponível'}</span>
+            </div>
+            ${p ? `<div class="quadra-match"><strong>${duplaLabel(d1)}</strong> vs <strong>${duplaLabel(d2)}</strong>${p.placar?` — ${formatPlacar(p)}`:''}</div>` : '<div class="quadra-match" style="color:rgba(255,255,255,.2)">Sem partida</div>'}
+            <div class="quadra-actions">
+                ${st==='disponivel'? `<button class="btn btn-sm btn-call" onclick="chamarParaQuadra(${q.id})">📣 Chamar</button>`:''}
+                ${st==='em_uso'||st==='chamando'? `<button class="btn btn-sm btn-ok" onclick="abrirPlacar(${q.partidaAtual})">✏️ Placar</button><button class="btn btn-sm btn-d" onclick="liberarQuadra(${q.id})">🏁 Liberar</button>`:''}
+            </div>
+        </div>`;
+    }).join('') || '<div class="empty">Nenhuma quadra</div>';
+}
+
+// ===== PARTIDAS FILA =====
+function renderPartidas() {
+    const catF = getCatFilter();
+    let list = D.partidas.filter(p => {
+        if (catF && p.categoriaId !== catF) return false;
+        if (statusFilter !== 'todos' && p.status !== statusFilter) return false;
+        return true;
+    }).sort((a,b)=>(a.horario||'').localeCompare(b.horario||''));
+
+    const el = document.getElementById('partidas-list');
+    if (!list.length) { el.innerHTML = '<div class="empty">Nenhuma partida</div>'; return; }
+
+    el.innerHTML = list.map((p,i) => {
+        const d1 = D.duplas.find(d=>d.id===p.dupla1Id);
+        const d2 = D.duplas.find(d=>d.id===p.dupla2Id);
+        const cat = D.categorias.find(c=>c.id===p.categoriaId);
+        const hora = p.horario ? new Date(p.horario).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}) : '--:--';
+        const st = p.status || 'agendado';
+        const placar = (st==='em_jogo'||st==='encerrado') ? formatPlacar(p) : '';
+        return `<div class="match-item ${st}" onclick="onMatchClick(${p.id},'${st}')">
+            <div class="match-order">${hora}</div>
+            <div class="match-info">
+                <div class="match-teams">${duplaLabel(d1)} vs ${duplaLabel(d2)}</div>
+                <div class="match-meta">${cat?cat.nome:'?'} · ${p.fase||'?'}${placar?' · '+placar:''}</div>
+            </div>
+            <span class="match-status ms-${st}">${statusLabel(st)}</span>
+        </div>`;
+    }).join('');
+}
+
+// ===== EM JOGO AGORA =====
+function renderEmJogo() {
+    const list = D.partidas.filter(p=>p.status==='em_jogo'||p.status==='chamando');
+    const el = document.getElementById('emjogo-list');
+    if (!list.length) { el.innerHTML = '<div class="empty">Nenhum jogo em andamento</div>'; return; }
+    el.innerHTML = list.map(p => {
+        const d1 = D.duplas.find(d=>d.id===p.dupla1Id);
+        const d2 = D.duplas.find(d=>d.id===p.dupla2Id);
+        const q = D.quadras.find(qq=>qq.id===p.quadraId);
+        return `<div style="background:rgba(255,255,255,.03);border:1px solid rgba(56,239,125,.15);border-radius:10px;padding:12px;margin-bottom:8px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+                <span style="font-weight:700;font-size:.88rem;color:#fbbf24">${q?q.nome:'?'}</span>
+                <span class="match-status ms-${p.status}">${statusLabel(p.status)}</span>
+            </div>
+            <div style="font-size:.88rem;font-weight:600">${duplaLabel(d1)} vs ${duplaLabel(d2)}</div>
+            <div style="font-size:.95rem;font-weight:800;color:#fff;margin-top:6px">${formatPlacar(p)}</div>
+            <div style="display:flex;gap:4px;margin-top:8px">
+                <button class="btn btn-sm btn-ok" onclick="abrirPlacar(${p.id})">✏️ Placar</button>
+                <button class="btn btn-sm btn-d" onclick="registrarWODireto(${p.id})">🚫 WO</button>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function renderResumo() {
+    const total = D.partidas.length;
+    const enc = D.partidas.filter(p=>p.status==='encerrado'||p.status==='wo').length;
+    const jogo = D.partidas.filter(p=>p.status==='em_jogo'||p.status==='chamando').length;
+    const agd = D.partidas.filter(p=>p.status==='agendado').length;
+    document.getElementById('rs-total').textContent = total;
+    document.getElementById('rs-enc').textContent = enc;
+    document.getElementById('rs-jogo').textContent = jogo;
+    document.getElementById('rs-agd').textContent = agd;
+}
+
+// ===== AÇÕES =====
+function onMatchClick(id, status) {
+    if (status === 'agendado') chamarPartida(id);
+    else if (status === 'em_jogo' || status === 'chamando') abrirPlacar(id);
+}
+
+async function chamarProxima() {
+    const proxima = D.partidas.find(p => p.status === 'agendado');
+    if (!proxima) return toast('Sem partidas agendadas', 'error');
+    const qLivre = D.quadras.find(q => q.status === 'disponivel');
+    if (!qLivre) return toast('Sem quadra disponível', 'error');
+    proxima.quadraId = qLivre.id;
+    await chamarPartida(proxima.id);
+}
+
+async function chamarPartida(id) {
+    try {
+        await api('/api/campeonato/chamar-quadra', 'POST', { partidaId: id });
+        const p = D.partidas.find(pp=>pp.id===id);
+        if (p) p.status = 'chamando';
+        renderAll();
+        toast('📣 Duplas chamadas!', 'info');
+    } catch(e) { toast('Erro: '+e.message, 'error'); }
+}
+
+async function chamarParaQuadra(qid) {
+    const proxima = D.partidas.find(p => p.status === 'agendado');
+    if (!proxima) return toast('Sem partidas agendadas', 'error');
+    proxima.quadraId = qid;
+    await api('/api/campeonato/partidas/'+proxima.id, 'PUT', { quadraId: qid });
+    await chamarPartida(proxima.id);
+}
+
+// ===== PLACAR (Beach Tennis: 0→15→30→40→Game) =====
+const PONTOS_SEQ = [0, 15, 30, 40];
+let placarLive = { partidaId: null, games: [[0,0]], pontos: [0,0], setAtual: 0, historico: [], regras: { gamesParaSet: 4, formato: 'melhor-de-3' }, encerrada: false, vencedorTeam: null, nomes: ['',''] };
+
+function abrirPlacar(id) {
+    const p = D.partidas.find(pp=>pp.id===id);
+    if (!p) return;
+    const d1 = D.duplas.find(d=>d.id===p.dupla1Id);
+    const d2 = D.duplas.find(d=>d.id===p.dupla2Id);
+    const cat = D.categorias.find(c=>c.id===p.categoriaId);
+    const regras = cat?.regras || {};
+    document.getElementById('mp-id').value = id;
+    document.getElementById('mp-info').textContent = `${cat?.nome||''} · ${p.fase||''}`;
+
+    const gamesParaSet = regras.pontosSet || regras.pontosPorSet || 4;
+    const formato = regras.formatoJogo || 'melhor-de-3';
+
+    placarLive = {
+        partidaId: id, games: [[0,0]], pontos: [0,0], setAtual: 0,
+        historico: [], regras: { gamesParaSet, formato },
+        encerrada: false, vencedorTeam: null,
+        nomes: [duplaLabel(d1), duplaLabel(d2)]
+    };
+
+    // Resume from existing placar
+    const s1 = p.placar?.dupla1 || [];
+    const s2 = p.placar?.dupla2 || [];
+    if (s1.length > 0 || s2.length > 0) {
+        const numSets = Math.max(s1.length, s2.length, 1);
+        placarLive.games = [];
+        for (let i = 0; i < numSets; i++) placarLive.games.push([s1[i]||0, s2[i]||0]);
+        placarLive.setAtual = numSets - 1;
+        placarLive.pontos = p.placar?.pontosGame ? [...p.placar.pontosGame] : [0,0];
+        checarVencedorMatch();
+    }
+
+    if (p.status === 'encerrado' || p.status === 'wo') {
+        placarLive.encerrada = true;
+        if (p.vencedor === p.dupla1Id) placarLive.vencedorTeam = 0;
+        else if (p.vencedor === p.dupla2Id) placarLive.vencedorTeam = 1;
+    }
+
+    renderPlacarBoard();
+
+    // Start match if still agendado/chamando
+    if (p.status === 'agendado' || p.status === 'chamando') {
+        api('/api/campeonato/partidas/'+id, 'PUT', { status: 'em_jogo' });
+        p.status = 'em_jogo';
+        addLog('▶️ Partida iniciada');
+        renderAll();
+    }
+    document.getElementById('modal-placar').classList.add('show');
+}
+
+function pontuar(team) {
+    if (placarLive.encerrada) return;
+    const other = 1 - team;
+    placarLive.historico.push({
+        pontos: [...placarLive.pontos],
+        games: placarLive.games.map(s => [...s]),
+        setAtual: placarLive.setAtual,
+        encerrada: placarLive.encerrada,
+        vencedorTeam: placarLive.vencedorTeam
+    });
+
+    if (placarLive.pontos[team] >= 40) {
+        ganhouGame(team);
+    } else {
+        const idx = PONTOS_SEQ.indexOf(placarLive.pontos[team]);
+        placarLive.pontos[team] = PONTOS_SEQ[idx + 1];
+    }
+    renderPlacarBoard();
+    salvarPlacarLive();
+}
+
+function ganhouGame(team) {
+    const si = placarLive.setAtual;
+    placarLive.games[si][team]++;
+    placarLive.pontos = [0, 0];
+    if (placarLive.games[si][team] >= placarLive.regras.gamesParaSet) {
+        ganhouSet(team);
+    }
+}
+
+function ganhouSet(team) {
+    checarVencedorMatch();
+    if (!placarLive.encerrada) {
+        placarLive.setAtual++;
+        placarLive.games.push([0, 0]);
+    }
+}
+
+function checarVencedorMatch() {
+    const setsGanhos = [0, 0];
+    placarLive.games.forEach(s => {
+        if (s[0] > s[1]) setsGanhos[0]++;
+        else if (s[1] > s[0]) setsGanhos[1]++;
+    });
+    const setsParaVencer = placarLive.regras.formato === 'melhor-de-5' ? 3 : placarLive.regras.formato === 'melhor-de-3' ? 2 : 1;
+    for (let t = 0; t < 2; t++) {
+        if (setsGanhos[t] >= setsParaVencer) {
+            placarLive.encerrada = true;
+            placarLive.vencedorTeam = t;
+            return;
+        }
+    }
+}
+
+function desfazerPonto() {
+    if (!placarLive.historico.length) return toast('Nada para desfazer', 'info');
+    const snap = placarLive.historico.pop();
+    placarLive.pontos = snap.pontos;
+    placarLive.games = snap.games;
+    placarLive.setAtual = snap.setAtual;
+    placarLive.encerrada = snap.encerrada;
+    placarLive.vencedorTeam = snap.vencedorTeam;
+    renderPlacarBoard();
+    salvarPlacarLive();
+}
+
+function renderPlacarBoard() {
+    const board = document.getElementById('mp-board');
+    const btnArea = document.getElementById('mp-btns');
+    const PL = placarLive;
+    const n1 = PL.nomes[0], n2 = PL.nomes[1];
+    const numSets = PL.games.length;
+
+    let cols = '';
+    for (let s = 0; s < numSets; s++) cols += `<th class="${s===PL.setAtual&&!PL.encerrada?'set-active':''}">SET ${s+1}</th>`;
+
+    const rows = [0,1].map(team => {
+        const name = team===0 ? n1 : n2;
+        let cells = '';
+        for (let s = 0; s < numSets; s++) {
+            const g = PL.games[s][team];
+            const done = s < PL.setAtual || PL.encerrada;
+            const won = done && PL.games[s][team] > PL.games[s][1-team];
+            cells += `<td class="set-cell ${won?'set-won':''} ${s===PL.setAtual&&!PL.encerrada?'set-active':''}">${g}</td>`;
+        }
+        const ponto = PL.encerrada ? '-' : PL.pontos[team];
+        const isWinner = PL.vencedorTeam === team;
+        return `<tr class="placar-row ${isWinner?'winner':''}">
+            <td class="placar-team-name">${esc(name)}</td>
+            ${cells}
+            <td class="game-score-cell ${PL.pontos[team]>=40&&!PL.encerrada?'at-forty':''}">${ponto}</td>
+        </tr>`;
+    }).join('');
+
+    board.innerHTML = `<table class="score-table"><thead><tr><th></th>${cols}<th class="game-col">GAME</th></tr></thead><tbody>${rows}</tbody></table>`;
+
+    let status = '';
+    if (PL.encerrada) {
+        const winName = PL.vencedorTeam === 0 ? n1 : n2;
+        status = `<div class="match-result-box">🏆 ${esc(winName)} venceu!</div>`;
+        btnArea.innerHTML = status;
+    } else {
+        if (PL.pontos[0] >= 40 && PL.pontos[1] >= 40) {
+            status = `<div class="match-deuce">⚡ 40 × 40 — Ponto Decisivo!</div>`;
+        } else {
+            const totalG = PL.games[PL.setAtual][0] + PL.games[PL.setAtual][1];
+            status = `<div class="match-info-line">Set ${PL.setAtual+1} · Game ${totalG+1} · ${PL.regras.gamesParaSet} games p/ set</div>`;
+        }
+        btnArea.innerHTML = `${status}
+            <button class="ponto-btn ponto-team0" onclick="pontuar(0)">🏐 PONTO ▸ ${esc(n1)}</button>
+            <button class="ponto-btn ponto-team1" onclick="pontuar(1)">🏐 PONTO ▸ ${esc(n2)}</button>`;
+    }
+}
+
+async function salvarPlacarLive() {
+    const PL = placarLive;
+    const id = PL.partidaId;
+    const p = D.partidas.find(pp=>pp.id===id);
+    if (!p) return;
+    const placar = { dupla1: PL.games.map(s=>s[0]), dupla2: PL.games.map(s=>s[1]), pontosGame: [...PL.pontos] };
+    try {
+        await api('/api/campeonato/partidas/'+id, 'PUT', { placar });
+        p.placar = placar;
+        renderAll();
+    } catch(e) {}
+}
+
+async function salvarPlacar() {
+    const PL = placarLive;
+    const id = PL.partidaId;
+    const p = D.partidas.find(pp=>pp.id===id);
+    if (!p) return;
+
+    if (!PL.encerrada) {
+        if (!confirm('A partida ainda não terminou. Deseja encerrar manualmente?')) return;
+        let sw = [0,0];
+        PL.games.forEach(s => { if(s[0]>s[1]) sw[0]++; else if(s[1]>s[0]) sw[1]++; });
+        if (sw[0] === sw[1]) {
+            const si = PL.setAtual;
+            if (PL.games[si][0] === PL.games[si][1]) {
+                toast('Placar empatado — continue a partida ou registre WO', 'error'); return;
+            }
+            PL.vencedorTeam = PL.games[si][0] > PL.games[si][1] ? 0 : 1;
+        } else {
+            PL.vencedorTeam = sw[0] > sw[1] ? 0 : 1;
+        }
+    }
+
+    const placar = { dupla1: PL.games.map(s=>s[0]), dupla2: PL.games.map(s=>s[1]) };
+    const vencedor = PL.vencedorTeam === 0 ? p.dupla1Id : p.dupla2Id;
+
+    try {
+        await api('/api/campeonato/partidas/'+id, 'PUT', { placar, vencedor, status: 'encerrado' });
+        p.placar = placar; p.vencedor = vencedor; p.status = 'encerrado';
+        const q = D.quadras.find(qq=>qq.id===p.quadraId);
+        if (q) { q.status = 'disponivel'; q.partidaAtual = null; }
+        fecharModal('modal-placar');
+        addLog(`✅ Resultado: ${formatPlacar(p)}`);
+        renderAll();
+        toast('Resultado registrado!', 'success');
+    } catch(e) { toast('Erro: '+e.message, 'error'); }
+}
+
+async function registrarWO() {
+    if (!confirm('Registrar WO/Desistência?')) return;
+    const id = placarLive.partidaId;
+    const p = D.partidas.find(pp=>pp.id===id); if(!p) return;
+    // Ask which team gave WO
+    const d1 = D.duplas.find(d=>d.id===p.dupla1Id);
+    const d2 = D.duplas.find(d=>d.id===p.dupla2Id);
+    const choice = prompt(`Qual dupla deu WO?\n1 - ${duplaLabel(d1)}\n2 - ${duplaLabel(d2)}`);
+    const vencedor = choice==='1' ? p.dupla2Id : choice==='2' ? p.dupla1Id : null;
+    if (!vencedor) return;
+    try {
+        await api('/api/campeonato/partidas/'+id, 'PUT', { status: 'wo', wo: true, vencedor });
+        p.status = 'wo'; p.wo = true; p.vencedor = vencedor;
+        const q = D.quadras.find(qq=>qq.id===p.quadraId);
+        if (q) { q.status = 'disponivel'; q.partidaAtual = null; }
+        fecharModal('modal-placar');
+        addLog('🚫 WO registrado');
+        renderAll();
+        toast('WO registrado', 'success');
+    } catch(e) { toast('Erro: '+e.message, 'error'); }
+}
+
+async function registrarWODireto(id) {
+    const p = D.partidas.find(pp=>pp.id===id); if(!p) return;
+    placarLive.partidaId = id;
+    await registrarWO();
+}
+
+async function liberarQuadra(qid) {
+    const q = D.quadras.find(qq=>qq.id===qid); if(!q) return;
+    if (q.partidaAtual) {
+        const p = D.partidas.find(pp=>pp.id===q.partidaAtual);
+        if (p && p.status !== 'encerrado' && p.status !== 'wo') {
+            if (!confirm('Partida em andamento. Liberar mesmo assim?')) return;
+        }
+    }
+    try {
+        await api('/api/campeonato/quadras/'+qid, 'PUT', { status: 'disponivel', partidaAtual: null });
+        q.status = 'disponivel'; q.partidaAtual = null;
+        addLog(`🏁 ${q.nome} liberada`);
+        renderAll();
+    } catch(e) { toast('Erro: '+e.message, 'error'); }
+}
+
+// ===== MENSAGEM =====
+function enviarMensagem() { document.getElementById('modal-msg').classList.add('show'); }
+async function confirmarMensagem() {
+    const t = document.getElementById('msg-texto').value.trim();
+    if (!t) return toast('Digite a mensagem', 'error');
+    try {
+        await api('/api/campeonato/mensagens', 'POST', { texto: t, destinatario: 'todos' });
+        document.getElementById('msg-texto').value = '';
+        fecharModal('modal-msg');
+        addLog('💬 Mensagem enviada');
+        toast('Mensagem enviada!', 'success');
+    } catch(e) { toast('Erro: '+e.message, 'error'); }
+}
+
+function abrirModoContingencia() {
+    if (confirm('⛈️ Ativar modo contingência?\nTodas as partidas agendadas serão pausadas.')) {
+        D.partidas.filter(p=>p.status==='agendado').forEach(async p => {
+            try { await api('/api/campeonato/partidas/'+p.id,'PUT',{status:'pausado'}); p.status='pausado'; } catch(e){}
+        });
+        addLog('🌧️ Modo contingência ativado');
+        renderAll();
+        toast('Modo contingência ativado', 'info');
+    }
+}
+
+// ===== LOG =====
+function addLog(msg) {
+    const now = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    logs.unshift({ time: now, msg });
+    if (logs.length > 50) logs.length = 50;
+    document.getElementById('log-list').innerHTML = logs.map(l=>`<div class="log-item"><span class="log-time">${l.time}</span>${l.msg}</div>`).join('');
+}
+
+// ===== HELPERS =====
+function duplaLabel(d) { if(!d) return '?'; return d.nome || 'Dupla #'+d.id; }
+function esc(t) { const d=document.createElement('div'); d.textContent=t||''; return d.innerHTML; }
+function statusLabel(s) { return {agendado:'Agendado',chamando:'📣 Chamando',em_jogo:'Em Jogo',encerrado:'Encerrado',wo:'WO',pausado:'⏸ Pausado'}[s]||s; }
+function formatPlacar(p) {
+    if(!p.placar) return '';
+    const s1=p.placar.dupla1||[], s2=p.placar.dupla2||[];
+    let result = s1.map((v,i)=>`${v}×${s2[i]||0}`).join(' | ');
+    if (p.status === 'em_jogo' && p.placar.pontosGame) {
+        const pg = p.placar.pontosGame;
+        result += ` (${pg[0]}-${pg[1]})`;
+    }
+    return result;
+}
+async function api(url,method,body) {
+    const o={method,headers:{'Content-Type':'application/json'}};
+    if(body) o.body=JSON.stringify(body);
+    const r=await fetch(url,o);
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    return r.json();
+}
+function fecharModal(id) { document.getElementById(id).classList.remove('show'); }
+function toast(msg,type) {
+    const el=document.getElementById('toast'); el.textContent=msg;
+    el.className='toast '+type; el.classList.add('show');
+    setTimeout(()=>el.classList.remove('show'),3000);
+}
+document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',e=>{if(e.target===m) m.classList.remove('show')}));
+init();
+// Auto-refresh
+setInterval(async()=>{try{const r=await fetch('/api/campeonato');const d=await r.json();Object.assign(D,d);renderAll();}catch(e){}},15000);
+</script>
+</body>
+</html>
