@@ -128,6 +128,76 @@
 
         .empty{text-align:center;padding:20px;color:rgba(255,255,255,.15);font-style:italic;font-size:.82rem}
         ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:rgba(255,255,255,.03)}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:10px}
+
+        /* CENTER TABS */
+        .center-tabs{display:flex;gap:4px;margin-bottom:12px;flex-wrap:wrap}
+        .ctab{padding:8px 16px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);border-radius:10px 10px 0 0;font-family:'Poppins',sans-serif;font-size:.78rem;font-weight:600;color:rgba(255,255,255,.4);cursor:pointer;transition:all .3s;white-space:nowrap}
+        .ctab:hover{color:rgba(255,255,255,.6);background:rgba(255,255,255,.06)}
+        .ctab.active{color:#fbbf24;background:rgba(251,191,36,.08);border-color:rgba(251,191,36,.3);border-bottom-color:transparent}
+        .tab-panel{display:none}.tab-panel.active{display:block}
+
+        /* BRACKET CHAMPIONS LEAGUE */
+        .bracket-cat-title{font-size:1rem;font-weight:700;color:#fbbf24;margin:16px 0 10px;text-align:center}
+        .bracket-wrapper{display:flex;align-items:center;justify-content:center;gap:0;overflow-x:auto;padding:16px 0;min-height:200px}
+        .bracket-side{display:flex;flex-direction:row;gap:0}
+        .bracket-side.right{flex-direction:row-reverse}
+        .bracket-round{display:flex;flex-direction:column;justify-content:space-around;gap:16px;min-width:180px;padding:0 8px;position:relative}
+        .bracket-round-label{text-align:center;font-size:.6rem;font-weight:700;text-transform:uppercase;color:rgba(255,255,255,.2);letter-spacing:1px;margin-bottom:6px}
+        .bm{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:8px 10px;min-width:160px;transition:all .3s;position:relative}
+        .bm.encerrado{border-color:rgba(56,239,125,.2)}
+        .bm.em_jogo{border-color:rgba(99,102,241,.4);animation:pulse-card 1.5s infinite}
+        .bm.agendado{opacity:.7}
+        .bm.tbd{opacity:.35;border-style:dashed}
+        .bm-team{display:flex;align-items:center;justify-content:space-between;padding:3px 0;font-size:.75rem;font-weight:600;color:rgba(255,255,255,.7)}
+        .bm-team.winner{color:#6ee7b7}
+        .bm-team.loser{color:rgba(255,255,255,.3)}
+        .bm-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px}
+        .bm-score{font-weight:800;color:#fbbf24;font-size:.8rem;min-width:20px;text-align:right}
+        .bm-vs{text-align:center;font-size:.6rem;color:rgba(255,255,255,.15);border-top:1px solid rgba(255,255,255,.06);margin:2px -10px;padding:2px}
+        .bracket-final{min-width:200px;padding:0 12px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:8px}
+        .bracket-final .bm{border-color:rgba(251,191,36,.3);background:rgba(251,191,36,.06);min-width:190px}
+        .bracket-final-label{font-size:.7rem;font-weight:800;text-transform:uppercase;color:#fbbf24;letter-spacing:1px}
+        .bracket-connector{position:relative}
+        .bracket-connector::after{content:'';position:absolute;top:50%;width:12px;height:1px;background:rgba(255,255,255,.12)}
+        .bracket-side:not(.right) .bracket-connector::after{right:-12px}
+        .bracket-side.right .bracket-connector::after{left:-12px}
+
+        /* CELEBRATION OVERLAY */
+        .cele-overlay{position:fixed;inset:0;z-index:200;background:rgba(10,10,46,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;animation:fadeIn .5s ease}
+        .cele-content{text-align:center;z-index:2;position:relative}
+        .cele-trophy{font-size:6rem;animation:trophy-bounce 1.5s ease infinite}
+        @keyframes trophy-bounce{0%,100%{transform:scale(1) rotate(-2deg)}50%{transform:scale(1.15) rotate(2deg)}}
+        .cele-title{font-size:2.5rem;font-weight:900;background:linear-gradient(135deg,#fbbf24,#f59e0b,#d97706,#fbbf24);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmer 2s ease infinite;background-size:200% auto}
+        @keyframes shimmer{0%{background-position:0% center}50%{background-position:100% center}100%{background-position:0% center}}
+        .cele-name{font-size:1.6rem;font-weight:800;color:#fff;margin-top:10px;text-shadow:0 0 30px rgba(251,191,36,.5)}
+        .cele-category{font-size:.9rem;color:rgba(255,255,255,.5);margin-top:6px}
+        .confetti-piece{position:fixed;width:10px;height:10px;z-index:201;animation:confetti-fall linear forwards;pointer-events:none;border-radius:2px}
+        @keyframes confetti-fall{0%{opacity:1;transform:translateY(-10vh) rotate(0deg)}100%{opacity:0;transform:translateY(110vh) rotate(720deg)}}
+
+        /* STATS TABLE */
+        .stats-section{margin-bottom:20px}
+        .stats-section h3{font-size:.88rem;font-weight:700;color:rgba(255,255,255,.6);margin-bottom:8px}
+        .stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-bottom:14px}
+        .stat-card{text-align:center;padding:12px 8px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:10px}
+        .stat-val{font-size:1.5rem;font-weight:800;color:#fbbf24}
+        .stat-label{font-size:.65rem;color:rgba(255,255,255,.3);text-transform:uppercase;margin-top:2px}
+        .stats-table{width:100%;border-collapse:collapse;font-size:.78rem}
+        .stats-table th{text-align:left;padding:8px;font-weight:700;color:rgba(255,255,255,.4);border-bottom:1px solid rgba(255,255,255,.08);font-size:.7rem;text-transform:uppercase}
+        .stats-table td{padding:8px;color:rgba(255,255,255,.7);border-bottom:1px solid rgba(255,255,255,.04)}
+        .stats-table tr:hover td{background:rgba(255,255,255,.02)}
+
+        /* PODIUM */
+        .podium-cat{margin-bottom:30px}
+        .podium-cat-title{font-size:1rem;font-weight:700;color:#fbbf24;margin-bottom:16px;text-align:center}
+        .podium{display:flex;align-items:flex-end;justify-content:center;gap:12px;margin:0 auto;max-width:460px}
+        .podium-place{display:flex;flex-direction:column;align-items:center;text-align:center;flex:1;max-width:150px}
+        .podium-medal{font-size:2.2rem;margin-bottom:8px}
+        .podium-team{font-size:.82rem;font-weight:700;color:#fff;margin-bottom:4px;word-break:break-word}
+        .podium-result{font-size:.65rem;color:rgba(255,255,255,.35)}
+        .podium-bar{width:100%;border-radius:10px 10px 0 0;margin-top:8px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:8px;font-size:1.4rem;font-weight:900}
+        .podium-bar.gold{height:120px;background:linear-gradient(to top,#d97706,#fbbf24);color:#fff}
+        .podium-bar.silver{height:90px;background:linear-gradient(to top,#6b7280,#9ca3af);color:#fff}
+        .podium-bar.bronze{height:65px;background:linear-gradient(to top,#92400e,#d97706);color:#fff}
     </style>
 </head>
 <body>
@@ -139,7 +209,7 @@
         <div class="top-btns">
             <select id="filter-cat" onchange="renderAll()" style="margin-right:4px"><option value="">Todas categorias</option></select>
             <button class="btn btn-s" onclick="location.href='/telao.html'" title="Telão">📺 Telão</button>
-            <button class="btn btn-s" onclick="location.href='/campeonato.html'">⚙️ Config</button>
+            <button class="btn btn-s" onclick="location.href='/organizar.html'">⚙️ Config</button>
             <button class="btn btn-s" onclick="location.href='/'">← Voltar</button>
         </div>
     </div>
@@ -163,19 +233,49 @@
             </div>
         </div>
 
-        <!-- COL 2: FILA DE PARTIDAS -->
+        <!-- COL 2: CONTEÚDO PRINCIPAL -->
         <div>
-            <div class="glass">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-                    <h2 style="margin:0">🎾 Partidas</h2>
-                    <div style="display:flex;gap:4px">
-                        <button class="btn btn-sm btn-s tab-btn active" data-filter="todos" onclick="setFilter(this,'todos')">Todos</button>
-                        <button class="btn btn-sm btn-s tab-btn" data-filter="agendado" onclick="setFilter(this,'agendado')">Agendados</button>
-                        <button class="btn btn-sm btn-s tab-btn" data-filter="em_jogo" onclick="setFilter(this,'em_jogo')">Em Jogo</button>
-                        <button class="btn btn-sm btn-s tab-btn" data-filter="encerrado" onclick="setFilter(this,'encerrado')">Encerrados</button>
+            <div class="center-tabs">
+                <button class="ctab active" onclick="switchTab('partidas')">🎾 Partidas</button>
+                <button class="ctab" onclick="switchTab('bracket')">🏆 Chaveamento</button>
+                <button class="ctab" onclick="switchTab('stats')">📊 Estatísticas</button>
+                <button class="ctab" onclick="switchTab('podio')">🥇 Pódio</button>
+            </div>
+
+            <div class="tab-panel active" id="tab-partidas">
+                <div class="glass">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+                        <h2 style="margin:0">🎾 Partidas</h2>
+                        <div style="display:flex;gap:4px">
+                            <button class="btn btn-sm btn-s tab-btn active" data-filter="todos" onclick="setFilter(this,'todos')">Todos</button>
+                            <button class="btn btn-sm btn-s tab-btn" data-filter="agendado" onclick="setFilter(this,'agendado')">Agendados</button>
+                            <button class="btn btn-sm btn-s tab-btn" data-filter="em_jogo" onclick="setFilter(this,'em_jogo')">Em Jogo</button>
+                            <button class="btn btn-sm btn-s tab-btn" data-filter="encerrado" onclick="setFilter(this,'encerrado')">Encerrados</button>
+                        </div>
                     </div>
+                    <div id="partidas-list"></div>
                 </div>
-                <div id="partidas-list"></div>
+            </div>
+
+            <div class="tab-panel" id="tab-bracket">
+                <div class="glass">
+                    <h2>🏆 Chaveamento Mata-Mata</h2>
+                    <div id="bracket-container"></div>
+                </div>
+            </div>
+
+            <div class="tab-panel" id="tab-stats">
+                <div class="glass">
+                    <h2>📊 Estatísticas do Campeonato</h2>
+                    <div id="stats-container"></div>
+                </div>
+            </div>
+
+            <div class="tab-panel" id="tab-podio">
+                <div class="glass">
+                    <h2>🥇 Pódio</h2>
+                    <div id="podio-container"></div>
+                </div>
             </div>
         </div>
 
@@ -230,6 +330,17 @@
     </div>
 </div>
 
+<!-- CELEBRATION OVERLAY -->
+<div id="celebration-overlay" class="cele-overlay" style="display:none">
+    <div class="cele-content">
+        <div class="cele-trophy">🏆</div>
+        <div class="cele-title">CAMPEÃO!</div>
+        <div class="cele-name" id="cele-champion-name"></div>
+        <div class="cele-category" id="cele-champion-cat"></div>
+        <button class="btn btn-p" onclick="closeCelebration()" style="margin-top:20px;font-size:1rem;padding:12px 30px">🎉 Fechar</button>
+    </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -261,7 +372,11 @@ function connectWS() {
                 if (msg.mataMataGerado) {
                     addLog('⚔️ MATA-MATA gerado automaticamente!');
                     toast('⚔️ Fase de grupos encerrada — Mata-mata gerado!', 'success');
-                    // Reload full data to get new matches
+                    fetch('/api/campeonato').then(r=>r.json()).then(data=>{Object.assign(D,data);renderAll();}).catch(()=>{});
+                }
+                if (msg.bracketAvanco) {
+                    addLog('🏆 Chave avançou — nova partida criada!');
+                    toast('🏆 Chave avançou!', 'success');
                     fetch('/api/campeonato').then(r=>r.json()).then(data=>{Object.assign(D,data);renderAll();}).catch(()=>{});
                 }
                 renderAll();
@@ -288,6 +403,19 @@ function renderAll() {
     renderPartidas();
     renderEmJogo();
     renderResumo();
+    renderBracket();
+    renderEstatisticas();
+    renderPodio();
+    checkCampeao();
+}
+
+let activeTab = 'partidas';
+function switchTab(tab) {
+    activeTab = tab;
+    document.querySelectorAll('.ctab').forEach(b => b.classList.remove('active'));
+    document.querySelector(`.ctab[onclick*="'${tab}'"]`).classList.add('active');
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('tab-'+tab).classList.add('active');
 }
 
 // ===== QUADRAS =====
@@ -735,6 +863,277 @@ document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click
 init();
 // Auto-refresh
 setInterval(async()=>{try{const r=await fetch('/api/campeonato');const d=await r.json();Object.assign(D,d);renderAll();}catch(e){}},15000);
+
+// ===== BRACKET CHAMPIONS LEAGUE =====
+const FASES_ORDEM = ['oitavas','quartas','semifinal','final'];
+
+function renderBracket() {
+    const el = document.getElementById('bracket-container');
+    const catF = getCatFilter();
+    const cats = catF ? D.categorias.filter(c=>c.id===catF) : D.categorias;
+    if (!cats.length) { el.innerHTML = '<div class="empty">Nenhuma categoria</div>'; return; }
+
+    let html = '';
+    cats.forEach(cat => {
+        const mmPartidas = D.partidas.filter(p => p.categoriaId === cat.id && p.fase !== 'grupos');
+        if (!mmPartidas.length) { html += `<div class="bracket-cat-title">${esc(cat.nome)}</div><div class="empty">Mata-mata ainda não gerado</div>`; return; }
+
+        const porFase = {};
+        mmPartidas.forEach(p => { if (!porFase[p.fase]) porFase[p.fase]=[];  porFase[p.fase].push(p); });
+        Object.values(porFase).forEach(arr => arr.sort((a,b) => (a.bracketPos??0) - (b.bracketPos??0)));
+
+        const fases = FASES_ORDEM.filter(f => porFase[f]);
+        const finalMatch = porFase['final']?.[0] || null;
+        const preFases = fases.filter(f => f !== 'final');
+
+        const halfLen = Math.ceil(preFases.length / 2) || 0;
+        const leftFases = preFases;
+        const totalMatchesFirstRound = porFase[preFases[0]]?.length || 0;
+        const halfMatches = Math.ceil(totalMatchesFirstRound / 2);
+
+        html += `<div class="bracket-cat-title">${esc(cat.nome)}</div>`;
+        html += `<div class="bracket-wrapper">`;
+
+        // LEFT SIDE
+        html += `<div class="bracket-side left">`;
+        preFases.forEach(fase => {
+            const matches = porFase[fase] || [];
+            const isFirstRound = fase === preFases[0];
+            const leftMatches = isFirstRound ? matches.slice(0, halfMatches) : matches.filter(m => (m.bracketPos??0) < Math.ceil(matches.length/2));
+            if (!leftMatches.length) return;
+            html += `<div class="bracket-round">`;
+            html += `<div class="bracket-round-label">${faseLabel(fase)}</div>`;
+            leftMatches.forEach(m => { html += renderBracketMatch(m); });
+            html += `</div>`;
+        });
+        html += `</div>`;
+
+        // CENTER (FINAL)
+        html += `<div class="bracket-final">`;
+        html += `<div class="bracket-final-label">⭐ FINAL</div>`;
+        if (finalMatch) {
+            html += renderBracketMatch(finalMatch, true);
+        } else {
+            html += `<div class="bm tbd"><div class="bm-team"><span class="bm-name">A definir</span></div><div class="bm-vs">VS</div><div class="bm-team"><span class="bm-name">A definir</span></div></div>`;
+        }
+        html += `</div>`;
+
+        // RIGHT SIDE
+        html += `<div class="bracket-side right">`;
+        preFases.forEach(fase => {
+            const matches = porFase[fase] || [];
+            const isFirstRound = fase === preFases[0];
+            const rightMatches = isFirstRound ? matches.slice(halfMatches) : matches.filter(m => (m.bracketPos??0) >= Math.ceil(matches.length/2));
+            if (!rightMatches.length) return;
+            html += `<div class="bracket-round">`;
+            html += `<div class="bracket-round-label">${faseLabel(fase)}</div>`;
+            rightMatches.forEach(m => { html += renderBracketMatch(m); });
+            html += `</div>`;
+        });
+        html += `</div>`;
+
+        html += `</div>`;
+    });
+    el.innerHTML = html;
+}
+
+function renderBracketMatch(p, isFinal) {
+    const d1 = D.duplas.find(d=>d.id===p.dupla1Id);
+    const d2 = D.duplas.find(d=>d.id===p.dupla2Id);
+    const n1 = d1 ? duplaLabel(d1) : 'A definir';
+    const n2 = d2 ? duplaLabel(d2) : 'A definir';
+    const st = p.status || 'agendado';
+    const isDone = st === 'encerrado' || st === 'wo';
+    const w1 = isDone && p.vencedor === p.dupla1Id;
+    const w2 = isDone && p.vencedor === p.dupla2Id;
+    const isTbd = !d1 && !d2;
+    const placarStr = (isDone || st==='em_jogo') ? formatPlacar(p) : '';
+    const cls = isTbd ? 'tbd' : st;
+
+    return `<div class="bm ${cls} bracket-connector" onclick="${!isTbd?`onMatchClick(${p.id},'${st}')`:''}" style="cursor:${isTbd?'default':'pointer'}">
+        <div class="bm-team ${w1?'winner':''} ${isDone&&!w1&&d1?'loser':''}"><span class="bm-name">${esc(n1)}</span>${placarStr?`<span class="bm-score">${(p.placar?.dupla1||[]).join('-')}</span>`:''}</div>
+        <div class="bm-vs">${placarStr || 'VS'}</div>
+        <div class="bm-team ${w2?'winner':''} ${isDone&&!w2&&d2?'loser':''}"><span class="bm-name">${esc(n2)}</span>${placarStr?`<span class="bm-score">${(p.placar?.dupla2||[]).join('-')}</span>`:''}</div>
+    </div>`;
+}
+
+function faseLabel(f) { return {oitavas:'Oitavas',quartas:'Quartas',semifinal:'Semifinal',final:'Final'}[f]||f; }
+
+// ===== ESTATÍSTICAS =====
+function renderEstatisticas() {
+    const el = document.getElementById('stats-container');
+    const catF = getCatFilter();
+    const partidas = catF ? D.partidas.filter(p=>p.categoriaId===catF) : D.partidas;
+    const encerradas = partidas.filter(p=>p.status==='encerrado'||p.status==='wo');
+    const emJogo = partidas.filter(p=>p.status==='em_jogo');
+
+    let totalGames = 0, totalSets = 0;
+    encerradas.forEach(p => {
+        const s1 = p.placar?.dupla1||[], s2 = p.placar?.dupla2||[];
+        const sets = Math.max(s1.length, s2.length);
+        totalSets += sets;
+        s1.forEach((g,i) => { totalGames += g + (s2[i]||0); });
+    });
+
+    // Player stats
+    const duplaStats = {};
+    encerradas.forEach(p => {
+        [p.dupla1Id, p.dupla2Id].forEach(did => {
+            if (!did) return;
+            if (!duplaStats[did]) duplaStats[did] = { id:did, partidas:0, vitorias:0, derrotas:0, gamesW:0, gamesL:0, setsW:0, setsL:0 };
+            duplaStats[did].partidas++;
+            if (p.vencedor === did) duplaStats[did].vitorias++;
+            else duplaStats[did].derrotas++;
+            const mine = p.dupla1Id===did ? (p.placar?.dupla1||[]) : (p.placar?.dupla2||[]);
+            const opp = p.dupla1Id===did ? (p.placar?.dupla2||[]) : (p.placar?.dupla1||[]);
+            mine.forEach((g,i) => { duplaStats[did].gamesW+=g; duplaStats[did].gamesL+=(opp[i]||0); if(g>(opp[i]||0)) duplaStats[did].setsW++; else if(g<(opp[i]||0)) duplaStats[did].setsL++; });
+        });
+    });
+
+    const sortedDuplas = Object.values(duplaStats).sort((a,b)=>b.vitorias-a.vitorias || (b.gamesW-b.gamesL)-(a.gamesW-a.gamesL));
+
+    // Longest match (most games)
+    let longestMatch = null, longestGames = 0;
+    encerradas.forEach(p => {
+        const g = (p.placar?.dupla1||[]).reduce((s,v,i)=>s+v+(p.placar?.dupla2?.[i]||0),0);
+        if (g > longestGames) { longestGames = g; longestMatch = p; }
+    });
+
+    let html = `<div class="stats-grid">
+        <div class="stat-card"><div class="stat-val">${partidas.length}</div><div class="stat-label">Total Partidas</div></div>
+        <div class="stat-card"><div class="stat-val">${encerradas.length}</div><div class="stat-label">Encerradas</div></div>
+        <div class="stat-card"><div class="stat-val">${emJogo.length}</div><div class="stat-label">Em Jogo</div></div>
+        <div class="stat-card"><div class="stat-val">${totalSets}</div><div class="stat-label">Total Sets</div></div>
+        <div class="stat-card"><div class="stat-val">${totalGames}</div><div class="stat-label">Total Games</div></div>
+        <div class="stat-card"><div class="stat-val">${longestGames}</div><div class="stat-label">Maior Partida (games)</div></div>
+    </div>`;
+
+    if (longestMatch) {
+        const ld1 = D.duplas.find(d=>d.id===longestMatch.dupla1Id);
+        const ld2 = D.duplas.find(d=>d.id===longestMatch.dupla2Id);
+        html += `<div class="stats-section"><h3>🔥 Partida Mais Longa</h3><div style="padding:10px;background:rgba(255,255,255,.03);border-radius:10px;font-size:.85rem;color:rgba(255,255,255,.6)">${duplaLabel(ld1)} vs ${duplaLabel(ld2)} — ${formatPlacar(longestMatch)} (${longestGames} games)</div></div>`;
+    }
+
+    if (sortedDuplas.length) {
+        html += `<div class="stats-section"><h3>📋 Ranking de Duplas</h3><table class="stats-table"><thead><tr><th>#</th><th>Dupla</th><th>V</th><th>D</th><th>Games +/-</th><th>Sets +/-</th></tr></thead><tbody>`;
+        sortedDuplas.forEach((s,i) => {
+            const dup = D.duplas.find(d=>d.id===s.id);
+            html += `<tr><td>${i+1}</td><td>${esc(duplaLabel(dup))}</td><td style="color:#6ee7b7;font-weight:700">${s.vitorias}</td><td style="color:#f87171">${s.derrotas}</td><td>${s.gamesW}-${s.gamesL} (${s.gamesW-s.gamesL>0?'+':''}${s.gamesW-s.gamesL})</td><td>${s.setsW}-${s.setsL}</td></tr>`;
+        });
+        html += `</tbody></table></div>`;
+    }
+
+    // Per-phase breakdown
+    const faseCount = {};
+    partidas.forEach(p => { const f = p.fase||'?'; faseCount[f]=(faseCount[f]||0)+1; });
+    html += `<div class="stats-section"><h3>📊 Partidas por Fase</h3><div style="display:flex;gap:8px;flex-wrap:wrap">`;
+    Object.entries(faseCount).forEach(([f,c]) => {
+        html += `<div style="padding:8px 14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:8px;font-size:.8rem"><strong>${faseLabel(f)||f}</strong>: ${c}</div>`;
+    });
+    html += `</div></div>`;
+
+    el.innerHTML = html;
+}
+
+// ===== PÓDIO =====
+function renderPodio() {
+    const el = document.getElementById('podio-container');
+    const catF = getCatFilter();
+    const cats = catF ? D.categorias.filter(c=>c.id===catF) : D.categorias;
+
+    let html = '';
+    cats.forEach(cat => {
+        const mmPartidas = D.partidas.filter(p => p.categoriaId === cat.id && p.fase !== 'grupos');
+        const finalMatch = mmPartidas.find(p => p.fase === 'final' && (p.status === 'encerrado' || p.status === 'wo'));
+        const semiMatches = mmPartidas.filter(p => p.fase === 'semifinal' && (p.status === 'encerrado' || p.status === 'wo'));
+
+        if (!finalMatch) {
+            html += `<div class="podium-cat"><div class="podium-cat-title">${esc(cat.nome)}</div><div class="empty">Final ainda não definida</div></div>`;
+            return;
+        }
+
+        const campeao = D.duplas.find(d=>d.id===finalMatch.vencedor);
+        const vice = D.duplas.find(d=>d.id===(finalMatch.dupla1Id===finalMatch.vencedor ? finalMatch.dupla2Id : finalMatch.dupla1Id));
+
+        // 3rd place: losers of semifinals
+        const terceiros = semiMatches.map(m => {
+            const loserId = m.dupla1Id === m.vencedor ? m.dupla2Id : m.dupla1Id;
+            return D.duplas.find(d=>d.id===loserId);
+        }).filter(Boolean);
+
+        html += `<div class="podium-cat"><div class="podium-cat-title">${esc(cat.nome)}</div><div class="podium">`;
+
+        // 2nd place (left)
+        html += `<div class="podium-place">
+            <div class="podium-medal">🥈</div>
+            <div class="podium-team">${vice ? esc(duplaLabel(vice)) : '?'}</div>
+            <div class="podium-result">Vice-campeão</div>
+            <div class="podium-bar silver">2°</div>
+        </div>`;
+
+        // 1st place (center, tallest)
+        html += `<div class="podium-place">
+            <div class="podium-medal">🥇</div>
+            <div class="podium-team">${campeao ? esc(duplaLabel(campeao)) : '?'}</div>
+            <div class="podium-result">Campeão!</div>
+            <div class="podium-bar gold">1°</div>
+        </div>`;
+
+        // 3rd place (right)
+        html += `<div class="podium-place">
+            <div class="podium-medal">🥉</div>
+            <div class="podium-team">${terceiros.length ? terceiros.map(t=>esc(duplaLabel(t))).join(' / ') : '?'}</div>
+            <div class="podium-result">3° lugar</div>
+            <div class="podium-bar bronze">3°</div>
+        </div>`;
+
+        html += `</div></div>`;
+    });
+
+    el.innerHTML = html || '<div class="empty">Nenhum pódio definido ainda</div>';
+}
+
+// ===== CELEBRAÇÃO DO CAMPEÃO =====
+let celebrationShown = {};
+
+function checkCampeao() {
+    D.categorias.forEach(cat => {
+        const finalMatch = D.partidas.find(p => p.categoriaId === cat.id && p.fase === 'final' && (p.status === 'encerrado' || p.status === 'wo') && p.vencedor);
+        if (finalMatch && !celebrationShown[cat.id]) {
+            celebrationShown[cat.id] = true;
+            const campeao = D.duplas.find(d=>d.id===finalMatch.vencedor);
+            showCelebration(duplaLabel(campeao), cat.nome);
+        }
+    });
+}
+
+function showCelebration(teamName, catName) {
+    const overlay = document.getElementById('celebration-overlay');
+    document.getElementById('cele-champion-name').textContent = teamName;
+    document.getElementById('cele-champion-cat').textContent = catName;
+    overlay.style.display = 'flex';
+
+    // Spawn confetti
+    const colors = ['#fbbf24','#f59e0b','#d97706','#6ee7b7','#a5b4fc','#f87171','#fff','#38ef7d'];
+    for (let i = 0; i < 80; i++) {
+        const piece = document.createElement('div');
+        piece.className = 'confetti-piece';
+        piece.style.left = Math.random() * 100 + 'vw';
+        piece.style.background = colors[Math.floor(Math.random()*colors.length)];
+        piece.style.width = (6 + Math.random()*10) + 'px';
+        piece.style.height = (6 + Math.random()*10) + 'px';
+        piece.style.animationDuration = (2 + Math.random()*3) + 's';
+        piece.style.animationDelay = Math.random()*2 + 's';
+        piece.style.borderRadius = Math.random()>.5 ? '50%' : '2px';
+        overlay.appendChild(piece);
+    }
+}
+
+function closeCelebration() {
+    const overlay = document.getElementById('celebration-overlay');
+    overlay.style.display = 'none';
+    overlay.querySelectorAll('.confetti-piece').forEach(p=>p.remove());
+}
 </script>
 </body>
 </html>

@@ -1531,24 +1531,17 @@
                         </div>
                         <div class="beach-actions">
                             <button class="beach-btn beach-btn-manage" onclick="beachOpenManage()">
-                                ⚙️ Gerenciamento
-                            </button>
-                            <button class="beach-btn beach-btn-public" onclick="beachOpenPublic()">
-                                👁️ Visualização Pública
+                                🏐 Organizar Campeonato
                             </button>
                             <button class="beach-btn beach-btn-manage" onclick="window.open('/mesa.html','_blank')">
                                 🏓 Mesa Organizadora
                             </button>
+                            <button class="beach-btn beach-btn-public" onclick="beachOpenPublic()">
+                                👁️ Visualização Pública
+                            </button>
                             <button class="beach-btn beach-btn-public" onclick="window.open('/telao.html','_blank')">
                                 📺 Telão / TV
                             </button>
-                            <button class="beach-btn beach-btn-export" onclick="beachExportData()">
-                                📤 Exportar Dados
-                            </button>
-                            <label class="beach-btn beach-btn-import">
-                                📥 Importar JSON
-                                <input type="file" accept=".json" onchange="beachImportData(event)">
-                            </label>
                         </div>
                     </div>
                 </div>
@@ -2433,7 +2426,7 @@
         }
 
         function beachOpenManage() {
-            window.open('/campeonato.html', '_blank');
+            window.open('/organizar.html', '_blank');
         }
 
         function beachOpenPublic() {

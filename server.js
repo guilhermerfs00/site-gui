@@ -1227,19 +1227,27 @@ const server = http.createServer((req, res) => {
         let ordem = 0;
         if (grupos.length === 2 && classificados === 2) {
             const a = topTeams[0], b = topTeams[1];
-            [[a[0], b[1]], [b[0], a[1]]].forEach(([d1, d2]) => {
-                novasPartidas.push({ id: Date.now() + ordem, dupla1Id: d1, dupla2Id: d2, categoriaId, grupoId: null, fase: 'semifinal', quadraId: quadrasDisp[ordem % quadrasDisp.length], horario: new Date(horBase.getTime() + Math.floor(ordem / quadrasDisp.length) * dur * 60000).toISOString(), status: 'agendado', placar: { dupla1: [], dupla2: [] }, vencedor: null, wo: false, createdAt: new Date().toISOString() });
+            [[a[0], b[1]], [b[0], a[1]]].forEach(([d1, d2], idx) => {
+                novasPartidas.push({ id: Date.now() + ordem, dupla1Id: d1, dupla2Id: d2, categoriaId, grupoId: null, fase: 'semifinal', bracketPos: idx, quadraId: quadrasDisp[ordem % quadrasDisp.length], horario: new Date(horBase.getTime() + Math.floor(ordem / quadrasDisp.length) * dur * 60000).toISOString(), status: 'agendado', placar: { dupla1: [], dupla2: [] }, vencedor: null, wo: false, createdAt: new Date().toISOString() });
                 ordem++;
             });
-            novasPartidas.push({ id: Date.now() + ordem, dupla1Id: null, dupla2Id: null, categoriaId, grupoId: null, fase: 'final', quadraId: quadrasDisp[0], horario: new Date(horBase.getTime() + 2 * dur * 60000).toISOString(), status: 'agendado', placar: { dupla1: [], dupla2: [] }, vencedor: null, wo: false, createdAt: new Date().toISOString() });
         } else {
             const allTeams = topTeams.flat();
-            const fase = allTeams.length <= 4 ? 'semifinal' : allTeams.length <= 8 ? 'quartas' : 'oitavas';
-            for (let i = 0; i < Math.floor(allTeams.length / 2); i++) {
-                novasPartidas.push({ id: Date.now() + ordem, dupla1Id: allTeams[i], dupla2Id: allTeams[allTeams.length - 1 - i], categoriaId, grupoId: null, fase, quadraId: quadrasDisp[ordem % quadrasDisp.length], horario: new Date(horBase.getTime() + Math.floor(ordem / quadrasDisp.length) * dur * 60000).toISOString(), status: 'agendado', placar: { dupla1: [], dupla2: [] }, vencedor: null, wo: false, createdAt: new Date().toISOString() });
+            const n = allTeams.length;
+            if (n < 2) { d.partidas.push(...novasPartidas); return { classificacao, partidas: novasPartidas }; }
+            const fase = n <= 2 ? 'final' : n <= 4 ? 'semifinal' : n <= 8 ? 'quartas' : 'oitavas';
+            for (let i = 0; i < Math.floor(n / 2); i++) {
+                novasPartidas.push({ id: Date.now() + ordem, dupla1Id: allTeams[i], dupla2Id: allTeams[n - 1 - i], categoriaId, grupoId: null, fase, bracketPos: i, quadraId: quadrasDisp[ordem % quadrasDisp.length], horario: new Date(horBase.getTime() + Math.floor(ordem / quadrasDisp.length) * dur * 60000).toISOString(), status: 'agendado', placar: { dupla1: [], dupla2: [] }, vencedor: null, wo: false, createdAt: new Date().toISOString() });
                 ordem++;
             }
-            novasPartidas.push({ id: Date.now() + ordem, dupla1Id: null, dupla2Id: null, categoriaId, grupoId: null, fase: 'final', quadraId: quadrasDisp[0], horario: new Date(horBase.getTime() + Math.ceil(allTeams.length / 2) * dur * 60000).toISOString(), status: 'agendado', placar: { dupla1: [], dupla2: [] }, vencedor: null, wo: false, createdAt: new Date().toISOString() });
+            if (n % 2 !== 0) {
+                const byeTeam = allTeams[Math.floor(n / 2)];
+                const proxFase = fase === 'oitavas' ? 'quartas' : fase === 'quartas' ? 'semifinal' : fase === 'semifinal' ? 'final' : null;
+                if (proxFase) {
+                    novasPartidas.push({ id: Date.now() + ordem, dupla1Id: byeTeam, dupla2Id: null, categoriaId, grupoId: null, fase: proxFase, bracketPos: Math.floor(Math.floor(n / 2) / 2), quadraId: null, horario: new Date(horBase.getTime() + 2 * dur * 60000).toISOString(), status: 'agendado', placar: { dupla1: [], dupla2: [] }, vencedor: null, wo: false, createdAt: new Date().toISOString() });
+                    ordem++;
+                }
+            }
         }
         d.partidas.push(...novasPartidas);
         return { classificacao, partidas: novasPartidas };
@@ -1389,13 +1397,31 @@ const server = http.createServer((req, res) => {
                 // Atualiza quadra
                 if (partida.status === 'em_jogo') { const q = d.quadras.find(q => q.id === partida.quadraId); if (q) { q.status = 'em_uso'; q.partidaAtual = pid; } }
                 if (partida.status === 'encerrado' || partida.status === 'wo') { const q = d.quadras.find(q => q.id === partida.quadraId); if (q) { q.status = 'disponivel'; q.partidaAtual = null; } }
-                // Avança automaticamente na chave
+                // Avança automaticamente na chave (progressivo)
+                let bracketAvanco = false;
                 if (body.vencedor && partida.fase !== 'grupos') {
-                    const vDupla = body.vencedor;
                     const proxFase = partida.fase === 'oitavas' ? 'quartas' : partida.fase === 'quartas' ? 'semifinal' : partida.fase === 'semifinal' ? 'final' : null;
                     if (proxFase) {
-                        const proxPartida = d.partidas.find(pp => pp.fase === proxFase && pp.categoriaId === partida.categoriaId && (pp.dupla1Id === null || pp.dupla2Id === null));
-                        if (proxPartida) { if (!proxPartida.dupla1Id) proxPartida.dupla1Id = vDupla; else proxPartida.dupla2Id = vDupla; }
+                        const bp = partida.bracketPos ?? 0;
+                        const siblingPos = bp % 2 === 0 ? bp + 1 : bp - 1;
+                        const roundMatches = d.partidas.filter(pp => pp.fase === partida.fase && pp.categoriaId === partida.categoriaId);
+                        const sibling = roundMatches.find(pp => (pp.bracketPos ?? -1) === siblingPos);
+                        const nextPos = Math.floor(bp / 2);
+                        const existing = d.partidas.find(pp => pp.fase === proxFase && pp.categoriaId === partida.categoriaId && (pp.bracketPos ?? 0) === nextPos);
+                        if (!existing) {
+                            if (sibling && (sibling.status === 'encerrado' || sibling.status === 'wo') && sibling.vencedor) {
+                                const w1 = bp < siblingPos ? body.vencedor : sibling.vencedor;
+                                const w2 = bp < siblingPos ? sibling.vencedor : body.vencedor;
+                                d.partidas.push({ id: Date.now() + 997, dupla1Id: w1, dupla2Id: w2, categoriaId: partida.categoriaId, grupoId: null, fase: proxFase, bracketPos: nextPos, quadraId: null, horario: new Date().toISOString(), status: 'agendado', placar: { dupla1: [], dupla2: [] }, vencedor: null, wo: false, createdAt: new Date().toISOString() });
+                                bracketAvanco = true;
+                            } else if (!sibling) {
+                                d.partidas.push({ id: Date.now() + 998, dupla1Id: body.vencedor, dupla2Id: null, categoriaId: partida.categoriaId, grupoId: null, fase: proxFase, bracketPos: nextPos, quadraId: null, horario: new Date().toISOString(), status: 'agendado', placar: { dupla1: [], dupla2: [] }, vencedor: null, wo: false, createdAt: new Date().toISOString() });
+                                bracketAvanco = true;
+                            }
+                        } else if (existing.dupla1Id === null || existing.dupla2Id === null) {
+                            if (!existing.dupla1Id) existing.dupla1Id = body.vencedor; else existing.dupla2Id = body.vencedor;
+                            bracketAvanco = true;
+                        }
                     }
                 }
                 // Atualiza ranking
@@ -1418,8 +1444,8 @@ const server = http.createServer((req, res) => {
                 const resposta = mataMataGerado ? { ...partida, mataMataGerado } : partida;
                 sendJSON(res, resposta);
                 // Broadcast WebSocket
-                const wsMsg = mataMataGerado
-                    ? JSON.stringify({ type: 'partida-update', partida, mataMataGerado: true })
+                const wsMsg = (mataMataGerado || bracketAvanco)
+                    ? JSON.stringify({ type: 'partida-update', partida, mataMataGerado: !!mataMataGerado, bracketAvanco: !!bracketAvanco })
                     : JSON.stringify({ type: 'partida-update', partida });
                 wss.clients.forEach(cl => { if (cl.readyState === 1) cl.send(wsMsg); });
             }); return;

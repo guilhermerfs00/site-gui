@@ -77,6 +77,42 @@
         .ticker span{margin-right:40px;font-size:.82rem;color:rgba(255,255,255,.3)}
 
         .empty{color:rgba(255,255,255,.1);font-style:italic;padding:20px;text-align:center;font-size:.9rem}
+
+        /* FINAL - PODIO & STATS OVERLAY */
+        .final-overlay{position:fixed;inset:0;z-index:50;background:rgba(10,10,30,.96);display:none;flex-direction:column;overflow-y:auto}
+        .final-overlay.show{display:flex}
+        .final-wrap{max-width:1100px;margin:0 auto;padding:32px 24px;width:100%}
+        .final-header{text-align:center;margin-bottom:30px}
+        .final-trophy{font-size:5rem;animation:trophy-bounce 1.5s ease infinite}
+        @keyframes trophy-bounce{0%,100%{transform:scale(1) rotate(-2deg)}50%{transform:scale(1.15) rotate(2deg)}}
+        .final-title{font-size:2.4rem;font-weight:900;background:linear-gradient(135deg,#fbbf24,#f59e0b,#d97706,#fbbf24);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmer 2s ease infinite;background-size:200% auto}
+        @keyframes shimmer{0%{background-position:0% center}50%{background-position:100% center}100%{background-position:0% center}}
+
+        .podium-section{margin-bottom:36px}
+        .podium-cat-title{font-size:1.1rem;font-weight:700;color:#fbbf24;margin-bottom:16px;text-align:center;text-transform:uppercase;letter-spacing:1px}
+        .podium{display:flex;align-items:flex-end;justify-content:center;gap:16px;max-width:520px;margin:0 auto}
+        .podium-place{display:flex;flex-direction:column;align-items:center;text-align:center;flex:1;max-width:170px}
+        .podium-medal{font-size:2.8rem;margin-bottom:8px}
+        .podium-team{font-size:.95rem;font-weight:700;color:#fff;margin-bottom:4px;word-break:break-word}
+        .podium-result{font-size:.68rem;color:rgba(255,255,255,.35)}
+        .podium-bar{width:100%;border-radius:12px 12px 0 0;margin-top:10px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:10px;font-size:1.5rem;font-weight:900}
+        .podium-bar.gold{height:130px;background:linear-gradient(to top,#d97706,#fbbf24);color:#fff}
+        .podium-bar.silver{height:95px;background:linear-gradient(to top,#6b7280,#9ca3af);color:#fff}
+        .podium-bar.bronze{height:68px;background:linear-gradient(to top,#92400e,#d97706);color:#fff}
+
+        .final-stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-bottom:28px}
+        .fstat{text-align:center;padding:16px 10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:14px}
+        .fstat .fval{font-size:1.8rem;font-weight:800;color:#fbbf24}
+        .fstat .flabel{font-size:.68rem;color:rgba(255,255,255,.3);text-transform:uppercase;margin-top:3px}
+
+        .final-ranking{width:100%;border-collapse:collapse;font-size:.85rem;margin-bottom:24px}
+        .final-ranking th{text-align:left;padding:10px;font-weight:700;color:rgba(255,255,255,.4);border-bottom:1px solid rgba(255,255,255,.1);font-size:.72rem;text-transform:uppercase}
+        .final-ranking td{padding:10px;color:rgba(255,255,255,.7);border-bottom:1px solid rgba(255,255,255,.04)}
+        .final-ranking tr:hover td{background:rgba(255,255,255,.02)}
+        .final-section-title{font-size:1rem;font-weight:700;color:rgba(255,255,255,.5);margin:20px 0 12px;text-align:center}
+
+        .confetti-piece{position:fixed;width:10px;height:10px;z-index:201;animation:confetti-fall linear forwards;pointer-events:none;border-radius:2px}
+        @keyframes confetti-fall{0%{opacity:1;transform:translateY(-10vh) rotate(0deg)}100%{opacity:0;transform:translateY(110vh) rotate(720deg)}}
     </style>
 </head>
 <body>
@@ -114,6 +150,21 @@
     <div class="cb-detail" id="cb-detail"></div>
 </div>
 
+<!-- FINAL OVERLAY (pódio + stats) -->
+<div class="final-overlay" id="final-overlay">
+    <div class="final-wrap">
+        <div class="final-header">
+            <div class="final-trophy">🏆</div>
+            <div class="final-title">CAMPEONATO ENCERRADO!</div>
+        </div>
+        <div id="final-podio"></div>
+        <div class="final-section-title">📊 Estatísticas Gerais</div>
+        <div id="final-stats"></div>
+        <div class="final-section-title">📋 Ranking de Duplas</div>
+        <div id="final-ranking"></div>
+    </div>
+</div>
+
 <script>
 let D = {};
 
@@ -149,6 +200,7 @@ function render() {
     renderNext();
     renderResults();
     renderTicker();
+    checkFinalizado();
 }
 
 function renderLive() {
@@ -242,6 +294,166 @@ function findCat(id){return(D.categorias||[]).find(c=>c.id===id)}
 function dLabel(d){return d?.nome||'?'}
 function esc(t){const d=document.createElement('div');d.textContent=t||'';return d.innerHTML}
 function formatPlacar(p){if(!p.placar)return'';const s1=p.placar.dupla1||[],s2=p.placar.dupla2||[];return s1.map((v,i)=>`${v}×${s2[i]||0}`).join(' ')}
+
+// ===== FINAL: PÓDIO + STATS =====
+let finalShown = false;
+
+function checkFinalizado() {
+    const cats = D.categorias || [];
+    const partidas = D.partidas || [];
+    if (!cats.length || !partidas.length) return;
+
+    // Verifica se TODAS as categorias têm final encerrada
+    const todasFinalizadas = cats.every(cat => {
+        const mmPartidas = partidas.filter(p => p.categoriaId === cat.id && p.fase !== 'grupos');
+        if (!mmPartidas.length) return false;
+        const finalMatch = mmPartidas.find(p => p.fase === 'final');
+        return finalMatch && (finalMatch.status === 'encerrado' || finalMatch.status === 'wo') && finalMatch.vencedor;
+    });
+
+    if (!todasFinalizadas) return;
+
+    renderFinalPodio();
+    renderFinalStats();
+    renderFinalRanking();
+
+    const overlay = document.getElementById('final-overlay');
+    if (!overlay.classList.contains('show')) {
+        overlay.classList.add('show');
+        if (!finalShown) {
+            finalShown = true;
+            spawnConfetti(overlay);
+            document.getElementById('t-status').textContent = '🏆 ENCERRADO';
+            document.getElementById('t-status').className = 'status-badge';
+            document.getElementById('t-status').style.background = 'rgba(251,191,36,.2)';
+            document.getElementById('t-status').style.color = '#fbbf24';
+            document.getElementById('t-status').style.border = '1px solid rgba(251,191,36,.3)';
+        }
+    }
+}
+
+function renderFinalPodio() {
+    const el = document.getElementById('final-podio');
+    const cats = D.categorias || [];
+    let html = '';
+    cats.forEach(cat => {
+        const mmPartidas = (D.partidas||[]).filter(p => p.categoriaId === cat.id && p.fase !== 'grupos');
+        const finalMatch = mmPartidas.find(p => p.fase === 'final' && (p.status === 'encerrado' || p.status === 'wo'));
+        if (!finalMatch) return;
+
+        const campeao = findDupla(finalMatch.vencedor);
+        const viceId = finalMatch.dupla1Id === finalMatch.vencedor ? finalMatch.dupla2Id : finalMatch.dupla1Id;
+        const vice = findDupla(viceId);
+
+        const semiMatches = mmPartidas.filter(p => p.fase === 'semifinal' && (p.status === 'encerrado' || p.status === 'wo'));
+        const terceiros = semiMatches.map(m => {
+            const loserId = m.dupla1Id === m.vencedor ? m.dupla2Id : m.dupla1Id;
+            return findDupla(loserId);
+        }).filter(Boolean);
+
+        html += `<div class="podium-section">
+            <div class="podium-cat-title">🏐 ${esc(cat.nome)}</div>
+            <div class="podium">
+                <div class="podium-place">
+                    <div class="podium-medal">🥈</div>
+                    <div class="podium-team">${vice ? esc(dLabel(vice)) : '?'}</div>
+                    <div class="podium-result">Vice-campeão</div>
+                    <div class="podium-bar silver">2°</div>
+                </div>
+                <div class="podium-place">
+                    <div class="podium-medal">🥇</div>
+                    <div class="podium-team">${campeao ? esc(dLabel(campeao)) : '?'}</div>
+                    <div class="podium-result">Campeão!</div>
+                    <div class="podium-bar gold">1°</div>
+                </div>
+                <div class="podium-place">
+                    <div class="podium-medal">🥉</div>
+                    <div class="podium-team">${terceiros.length ? terceiros.map(t=>esc(dLabel(t))).join(' / ') : '?'}</div>
+                    <div class="podium-result">3° lugar</div>
+                    <div class="podium-bar bronze">3°</div>
+                </div>
+            </div>
+        </div>`;
+    });
+    el.innerHTML = html;
+}
+
+function renderFinalStats() {
+    const el = document.getElementById('final-stats');
+    const partidas = D.partidas || [];
+    const encerradas = partidas.filter(p => p.status === 'encerrado' || p.status === 'wo');
+    const emGrupos = partidas.filter(p => p.fase === 'grupos').length;
+    const emMM = partidas.filter(p => p.fase !== 'grupos').length;
+
+    let totalGames = 0, totalSets = 0, woCount = 0;
+    encerradas.forEach(p => {
+        if (p.status === 'wo') woCount++;
+        const s1 = p.placar?.dupla1 || [], s2 = p.placar?.dupla2 || [];
+        totalSets += Math.max(s1.length, s2.length);
+        s1.forEach((g, i) => { totalGames += g + (s2[i] || 0); });
+    });
+
+    let longestGames = 0;
+    encerradas.forEach(p => {
+        const g = (p.placar?.dupla1||[]).reduce((s,v,i) => s + v + (p.placar?.dupla2?.[i]||0), 0);
+        if (g > longestGames) longestGames = g;
+    });
+
+    el.innerHTML = `<div class="final-stats">
+        <div class="fstat"><div class="fval">${partidas.length}</div><div class="flabel">Total Partidas</div></div>
+        <div class="fstat"><div class="fval">${encerradas.length}</div><div class="flabel">Encerradas</div></div>
+        <div class="fstat"><div class="fval">${emGrupos}</div><div class="flabel">Fase de Grupos</div></div>
+        <div class="fstat"><div class="fval">${emMM}</div><div class="flabel">Mata-Mata</div></div>
+        <div class="fstat"><div class="fval">${totalSets}</div><div class="flabel">Total Sets</div></div>
+        <div class="fstat"><div class="fval">${totalGames}</div><div class="flabel">Total Games</div></div>
+        <div class="fstat"><div class="fval">${longestGames}</div><div class="flabel">Maior Partida</div></div>
+        <div class="fstat"><div class="fval">${woCount}</div><div class="flabel">WOs</div></div>
+    </div>`;
+}
+
+function renderFinalRanking() {
+    const el = document.getElementById('final-ranking');
+    const encerradas = (D.partidas||[]).filter(p => p.status === 'encerrado' || p.status === 'wo');
+    const duplaStats = {};
+    encerradas.forEach(p => {
+        [p.dupla1Id, p.dupla2Id].forEach(did => {
+            if (!did) return;
+            if (!duplaStats[did]) duplaStats[did] = { id: did, partidas: 0, vitorias: 0, derrotas: 0, gamesW: 0, gamesL: 0 };
+            duplaStats[did].partidas++;
+            if (p.vencedor === did) duplaStats[did].vitorias++; else duplaStats[did].derrotas++;
+            const mine = p.dupla1Id === did ? (p.placar?.dupla1||[]) : (p.placar?.dupla2||[]);
+            const opp = p.dupla1Id === did ? (p.placar?.dupla2||[]) : (p.placar?.dupla1||[]);
+            mine.forEach((g, i) => { duplaStats[did].gamesW += g; duplaStats[did].gamesL += (opp[i]||0); });
+        });
+    });
+    const sorted = Object.values(duplaStats).sort((a,b) => b.vitorias - a.vitorias || (b.gamesW-b.gamesL) - (a.gamesW-a.gamesL));
+    if (!sorted.length) { el.innerHTML = ''; return; }
+
+    let html = `<table class="final-ranking"><thead><tr><th>#</th><th>Dupla</th><th>Cat.</th><th>V</th><th>D</th><th>Games +/−</th></tr></thead><tbody>`;
+    sorted.forEach((s, i) => {
+        const dup = findDupla(s.id);
+        const cat = dup ? findCat(dup.categoriaId) : null;
+        html += `<tr><td style="color:#fbbf24;font-weight:800">${i+1}</td><td style="font-weight:600">${esc(dLabel(dup))}</td><td style="color:rgba(255,255,255,.35);font-size:.75rem">${cat?esc(cat.nome):''}</td><td style="color:#6ee7b7;font-weight:700">${s.vitorias}</td><td style="color:#f87171">${s.derrotas}</td><td>${s.gamesW}−${s.gamesL} (${s.gamesW-s.gamesL>0?'+':''}${s.gamesW-s.gamesL})</td></tr>`;
+    });
+    html += '</tbody></table>';
+    el.innerHTML = html;
+}
+
+function spawnConfetti(container) {
+    const colors = ['#fbbf24','#f59e0b','#d97706','#6ee7b7','#a5b4fc','#f87171','#fff','#38ef7d'];
+    for (let i = 0; i < 60; i++) {
+        const piece = document.createElement('div');
+        piece.className = 'confetti-piece';
+        piece.style.left = Math.random() * 100 + 'vw';
+        piece.style.background = colors[Math.floor(Math.random()*colors.length)];
+        piece.style.width = (6 + Math.random()*10) + 'px';
+        piece.style.height = (6 + Math.random()*10) + 'px';
+        piece.style.animationDuration = (2.5 + Math.random()*3) + 's';
+        piece.style.animationDelay = Math.random()*2.5 + 's';
+        piece.style.borderRadius = Math.random()>.5 ? '50%' : '2px';
+        container.appendChild(piece);
+    }
+}
 
 load();
 connectWS();
