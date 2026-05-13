@@ -1735,6 +1735,286 @@ const server = http.createServer((req, res) => {
     }
     // ==================== FIM API CAMPEONATO ====================
 
+    // ==================== API COPA CIRROSE ====================
+    const CIRROSE_FILE = path.join(__dirname, 'data', 'copa-cirrose.json');
+    function readCirrose() {
+        try {
+            const d = JSON.parse(fs.readFileSync(CIRROSE_FILE, 'utf8'));
+            // backcompat: add missing fields
+            if (!d.quadras) d.quadras = [];
+            if (!d.categorias) d.categorias = [];
+            if (!d.inscricoes) d.inscricoes = [];
+            return d;
+        } catch(e) {
+            return { evento: { nome: 'Grande Copa Cirrose - 1ª Edição', data: '', horaInicio: '09:00', local: '', descricao: '', status: 'agendado' }, quadras: [], categorias: [], jogadores: [], inscricoes: [], partidas: [], fase: 'cadastro' };
+        }
+    }
+    function writeCirrose(d) { fs.writeFileSync(CIRROSE_FILE, JSON.stringify(d, null, 2), 'utf8'); }
+
+    // GET /api/cirrose
+    if (url === '/api/cirrose' && req.method === 'GET') {
+        sendJSON(res, readCirrose()); return;
+    }
+    // PUT /api/cirrose/evento
+    if (url === '/api/cirrose/evento' && req.method === 'PUT') {
+        readBody(req, body => { const d = readCirrose(); d.evento = { ...d.evento, ...body }; writeCirrose(d); sendJSON(res, d.evento); }); return;
+    }
+
+    // GET /api/cirrose/quadras
+    if (url === '/api/cirrose/quadras' && req.method === 'GET') {
+        sendJSON(res, readCirrose().quadras || []); return;
+    }
+    // POST /api/cirrose/quadras
+    if (url === '/api/cirrose/quadras' && req.method === 'POST') {
+        readBody(req, body => {
+            const d = readCirrose();
+            const nome = (body.nome || '').trim();
+            if (!nome) { res.writeHead(400); res.end(JSON.stringify({ erro: 'Nome obrigatório' })); return; }
+            const maxId = (d.quadras || []).reduce((m, q) => Math.max(m, q.id), 0);
+            const q = { id: maxId + 1, nome };
+            d.quadras = d.quadras || []; d.quadras.push(q);
+            writeCirrose(d); sendJSON(res, q);
+        }); return;
+    }
+    // DELETE /api/cirrose/quadras/:id
+    if (url.startsWith('/api/cirrose/quadras/') && req.method === 'DELETE') {
+        const id = parseInt(url.split('/').pop());
+        const d = readCirrose();
+        d.quadras = (d.quadras || []).filter(q => q.id !== id);
+        writeCirrose(d); sendJSON(res, { ok: true }); return;
+    }
+
+    // GET /api/cirrose/categorias
+    if (url === '/api/cirrose/categorias' && req.method === 'GET') {
+        sendJSON(res, readCirrose().categorias || []); return;
+    }
+    // POST /api/cirrose/categorias
+    if (url === '/api/cirrose/categorias' && req.method === 'POST') {
+        readBody(req, body => {
+            const d = readCirrose();
+            const nome = (body.nome || '').trim();
+            if (!nome) { res.writeHead(400); res.end(JSON.stringify({ erro: 'Nome obrigatório' })); return; }
+            const maxId = (d.categorias || []).reduce((m, c) => Math.max(m, c.id), 0);
+            const cat = { id: maxId + 1, nome, numChaves: body.numChaves || 1, classificadosPorChave: body.classificadosPorChave || 2 };
+            d.categorias = d.categorias || []; d.categorias.push(cat);
+            writeCirrose(d); sendJSON(res, cat);
+        }); return;
+    }
+    // PUT /api/cirrose/categorias/:id
+    if (url.startsWith('/api/cirrose/categorias/') && req.method === 'PUT') {
+        const id = parseInt(url.split('/').pop());
+        readBody(req, body => {
+            const d = readCirrose();
+            const idx = (d.categorias || []).findIndex(c => c.id === id);
+            if (idx < 0) { res.writeHead(404); res.end(JSON.stringify({ erro: 'Categoria não encontrada' })); return; }
+            const allowed = ['nome','numChaves','classificadosPorChave'];
+            allowed.forEach(k => { if (body[k] !== undefined) d.categorias[idx][k] = body[k]; });
+            writeCirrose(d); sendJSON(res, d.categorias[idx]);
+        }); return;
+    }
+    // DELETE /api/cirrose/categorias/:id
+    if (url.startsWith('/api/cirrose/categorias/') && req.method === 'DELETE') {
+        const id = parseInt(url.split('/').pop());
+        const d = readCirrose();
+        d.categorias = (d.categorias || []).filter(c => c.id !== id);
+        d.inscricoes = (d.inscricoes || []).filter(i => i.categoriaId !== id);
+        d.partidas = (d.partidas || []).filter(p => p.categoriaId !== id);
+        writeCirrose(d); sendJSON(res, { ok: true }); return;
+    }
+
+    // POST /api/cirrose/jogadores
+    if (url === '/api/cirrose/jogadores' && req.method === 'POST') {
+        readBody(req, body => {
+            const d = readCirrose();
+            const nome = (body.nome || '').trim();
+            if (!nome) { res.writeHead(400); res.end(JSON.stringify({ erro: 'Nome obrigatório' })); return; }
+            const maxId = (d.jogadores || []).reduce((m, j) => Math.max(m, j.id), 0);
+            const jog = { id: maxId + 1, nome, tel: body.tel || '' };
+            d.jogadores = d.jogadores || []; d.jogadores.push(jog);
+            writeCirrose(d); sendJSON(res, jog);
+        }); return;
+    }
+    // PUT /api/cirrose/jogadores/:id
+    if (url.startsWith('/api/cirrose/jogadores/') && req.method === 'PUT') {
+        const id = parseInt(url.split('/').pop());
+        readBody(req, body => {
+            const d = readCirrose();
+            const idx = (d.jogadores || []).findIndex(j => j.id === id);
+            if (idx < 0) { res.writeHead(404); res.end(JSON.stringify({ erro: 'Atleta não encontrado' })); return; }
+            if (body.nome) d.jogadores[idx].nome = body.nome.trim();
+            if (body.tel !== undefined) d.jogadores[idx].tel = body.tel;
+            writeCirrose(d); sendJSON(res, d.jogadores[idx]);
+        }); return;
+    }
+    // DELETE /api/cirrose/jogadores/:id
+    if (url.startsWith('/api/cirrose/jogadores/') && req.method === 'DELETE') {
+        const id = parseInt(url.split('/').pop());
+        const d = readCirrose();
+        d.jogadores = (d.jogadores || []).filter(j => j.id !== id);
+        d.inscricoes = (d.inscricoes || []).filter(i => i.jogadorId !== id);
+        writeCirrose(d); sendJSON(res, { ok: true }); return;
+    }
+
+    // GET /api/cirrose/inscricoes
+    if (url === '/api/cirrose/inscricoes' && req.method === 'GET') {
+        sendJSON(res, readCirrose().inscricoes || []); return;
+    }
+    // POST /api/cirrose/inscricoes
+    if (url === '/api/cirrose/inscricoes' && req.method === 'POST') {
+        readBody(req, body => {
+            const d = readCirrose();
+            const jogadorId = parseInt(body.jogadorId), categoriaId = parseInt(body.categoriaId);
+            if (!jogadorId || !categoriaId) { res.writeHead(400); res.end(JSON.stringify({ erro: 'jogadorId e categoriaId obrigatórios' })); return; }
+            // Evitar duplicata
+            const dup = (d.inscricoes || []).find(i => i.jogadorId === jogadorId && i.categoriaId === categoriaId);
+            if (dup) { res.writeHead(409); res.end(JSON.stringify({ erro: 'Atleta já inscrito nesta categoria' })); return; }
+            const maxId = (d.inscricoes || []).reduce((m, i) => Math.max(m, i.id), 0);
+            const insc = { id: maxId + 1, jogadorId, categoriaId };
+            d.inscricoes = d.inscricoes || []; d.inscricoes.push(insc);
+            writeCirrose(d); sendJSON(res, insc);
+        }); return;
+    }
+    // DELETE /api/cirrose/inscricoes/:id
+    if (url.startsWith('/api/cirrose/inscricoes/') && req.method === 'DELETE') {
+        const id = parseInt(url.split('/').pop());
+        const d = readCirrose();
+        d.inscricoes = (d.inscricoes || []).filter(i => i.id !== id);
+        writeCirrose(d); sendJSON(res, { ok: true }); return;
+    }
+
+    // POST /api/cirrose/gerar-chave (por categoria, com N chaves/grupos)
+    if (url === '/api/cirrose/gerar-chave' && req.method === 'POST') {
+        readBody(req, body => {
+            const d = readCirrose();
+            const categoriaId = parseInt(body.categoriaId);
+            if (!categoriaId) { res.writeHead(400); res.end(JSON.stringify({ erro: 'categoriaId obrigatório' })); return; }
+            const cat = (d.categorias || []).find(c => c.id === categoriaId);
+            if (!cat) { res.writeHead(404); res.end(JSON.stringify({ erro: 'Categoria não encontrada' })); return; }
+            const inscritos = (d.jogadores || []).map(j => j.id);
+            if (inscritos.length < 2) { res.writeHead(400); res.end(JSON.stringify({ erro: 'Mínimo 2 atletas cadastrados' })); return; }
+            // Remover partidas de grupos desta categoria
+            d.partidas = (d.partidas || []).filter(p => !(p.categoriaId === categoriaId && p.fase === 'grupos'));
+            const numChaves = cat.numChaves || 1;
+            const letters = 'ABCDEFGH';
+            // Distribuir atletas pelas chaves (round-robin distribution)
+            const grupos = Array.from({length: numChaves}, () => []);
+            inscritos.forEach((id, i) => grupos[i % numChaves].push(id));
+            let pid = (d.partidas.reduce((m, p) => Math.max(m, p.id), 0)) + 1;
+            const novasPartidas = [];
+            for (let g = 0; g < numChaves; g++) {
+                const chaveId = letters[g];
+                const ids = grupos[g];
+                const arr = ids.length % 2 === 0 ? [...ids] : [...ids, null];
+                const numRounds = arr.length - 1;
+                const matchesPerRound = arr.length / 2;
+                for (let r = 0; r < numRounds; r++) {
+                    for (let m = 0; m < matchesPerRound; m++) {
+                        const j1 = arr[m], j2 = arr[arr.length - 1 - m];
+                        if (j1 !== null && j2 !== null) {
+                            novasPartidas.push({ id: pid++, categoriaId, chaveId, j1Id: j1, j2Id: j2, fase: 'grupos', rodada: r + 1, bracketPos: null, gols1: 0, gols2: 0, status: 'agendado', vencedorId: null });
+                        }
+                    }
+                    const last = arr.splice(arr.length - 1, 1)[0];
+                    arr.splice(1, 0, last);
+                }
+            }
+            d.partidas = [...d.partidas, ...novasPartidas];
+            d.fase = 'grupos';
+            writeCirrose(d);
+            sendJSON(res, { partidas: novasPartidas });
+        }); return;
+    }
+
+    // POST /api/cirrose/gerar-mata-mata (por categoria)
+    if (url === '/api/cirrose/gerar-mata-mata' && req.method === 'POST') {
+        readBody(req, body => {
+            const d = readCirrose();
+            const categoriaId = parseInt(body.categoriaId);
+            if (!categoriaId) { res.writeHead(400); res.end(JSON.stringify({ erro: 'categoriaId obrigatório' })); return; }
+            const cat = (d.categorias || []).find(c => c.id === categoriaId);
+            if (!cat) { res.writeHead(404); res.end(JSON.stringify({ erro: 'Categoria não encontrada' })); return; }
+            const pg = (d.partidas || []).filter(p => p.categoriaId === categoriaId && p.fase === 'grupos');
+            const numChaves = cat.numChaves || 1;
+            const classifPorChave = cat.classificadosPorChave || 2;
+            const letters = 'ABCDEFGH';
+            const classificados = [];
+            for (let g = 0; g < numChaves; g++) {
+                const chaveId = letters[g];
+                const chavePartidas = pg.filter(p => p.chaveId === chaveId);
+                const playerIds = new Set();
+                chavePartidas.forEach(p => { if(p.j1Id) playerIds.add(p.j1Id); if(p.j2Id) playerIds.add(p.j2Id); });
+                const stats = {};
+                playerIds.forEach(id => { stats[id] = { id, v:0, e:0, pts:0, sg:0, gf:0 }; });
+                chavePartidas.filter(p => p.status === 'encerrado').forEach(p => {
+                    const s1 = stats[p.j1Id], s2 = stats[p.j2Id]; if(!s1||!s2) return;
+                    s1.gf += p.gols1; s2.gf += p.gols2;
+                    s1.sg += p.gols1 - p.gols2; s2.sg += p.gols2 - p.gols1;
+                    if (p.vencedorId === p.j1Id) { s1.v++; } else if (p.vencedorId === p.j2Id) { s2.v++; } else { s1.e++; s2.e++; }
+                });
+                Object.values(stats).forEach(s => { s.pts = s.v * 3 + s.e; });
+                const sorted = Object.values(stats).sort((a, b) => b.pts - a.pts || b.sg - a.sg || b.gf - a.gf);
+                sorted.slice(0, classifPorChave).forEach(s => classificados.push(s.id));
+            }
+            // Remover partidas de mata-mata antigas desta categoria
+            d.partidas = (d.partidas || []).filter(p => !(p.categoriaId === categoriaId && p.fase !== 'grupos'));
+            // Determinar bracket
+            const n = classificados.length;
+            let size = 1; while (size < n) size *= 2;
+            const fases = ['oitavas','quartas','semifinal','final'];
+            let faseidx = 0;
+            if (size <= 2) faseidx = 3;
+            else if (size <= 4) faseidx = 2;
+            else if (size <= 8) faseidx = 1;
+            else faseidx = 0;
+            const primFase = fases[faseidx];
+            let pid = (d.partidas.reduce((m, p) => Math.max(m, p.id), 0)) + 1;
+            const numMatches = size / 2;
+            const partidasMM = [];
+            for (let i = 0; i < numMatches; i++) {
+                const j1 = classificados[i] || null;
+                const j2 = classificados[size - 1 - i] || null;
+                partidasMM.push({ id: pid++, categoriaId, chaveId: null, j1Id: j1, j2Id: j2, fase: primFase, bracketPos: i, gols1: 0, gols2: 0, status: 'agendado', vencedorId: j2 === null && j1 ? j1 : (j1 === null && j2 ? j2 : null), rodada: null });
+            }
+            d.fase = 'mata-mata';
+            d.partidas = [...d.partidas, ...partidasMM];
+            writeCirrose(d);
+            sendJSON(res, { partidas: partidasMM });
+        }); return;
+    }
+
+    // PUT /api/cirrose/partidas/:id
+    if (url.startsWith('/api/cirrose/partidas/') && req.method === 'PUT') {
+        const id = parseInt(url.split('/').pop());
+        readBody(req, body => {
+            const d = readCirrose();
+            const idx = (d.partidas || []).findIndex(p => p.id === id);
+            if (idx < 0) { res.writeHead(404); res.end(JSON.stringify({ erro: 'Partida não encontrada' })); return; }
+            const allowed = ['gols1','gols2','status','vencedorId','j1Id','j2Id'];
+            allowed.forEach(k => { if (body[k] !== undefined) d.partidas[idx][k] = body[k]; });
+            writeCirrose(d); sendJSON(res, d.partidas[idx]);
+        }); return;
+    }
+    // POST /api/cirrose/partidas (nova partida bracket)
+    if (url === '/api/cirrose/partidas' && req.method === 'POST') {
+        readBody(req, body => {
+            const d = readCirrose();
+            const pid = ((d.partidas || []).reduce((m, p) => Math.max(m, p.id), 0)) + 1;
+            const nova = { id: pid, categoriaId: body.categoriaId || null, chaveId: body.chaveId || null, j1Id: body.j1Id || null, j2Id: body.j2Id || null, fase: body.fase || 'grupos', rodada: body.rodada || null, bracketPos: body.bracketPos !== undefined ? body.bracketPos : null, gols1: 0, gols2: 0, status: body.status || 'agendado', vencedorId: body.vencedorId || null };
+            d.partidas = d.partidas || []; d.partidas.push(nova);
+            writeCirrose(d); sendJSON(res, nova);
+        }); return;
+    }
+    // PUT /api/cirrose/fase
+    if (url === '/api/cirrose/fase' && req.method === 'PUT') {
+        readBody(req, body => { const d = readCirrose(); d.fase = body.fase || d.fase; writeCirrose(d); sendJSON(res, { fase: d.fase }); }); return;
+    }
+    // POST /api/cirrose/resetar
+    if (url === '/api/cirrose/resetar' && req.method === 'POST') {
+        const vazio = { evento: { nome: 'Grande Copa Cirrose - 1ª Edição', data: '', horaInicio: '09:00', local: '', descricao: '', status: 'agendado' }, quadras: [], categorias: [], jogadores: [], inscricoes: [], partidas: [], fase: 'cadastro' };
+        writeCirrose(vazio); sendJSON(res, vazio); return;
+    }
+    // ==================== FIM API COPA CIRROSE ====================
+
     const filePath = path.join(__dirname, 'public', decodeURIComponent(url));
     const ext = path.extname(filePath).toLowerCase();
     const contentType = MIME_TYPES[ext] || 'application/octet-stream';

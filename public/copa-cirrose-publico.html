@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏆 Grande Copa Cirrose - 1ª Edição</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background: #0f0f1a; color: #fff; min-height: 100vh; }
+        .bg { position: fixed; inset: 0; z-index: 0; overflow: hidden; }
+        .bg .g { position: absolute; inset: 0; background: linear-gradient(135deg, #1a0a2e 0%, #0f0f1a 50%, #1a1a00 100%); }
+        .bg .o { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.15; animation: orbFloat 20s ease-in-out infinite; }
+        .bg .o:nth-child(2) { width: 450px; height: 450px; background: #8b0000; top: -100px; right: -100px; }
+        .bg .o:nth-child(3) { width: 500px; height: 500px; background: #b8860b; bottom: -150px; left: -150px; animation-delay: -8s; }
+        .bg .o:nth-child(4) { width: 300px; height: 300px; background: #4a0080; top: 50%; left: 40%; animation-delay: -14s; }
+        @keyframes orbFloat { 0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-40px) scale(1.05)} }
+        .wrap { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 20px; }
+        .hero { text-align: center; padding: 40px 20px; }
+        .hero .icon { font-size: 4rem; margin-bottom: 12px; }
+        .hero h1 { font-size: 2rem; font-weight: 900; background: linear-gradient(135deg, #ffd700, #ff6b00); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero .subtitle { font-size: 0.9rem; color: rgba(255,255,255,0.5); margin-top: 6px; }
+        .hero .evento-info { margin-top: 16px; display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
+        .evento-chip { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); border-radius: 20px; padding: 6px 16px; font-size: 0.82rem; color: rgba(255,255,255,0.7); }
+        .nav { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; justify-content: center; }
+        .nav-tab { padding: 10px 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.6); cursor: pointer; font-family: 'Poppins',sans-serif; font-size: 0.85rem; font-weight: 600; transition: all 0.2s; }
+        .nav-tab:hover { background: rgba(255,255,255,0.1); color: #fff; }
+        .nav-tab.active { background: linear-gradient(135deg, #8b0000, #b8860b); color: #fff; border-color: transparent; }
+        .panel { display: none; }
+        .panel.active { display: block; }
+        .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 24px; margin-bottom: 20px; }
+        .glass h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 16px; }
+        .partida-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 16px 20px; margin-bottom: 12px; }
+        .partida-card.em-jogo { border-color: rgba(239,68,68,0.5); background: rgba(239,68,68,0.05); }
+        .partida-card.encerrado { border-color: rgba(34,197,94,0.3); opacity: 0.85; }
+        .partida-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+        .partida-fase { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.4); }
+        .badge { padding: 3px 10px; border-radius: 12px; font-size: 0.72rem; font-weight: 700; }
+        .badge-agendado { background: rgba(59,130,246,0.2); color: #60a5fa; }
+        .badge-em_jogo { background: rgba(239,68,68,0.2); color: #f87171; animation: pulseR 1.5s ease infinite; }
+        .badge-encerrado { background: rgba(34,197,94,0.2); color: #4ade80; }
+        @keyframes pulseR { 0%,100%{opacity:1}50%{opacity:0.6} }
+        .partida-body { display: flex; align-items: center; gap: 12px; }
+        .pj { flex:1; text-align:center; }
+        .pj-nome { font-weight: 700; font-size: 0.95rem; }
+        .pj-gols { font-size: 2rem; font-weight: 900; color: #ffd700; line-height: 1; margin-top: 4px; }
+        .pj-win { font-size: 0.7rem; color: #4ade80; font-weight: 700; margin-top: 2px; }
+        .vs { font-size: 0.85rem; font-weight: 800; color: rgba(255,255,255,0.3); flex-shrink: 0; }
+        .classif-table { width: 100%; border-collapse: collapse; }
+        .classif-table th { font-size: 0.78rem; font-weight: 700; color: rgba(255,255,255,0.5); text-align: center; padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+        .classif-table th:first-child { text-align: left; }
+        .classif-table td { padding: 10px; text-align: center; font-size: 0.85rem; border-bottom: 1px solid rgba(255,255,255,0.06); }
+        .classif-table td:first-child { text-align: left; }
+        .pos { width: 28px; height: 28px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.85rem; }
+        .pos-1 { background: linear-gradient(135deg, #b8860b, #ffd700); color: #000; }
+        .pos-2 { background: rgba(192,192,192,0.3); }
+        .pos-3 { background: rgba(205,127,50,0.3); color: #cd7f32; }
+        .pos-other { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.5); }
+        .bracket { display: flex; gap: 40px; align-items: flex-start; min-width: max-content; overflow-x: auto; padding-bottom: 12px; }
+        .bracket-round { display: flex; flex-direction: column; gap: 8px; }
+        .bracket-round-title { font-size: 0.75rem; font-weight: 700; text-align: center; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.4); margin-bottom: 8px; }
+        .bracket-match { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; overflow: hidden; width: 200px; }
+        .bracket-match.em-jogo { border-color: rgba(239,68,68,0.5); }
+        .bracket-match.encerrado { border-color: rgba(34,197,94,0.3); }
+        .bm-row { padding: 8px 12px; display: flex; align-items: center; justify-content: space-between; font-size: 0.82rem; font-weight: 600; border-bottom: 1px solid rgba(255,255,255,0.06); }
+        .bm-row:last-child { border-bottom: none; }
+        .bm-row.win { background: rgba(34,197,94,0.1); color: #4ade80; }
+        .bm-gols { font-weight: 900; font-size: 1rem; color: #ffd700; }
+        .podio { display: flex; align-items: flex-end; justify-content: center; gap: 12px; padding: 20px 0; }
+        .podio-item { text-align: center; }
+        .pedestal { border-radius: 10px 10px 0 0; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+        .p1 { width: 120px; height: 120px; background: linear-gradient(135deg, #b8860b, #ffd700); }
+        .p2 { width: 100px; height: 90px; background: rgba(192,192,192,0.3); border: 1px solid rgba(192,192,192,0.4); }
+        .p3 { width: 100px; height: 70px; background: rgba(205,127,50,0.3); border: 1px solid rgba(205,127,50,0.4); }
+        .podio-nome { font-size: 0.85rem; font-weight: 700; margin-top: 8px; }
+        .podio-sub { font-size: 0.75rem; color: rgba(255,255,255,0.5); }
+        .empty { text-align: center; padding: 40px; color: rgba(255,255,255,0.3); font-size: 0.9rem; }
+        .jogadores-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; }
+        .jog-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 12px 14px; display: flex; align-items: center; gap: 10px; }
+        .jog-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1rem; flex-shrink: 0; }
+        .jog-nome { font-size: 0.88rem; font-weight: 600; }
+        .live-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(239,68,68,0.2); border: 1px solid rgba(239,68,68,0.4); border-radius: 20px; padding: 4px 12px; font-size: 0.75rem; font-weight: 700; color: #f87171; margin-bottom: 16px; }
+        .live-dot { width: 8px; height: 8px; border-radius: 50%; background: #f87171; animation: pulseR 1s ease infinite; }
+
+        /* ===== GROUP CARDS (public) ===== */
+        .gc-cat-sel{display:flex;align-items:center;gap:10px;margin-bottom:18px;flex-wrap:wrap}
+        .gc-cat-sel label{font-size:.8rem;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.7px}
+        .gc-cat-sel select{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#fff;border-radius:10px;padding:7px 12px;font-family:'Poppins',sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;outline:none}
+        .gc-cat-sel select:focus{border-color:rgba(220,20,60,.5)}
+        .gc-classif-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin-bottom:20px}
+        .gc-classif-grid .group-card{margin-bottom:0}
+        .gc-rounds-section{margin-top:0}
+        .gc-round-block{margin-bottom:14px}
+        .gc-round-hdr{display:flex;align-items:center;gap:8px;padding:8px 14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:11px;margin-bottom:8px;font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.9px;color:rgba(255,255,255,.45)}
+        .gc-round-hdr::before{content:'';display:inline-block;width:3px;height:14px;border-radius:2px;background:linear-gradient(180deg,#dc143c,#ffd700)}
+        .gc-chave-mini{display:flex;align-items:center;gap:7px;margin:8px 0 5px;padding-left:2px}
+        .gc-chave-mini .cl{width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#dc143c,#8b0000);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.68rem;color:#fff;flex-shrink:0;box-shadow:0 2px 6px rgba(220,20,60,.25)}
+        .gc-chave-mini .cl-label{font-size:.68rem;font-weight:700;color:rgba(255,255,255,.38);text-transform:uppercase;letter-spacing:.7px}
+        .group-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:16px;margin-bottom:14px;overflow:hidden;transition:border-color .3s}
+        .group-card:hover{border-color:rgba(255,255,255,.18)}
+        .group-hdr{display:flex;align-items:center;gap:10px;padding:12px 16px;background:rgba(255,255,255,.03);border-bottom:1px solid rgba(255,255,255,.06)}
+        .group-letter{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#dc143c,#8b0000);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.95rem;flex-shrink:0;color:#fff;box-shadow:0 3px 10px rgba(220,20,60,.3)}
+        .group-title{font-weight:800;font-size:.92rem;color:#ffd700;flex:1}
+        .group-prog{display:flex;align-items:center;gap:7px}
+        .group-prog-bar{width:80px;height:4px;background:rgba(255,255,255,.1);border-radius:10px;overflow:hidden}
+        .group-prog-fill{height:100%;border-radius:10px;transition:width .6s ease}
+        .group-prog-label{font-size:.64rem;color:rgba(255,255,255,.4);font-weight:600;white-space:nowrap}
+        .group-body{display:grid;grid-template-columns:1fr 1.35fr}
+        .gcside{padding:14px 16px}
+        .gcside-left{border-right:1px solid rgba(255,255,255,.06)}
+        .gcside-title{font-size:.61rem;font-weight:700;text-transform:uppercase;letter-spacing:.9px;color:rgba(255,255,255,.3);margin-bottom:8px}
+        .gct{width:100%;border-collapse:collapse}
+        .gct td{padding:5px 4px;font-size:.77rem;vertical-align:middle}
+        .gct td:first-child{padding-left:0;width:26px}
+        .gct tr:not(:last-child) td{border-bottom:1px solid rgba(255,255,255,.035)}
+        .gct .gpts{font-weight:900;color:#ffd700;font-size:.88rem;text-align:center;min-width:22px}
+        .gct .gsgp{color:#6ee7b7;font-size:.7rem;text-align:right}
+        .gct .gsgn{color:#f87171;font-size:.7rem;text-align:right}
+        .gct .gsg0{color:rgba(255,255,255,.3);font-size:.7rem;text-align:right}
+        .cp{width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:.72rem}
+        .cp-1{background:linear-gradient(135deg,#b8860b,#ffd700);color:#000}
+        .cp-2{background:rgba(192,192,192,.25);color:#e2e8f0}
+        .cp-3{background:rgba(205,127,50,.25);color:#cd7f32}
+        .cp-n{background:rgba(255,255,255,.08);color:rgba(255,255,255,.4)}
+        .round-sep{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:rgba(255,255,255,.28);margin:8px 0 4px;padding-top:7px;border-top:1px solid rgba(255,255,255,.05)}
+        .round-sep:first-child{border-top:none;margin-top:0;padding-top:0}
+        .mr{display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:9px;margin-bottom:3px;border:1px solid transparent}
+        .mr.em_jogo{background:rgba(239,68,68,.07);border-color:rgba(239,68,68,.25);animation:pulseGrp 2.5s ease infinite}
+        .mr.encerrado{opacity:.82}
+        @keyframes pulseGrp{0%,100%{border-color:rgba(239,68,68,.25)}50%{border-color:rgba(239,68,68,.55)}}
+        .mr-player{flex:1;min-width:0;overflow:hidden}
+        .mr-nome{font-size:.77rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;color:rgba(255,255,255,.7)}
+        .mr-nome.venc{color:#ffd700;font-weight:800}
+        .mr-left{text-align:right}
+        .mr-right{text-align:left}
+        .mr-score{display:flex;align-items:center;gap:4px;flex-shrink:0}
+        .mr-g{font-size:1rem;font-weight:900;color:#ffd700;min-width:14px;text-align:center}
+        .mr-sep{font-size:.7rem;color:rgba(255,255,255,.25);font-weight:700}
+        .mr-st{width:19px;height:19px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.52rem;font-weight:800;flex-shrink:0}
+        .mr-st.wait{background:rgba(251,191,36,.15);color:#fbbf24;border:1px solid rgba(251,191,36,.3)}
+        .mr-st.live{background:rgba(239,68,68,.2);color:#f87171;border:1px solid rgba(239,68,68,.4)}
+        .mr-st.done{background:rgba(56,239,125,.12);color:#6ee7b7;border:1px solid rgba(56,239,125,.25)}
+        .mr-st.draw{background:rgba(251,191,36,.12);color:#fbbf24;border:1px solid rgba(251,191,36,.25)}
+        @media(max-width:600px){.group-body{grid-template-columns:1fr}.gcside-left{border-right:none;border-bottom:1px solid rgba(255,255,255,.06)}}
+
+        @media (max-width: 600px) { .hero h1 { font-size: 1.4rem; } .pj-gols { font-size: 1.5rem; } }
+    </style>
+</head>
+<body>
+<div class="bg"><div class="g"></div><div class="o"></div><div class="o"></div><div class="o"></div></div>
+<div class="wrap">
+    <div class="hero">
+        <div class="icon">🏆</div>
+        <h1 id="hero-nome">Grande Copa Cirrose</h1>
+        <div class="subtitle">1ª Edição</div>
+        <div class="evento-info" id="evento-info"></div>
+    </div>
+    <div class="nav">
+        <button class="nav-tab active" onclick="switchTab('aovivo')">🔴 Ao Vivo</button>
+        <button class="nav-tab" onclick="switchTab('grupos')">📊 Grupos</button>
+        <button class="nav-tab" onclick="switchTab('bracket')">⚔️ Mata-Mata</button>
+        <button class="nav-tab" onclick="switchTab('jogadores')">👥 Jogadores</button>
+    </div>
+
+    <div class="panel active" id="panel-aovivo">
+        <div class="glass">
+            <h2>🔴 Ao Vivo</h2>
+            <div id="aovivo-content"></div>
+        </div>
+        <div class="glass">
+            <h2>⏳ Próximas Partidas</h2>
+            <div id="proximas-content"></div>
+        </div>
+        <div class="glass">
+            <h2>✅ Últimos Resultados</h2>
+            <div id="ultimos-content"></div>
+        </div>
+    </div>
+
+    <div class="panel" id="panel-grupos">
+        <div class="glass">
+            <div class="gc-cat-sel">
+                <label>Categoria</label>
+                <select id="pub-grupos-cat" onchange="renderGrupos()"></select>
+            </div>
+            <div id="pub-grupos-container"><div class="empty">Carregando...</div></div>
+        </div>
+    </div>
+
+    <div class="panel" id="panel-bracket">
+        <div class="glass">
+            <h2>⚔️ Chave do Mata-Mata</h2>
+            <div style="overflow-x:auto;" id="bracket-content"></div>
+        </div>
+    </div>
+
+    <div class="panel" id="panel-jogadores">
+        <div class="glass">
+            <h2>🏆 Classificação Final / Tabela</h2>
+            <div id="podio-pub"></div>
+            <table class="classif-table" style="margin-top:16px;">
+                <thead><tr><th>#</th><th>Jogador</th><th>PJ</th><th>V</th><th>D</th><th>GF</th><th>GC</th><th>SG</th></tr></thead>
+                <tbody id="tbody-pub"></tbody>
+            </table>
+        </div>
+        <div class="glass">
+            <h2>👥 Participantes</h2>
+            <div class="jogadores-grid" id="jog-grid"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+let D = { evento: {}, jogadores: [], partidas: [], fase: 'cadastro' };
+
+function switchTab(tab) {
+    document.querySelectorAll('.nav-tab').forEach((t,i) => {
+        const tabs = ['aovivo','grupos','bracket','jogadores'];
+        t.classList.toggle('active', tabs[i] === tab);
+    });
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('panel-'+tab).classList.add('active');
+}
+
+async function load() {
+    try {
+        const r = await fetch('/api/cirrose');
+        D = await r.json();
+        render();
+    } catch {}
+}
+
+function render() {
+    renderHero();
+    renderAoVivo();
+    renderGrupos();
+    renderBracket();
+    renderJogadores();
+}
+
+function renderHero() {
+    const e = D.evento || {};
+    document.getElementById('hero-nome').textContent = e.nome || 'Grande Copa Cirrose';
+    const chips = [];
+    if (e.data) chips.push('📅 ' + formatDate(e.data));
+    if (e.horaInicio) chips.push('⏰ ' + e.horaInicio);
+    if (e.local) chips.push('📍 ' + e.local);
+    document.getElementById('evento-info').innerHTML = chips.map(c => `<span class="evento-chip">${esc(c)}</span>`).join('');
+}
+
+function renderAoVivo() {
+    const emJogo = D.partidas.filter(p => p.status === 'em_jogo');
+    const agendadas = D.partidas.filter(p => p.status === 'agendado');
+    const ultimas = D.partidas.filter(p => p.status === 'encerrado').slice(-6).reverse();
+
+    const aoVivoEl = document.getElementById('aovivo-content');
+    if (!emJogo.length) {
+        aoVivoEl.innerHTML = '<div class="empty">Nenhuma partida em andamento</div>';
+    } else {
+        aoVivoEl.innerHTML = `<div class="live-badge"><span class="live-dot"></span>AO VIVO</div>` + emJogo.map(p => renderPub(p, true)).join('');
+    }
+
+    const prox = document.getElementById('proximas-content');
+    if (!agendadas.length) {
+        prox.innerHTML = '<div class="empty">Sem partidas agendadas</div>';
+    } else {
+        // Separar grupos (intercalar rodada×chave) de mata-mata (ordem simples)
+        const grupos = agendadas.filter(p => p.fase === 'grupos');
+        const outros = agendadas.filter(p => p.fase !== 'grupos');
+        let html = '';
+        if (grupos.length) {
+            const porChave = {};
+            grupos.forEach(p => { const c = p.chaveId||'A'; if(!porChave[c]) porChave[c]=[]; porChave[c].push(p); });
+            const chaveKeys = Object.keys(porChave).sort();
+            const allRounds = new Set(grupos.map(p => p.rodada||1));
+            Array.from(allRounds).sort((a,b)=>+a-+b).forEach(r => {
+                const hasAny = chaveKeys.some(ck => porChave[ck].some(p=>(p.rodada||1)===+r));
+                if (!hasAny) return;
+                html += `<div class="gc-round-hdr">Rodada ${r}</div>`;
+                chaveKeys.forEach(ck => {
+                    const matches = porChave[ck].filter(p=>(p.rodada||1)===+r);
+                    if (!matches.length) return;
+                    html += `<div class="gc-chave-mini"><span class="cl">${ck}</span><span class="cl-label">Chave ${ck}</span></div>`;
+                    html += matches.map(p => renderPub(p)).join('');
+                });
+            });
+        }
+        if (outros.length) {
+            html += outros.map(p => renderPub(p)).join('');
+        }
+        prox.innerHTML = html;
+    }
+
+    const ult = document.getElementById('ultimos-content');
+    ult.innerHTML = ultimas.length ? ultimas.map(p => renderPub(p)).join('') : '<div class="empty">Nenhum resultado ainda</div>';
+}
+
+function renderGrupos() {
+    // populate category select
+    const sel = document.getElementById('pub-grupos-cat');
+    const cats = (D.categorias||[]);
+    if (sel.options.length !== cats.length) {
+        const prev = sel.value;
+        sel.innerHTML = cats.map(c => `<option value="${c.id}">${esc(c.nome)}</option>`).join('');
+        if (prev && cats.find(c=>String(c.id)===prev)) sel.value = prev;
+    }
+    const catId = parseInt(sel.value);
+    const container = document.getElementById('pub-grupos-container');
+    if (!catId) { container.innerHTML = '<div class="empty">Nenhuma categoria encontrada</div>'; return; }
+    const cat = cats.find(c => c.id === catId);
+    const partidas = (D.partidas||[]).filter(p => p.categoriaId === catId && p.fase === 'grupos');
+    if (!partidas.length) { container.innerHTML = '<div class="empty">Fase de grupos ainda não iniciada</div>'; return; }
+    const classif = cat?.classificadosPorChave || 2;
+
+    // Agrupar por chave
+    const chaves = {};
+    partidas.forEach(p => { const k = p.chaveId||'A'; if(!chaves[k]) chaves[k]=[]; chaves[k].push(p); });
+    const chaveKeys = Object.keys(chaves).sort();
+
+    // ===== SECTION 1: cards de classificação (um por chave) =====
+    const classifCards = chaveKeys.map(k => {
+        const ps = chaves[k];
+        const done = ps.filter(p=>p.status==='encerrado').length;
+        const total = ps.length;
+        const pct = total ? Math.round(done/total*100) : 0;
+        const progColor = pct===100 ? 'linear-gradient(90deg,#059669,#38ef7d)' : pct>0 ? 'linear-gradient(90deg,#dc143c,#ffd700)' : 'rgba(255,255,255,.2)';
+        const playerIds = new Set();
+        ps.forEach(p => { if(p.j1Id) playerIds.add(p.j1Id); if(p.j2Id) playerIds.add(p.j2Id); });
+        const st = {};
+        playerIds.forEach(id => { st[id]={id,v:0,e:0,d:0,pts:0,pj:0,gf:0,gc:0,sg:0}; });
+        ps.filter(p=>p.status==='encerrado').forEach(p => {
+            const s1=st[p.j1Id], s2=st[p.j2Id]; if(!s1||!s2) return;
+            s1.pj++;s2.pj++;
+            s1.gf+=p.gols1||0;s1.gc+=p.gols2||0;s2.gf+=p.gols2||0;s2.gc+=p.gols1||0;
+            s1.sg+=(p.gols1||0)-(p.gols2||0);s2.sg+=(p.gols2||0)-(p.gols1||0);
+            if(p.vencedorId===p.j1Id){s1.v++;s2.d++;}
+            else if(p.vencedorId===p.j2Id){s2.v++;s1.d++;}
+            else{s1.e++;s2.e++;}
+        });
+        Object.values(st).forEach(s => { s.pts = s.v*3 + s.e; });
+        const sorted = Object.values(st).sort((a,b)=>b.pts-a.pts||b.sg-a.sg||b.gf-a.gf);
+        const rows = sorted.map((s,i) => {
+            const posC = i<1?'cp-1':i<2?'cp-2':i<3?'cp-3':'cp-n';
+            const sgC = s.sg>0?'gsgp':s.sg<0?'gsgn':'gsg0';
+            return `<tr>
+                <td><span class="cp ${posC}">${i+1}</span></td>
+                <td style="max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:4px">${esc(findJ(s.id)?.nome||'?')}${i<classif?' <span style="font-size:.52rem;color:#6ee7b7;vertical-align:middle">✓</span>':''}</td>
+                <td class="gpts">${s.pts}</td>
+                <td style="font-size:.7rem;color:rgba(255,255,255,.4);text-align:center">${s.pj}</td>
+                <td style="font-size:.68rem;color:rgba(255,255,255,.4);white-space:nowrap;text-align:center">${s.v}V ${s.e}E</td>
+                <td class="${sgC}">${s.sg>0?'+':''}${s.sg}</td>
+            </tr>`;
+        }).join('');
+        return `<div class="group-card">
+            <div class="group-hdr">
+                <div class="group-letter">${k}</div>
+                <span class="group-title">Chave ${k}</span>
+                <div class="group-prog">
+                    <div class="group-prog-bar"><div class="group-prog-fill" style="width:${pct}%;background:${progColor}"></div></div>
+                    <span class="group-prog-label">${done}/${total} jogos</span>
+                </div>
+            </div>
+            <div class="gcside">
+                <div class="gcside-title">&#128202; Classifica&ccedil;&atilde;o</div>
+                <table class="gct"><tbody>${rows}</tbody></table>
+            </div>
+        </div>`;
+    }).join('');
+
+    // ===== SECTION 2: partidas intercaladas por rodada =====
+    const allRounds = new Set();
+    partidas.forEach(p => allRounds.add(p.rodada||1));
+    const roundBlocks = Array.from(allRounds).sort((a,b)=>+a-+b).map(r => {
+        const chaveBlocks = chaveKeys.map(k => {
+            const rMatches = chaves[k].filter(p => (p.rodada||1) === +r);
+            if (!rMatches.length) return '';
+            const matchRows = rMatches.map(p => {
+                const n1=findJ(p.j1Id)?.nome||'?', n2=findJ(p.j2Id)?.nome||'?';
+                const v1=p.vencedorId===p.j1Id, v2=p.vencedorId===p.j2Id;
+                const isDraw=p.status==='encerrado'&&!p.vencedorId;
+                const stEl = p.status==='em_jogo' ? '<span class="mr-st live">&#9679;</span>'
+                           : p.status==='encerrado' ? (isDraw ? '<span class="mr-st draw">=</span>' : '<span class="mr-st done">&#10003;</span>')
+                           : '<span class="mr-st wait">&hellip;</span>';
+                return `<div class="mr ${p.status}">
+                    <div class="mr-player mr-left"><span class="mr-nome${v1?' venc':''}">${esc(n1)}</span></div>
+                    <div class="mr-score"><span class="mr-g">${p.gols1||0}</span><span class="mr-sep">&times;</span><span class="mr-g">${p.gols2||0}</span></div>
+                    <div class="mr-player mr-right"><span class="mr-nome${v2?' venc':''}">${esc(n2)}</span></div>
+                    ${stEl}
+                </div>`;
+            }).join('');
+            return `<div class="gc-chave-mini"><span class="cl">${k}</span><span class="cl-label">Chave ${k}</span></div>${matchRows}`;
+        }).join('');
+        return `<div class="gc-round-block">
+            <div class="gc-round-hdr">Rodada ${r}</div>
+            ${chaveBlocks}
+        </div>`;
+    }).join('');
+
+    container.innerHTML = `<div class="gc-classif-grid">${classifCards}</div><div class="gc-rounds-section">${roundBlocks}</div>`;
+}
+
+function renderBracket() {
+    const mm = D.partidas.filter(p => p.fase !== 'grupos');
+    const el = document.getElementById('bracket-content');
+    if (!mm.length) { el.innerHTML = '<div class="empty">Mata-mata ainda não gerado</div>'; return; }
+    const fases = ['oitavas','quartas','semifinal','final','terceiro'];
+    const fp = fases.filter(f => mm.some(p => p.fase === f));
+    const fl = { oitavas:'Oitavas', quartas:'Quartas', semifinal:'Semifinal', final:'Final', terceiro:'3º Lugar' };
+    el.innerHTML = `<div class="bracket">` + fp.map(f => {
+        const ps = mm.filter(p => p.fase === f).sort((a,b)=>(a.bracketPos||0)-(b.bracketPos||0));
+        return `<div class="bracket-round"><div class="bracket-round-title">${fl[f]||f}</div>${ps.map(p => {
+            const j1 = findJ(p.j1Id), j2 = findJ(p.j2Id);
+            const cls = p.status==='em_jogo'?'em-jogo':p.status==='encerrado'?'encerrado':'';
+            return `<div class="bracket-match ${cls}">
+                <div class="bm-row${p.vencedorId===p.j1Id?' win':''}">${esc(j1?.nome||'?')}<span class="bm-gols">${p.status!=='agendado'?p.gols1:'-'}</span></div>
+                <div class="bm-row${p.vencedorId===p.j2Id?' win':''}">${esc(j2?.nome||'?')}<span class="bm-gols">${p.status!=='agendado'?p.gols2:'-'}</span></div>
+            </div>`;
+        }).join('')}</div>`;
+    }).join('') + `</div>`;
+}
+
+function renderJogadores() {
+    const stats = calcStats();
+    const sorted = Object.values(stats).sort((a,b)=>b.v-a.v||(b.gf-b.gc)-(a.gf-a.gc)||b.gf-a.gf);
+
+    const final = D.partidas.find(p => p.fase === 'final' && p.status === 'encerrado');
+    const terceiro = D.partidas.find(p => p.fase === 'terceiro' && p.status === 'encerrado');
+    const podioEl = document.getElementById('podio-pub');
+    if (final) {
+        const camp = findJ(final.vencedorId);
+        const vice = findJ(final.vencedorId === final.j1Id ? final.j2Id : final.j1Id);
+        const t3 = terceiro ? findJ(terceiro.vencedorId) : null;
+        podioEl.innerHTML = `<div class="podio">
+            <div class="podio-item"><div class="pedestal p2">🥈</div><div class="podio-nome">${esc(vice?.nome||'?')}</div><div class="podio-sub">2º Lugar</div></div>
+            <div class="podio-item"><div class="pedestal p1">🏆</div><div class="podio-nome">${esc(camp?.nome||'?')}</div><div class="podio-sub">🥇 Campeão!</div></div>
+            ${t3?`<div class="podio-item"><div class="pedestal p3">🥉</div><div class="podio-nome">${esc(t3.nome)}</div><div class="podio-sub">3º Lugar</div></div>`:'<div class="podio-item"></div>'}
+        </div>`;
+    } else { podioEl.innerHTML = ''; }
+
+    document.getElementById('tbody-pub').innerHTML = sorted.map((s,i) => `
+        <tr><td><span class="pos ${i===0?'pos-1':i===1?'pos-2':i===2?'pos-3':'pos-other'}">${i+1}</span></td><td>${esc(s.nome)}</td><td>${s.pj}</td><td>${s.v}</td><td>${s.d}</td><td>${s.gf}</td><td>${s.gc}</td><td style="color:${s.gf-s.gc>=0?'#4ade80':'#f87171'}">${s.gf-s.gc>=0?'+':''}${s.gf-s.gc}</td></tr>
+    `).join('');
+
+    document.getElementById('jog-grid').innerHTML = D.jogadores.map(j => `
+        <div class="jog-card"><div class="jog-avatar" style="background:${color(j.id)}">${esc(j.nome.charAt(0).toUpperCase())}</div><div class="jog-nome">${esc(j.nome)}</div></div>
+    `).join('');
+}
+
+function renderPub(p, live) {
+    const j1 = findJ(p.j1Id), j2 = findJ(p.j2Id);
+    const sl = { agendado:'Agendado', em_jogo:'🔴 Em Jogo', encerrado:'✅ Encerrado' };
+    const bc = { agendado:'badge-agendado', em_jogo:'badge-em_jogo', encerrado:'badge-encerrado' };
+    const cc = p.status==='em_jogo'?'em-jogo':p.status==='encerrado'?'encerrado':'';
+    const v1 = p.vencedorId===p.j1Id, v2 = p.vencedorId===p.j2Id;
+    const fl = { grupos:'Grupos', oitavas:'Oitavas', quartas:'Quartas', semifinal:'Semifinal', final:'Final', terceiro:'3º Lugar' };
+    return `<div class="partida-card ${cc}">
+        <div class="partida-header"><span class="partida-fase">${fl[p.fase]||p.fase}${p.rodada?' · Rodada '+p.rodada:''}</span><span class="badge ${bc[p.status]||'badge-agendado'}">${sl[p.status]||p.status}</span></div>
+        <div class="partida-body">
+            <div class="pj"><div class="pj-nome" style="color:${v1?'#4ade80':'#fff'}">${esc(j1?.nome||'?')}</div><div class="pj-gols">${p.status!=='agendado'?p.gols1:'-'}</div>${v1?'<div class="pj-win">🏆</div>':''}</div>
+            <div class="vs">VS</div>
+            <div class="pj"><div class="pj-nome" style="color:${v2?'#4ade80':'#fff'}">${esc(j2?.nome||'?')}</div><div class="pj-gols">${p.status!=='agendado'?p.gols2:'-'}</div>${v2?'<div class="pj-win">🏆</div>':''}</div>
+        </div>
+    </div>`;
+}
+
+function calcStats() {
+    const stats = {};
+    D.jogadores.forEach(j => { stats[j.id] = { id: j.id, nome: j.nome, pj: 0, v: 0, d: 0, gf: 0, gc: 0 }; });
+    D.partidas.filter(p => p.status === 'encerrado').forEach(p => {
+        const s1 = stats[p.j1Id], s2 = stats[p.j2Id];
+        if (!s1 || !s2) return;
+        s1.pj++; s2.pj++;
+        s1.gf += p.gols1||0; s1.gc += p.gols2||0;
+        s2.gf += p.gols2||0; s2.gc += p.gols1||0;
+        if (p.vencedorId===p.j1Id){s1.v++;s2.d++;}else if(p.vencedorId===p.j2Id){s2.v++;s1.d++;}else{s1.d++;s2.d++;}
+    });
+    return stats;
+}
+
+function findJ(id) { return D.jogadores.find(j => j.id === id); }
+function color(id) { const c=['#e21b3c','#1368ce','#26890c','#d89e00','#9b59b6','#e67e22','#1abc9c','#e74c3c','#3498db','#2ecc71']; return c[id%c.length]; }
+function esc(t) { const d=document.createElement('div'); d.textContent=t||''; return d.innerHTML; }
+function formatDate(d) { if (!d) return ''; const [y,m,dd]=d.split('-'); return `${dd}/${m}/${y}`; }
+
+load();
+setInterval(load, 10000);
+
+// WebSocket
+try {
+    const ws = new WebSocket('ws://'+location.host);
+    ws.onmessage = e => { try { const m=JSON.parse(e.data); if(m.type==='cirrose-update'){D=m.data;render();} } catch{} };
+    ws.onclose = () => setTimeout(() => { try { ws.close(); } catch{} }, 3000);
+} catch {}
+</script>
+</body>
+</html>

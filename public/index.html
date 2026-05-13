@@ -1007,6 +1007,53 @@
             cursor: pointer;
         }
 
+        /* ===== CIRROSE CARD ===== */
+        .campeonatos-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        @media (max-width: 700px) {
+            .campeonatos-grid { grid-template-columns: 1fr; }
+        }
+        .cirrose-card {
+            background: rgba(255,255,255,0.04);
+            border: 2px solid rgba(139, 0, 0, 0.3);
+            border-radius: 24px;
+            padding: 32px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+        .cirrose-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, rgba(139,0,0,0.1), rgba(184,134,11,0.05));
+            border-radius: 22px;
+        }
+        .cirrose-card:hover {
+            border-color: rgba(184, 134, 11, 0.5);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(139, 0, 0, 0.2);
+        }
+        .cirrose-card-inner { position: relative; z-index: 1; }
+        .cirrose-card-title { font-size: 1.3rem; font-weight: 800; color: #fbbf24; }
+        .cirrose-card-subtitle { font-size: 0.78rem; color: rgba(255,255,255,0.45); margin-top: 2px; }
+        .cirrose-btn-manage {
+            background: linear-gradient(135deg, #8b0000, #b8860b);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(139,0,0,0.35);
+        }
+        .cirrose-btn-manage:hover { box-shadow: 0 6px 20px rgba(184,134,11,0.5); }
+        .cirrose-status-agendado { background: rgba(99,102,241,0.2); color: #a5b4fc; border: 1px solid rgba(99,102,241,0.3); }
+        .cirrose-status-grupos { background: rgba(245,158,11,0.2); color: #fbbf24; border: 1px solid rgba(245,158,11,0.35); animation: pulse 2s ease infinite; }
+        .cirrose-status-mata-mata { background: rgba(239,68,68,0.2); color: #f87171; border: 1px solid rgba(239,68,68,0.35); animation: pulse 2s ease infinite; }
+        .cirrose-status-encerrado { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.15); }
+
         .trophy-icon {
             font-size: 4rem;
             margin-bottom: 10px;
@@ -1504,10 +1551,11 @@
 
             <div class="mode-label">Selecione um modo para continuar</div>
 
-            <!-- Beach Tennis Event Module -->
+            <!-- Campeonatos Module -->
             <div class="beach-section">
-                <div class="section-label">🏐 Campeonato</div>
-                <div class="beach-card" id="beach-card">
+                <div class="section-label">🏆 Campeonatos</div>
+                <div class="campeonatos-grid">
+                <div class="beach-card" id="beach-card" style="margin:0;max-width:none;">
                     <div class="beach-card-inner">
                         <div class="beach-card-header">
                             <div class="beach-card-icon">🏖️</div>
@@ -1545,6 +1593,43 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Copa Cirrose Card -->
+                <div class="cirrose-card" id="cirrose-card">
+                    <div class="cirrose-card-inner">
+                        <div class="beach-card-header">
+                            <div class="beach-card-icon">🏆</div>
+                            <div>
+                                <div class="cirrose-card-title" id="cirrose-event-name">Grande Copa Cirrose</div>
+                                <div class="cirrose-card-subtitle" id="cirrose-event-subtitle">1ª Edição</div>
+                            </div>
+                        </div>
+                        <div class="beach-card-meta">
+                            <div class="beach-meta-item">
+                                <span class="meta-icon">📅</span>
+                                <span id="cirrose-event-date">—</span>
+                            </div>
+                            <div class="beach-meta-item">
+                                <span class="meta-icon">⏰</span>
+                                <span id="cirrose-event-time">09:00</span>
+                            </div>
+                        </div>
+                        <div class="beach-status-badge cirrose-status-agendado" id="cirrose-status-badge">
+                            <span class="beach-status-dot"></span>
+                            <span id="cirrose-status-text">Cadastro</span>
+                        </div>
+                        <div class="beach-actions">
+                            <button class="beach-btn cirrose-btn-manage" onclick="cirroOpenManage()">
+                                ⚽ Organizar Copa
+                            </button>
+                            <button class="beach-btn beach-btn-public" onclick="cirroOpenPublic()">
+                                👁️ Placar Público
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                </div><!-- /campeonatos-grid -->
             </div>
         </div>
 
@@ -2479,6 +2564,64 @@
 
         // Load beach event on page load
         beachLoadEvent();
+
+        // ===== COPA CIRROSE MODULE =====
+        const cirroStatusMap = {
+            'cadastro':  { label: 'Cadastro',      css: 'cirrose-status-agendado' },
+            'agendado':  { label: 'Cadastro',      css: 'cirrose-status-agendado' },
+            'grupos':    { label: 'Fase de Grupos', css: 'cirrose-status-grupos' },
+            'mata-mata': { label: 'Mata-Mata 🔥',   css: 'cirrose-status-mata-mata' },
+            'encerrado': { label: 'Encerrado',      css: 'cirrose-status-encerrado' }
+        };
+
+        async function cirroLoadEvent() {
+            try {
+                const res = await fetch('/api/cirrose');
+                if (!res.ok) return;
+                const data = await res.json();
+                const ev = data.evento || {};
+
+                document.getElementById('cirrose-event-name').textContent = ev.nome || 'Grande Copa Cirrose';
+
+                if (ev.data) {
+                    const [y, m, d] = ev.data.split('-');
+                    document.getElementById('cirrose-event-date').textContent = `${d}/${m}/${y}`;
+                }
+                if (ev.horaInicio) {
+                    document.getElementById('cirrose-event-time').textContent = ev.horaInicio;
+                }
+
+                const fase = data.fase || 'cadastro';
+                const info = cirroStatusMap[fase] || cirroStatusMap['cadastro'];
+                const badge = document.getElementById('cirrose-status-badge');
+                badge.className = 'beach-status-badge ' + info.css;
+                document.getElementById('cirrose-status-text').textContent = info.label;
+
+                // Exibir local se disponível
+                if (ev.local) {
+                    document.getElementById('cirrose-event-subtitle').textContent = ev.local;
+                }
+
+                // Contagem de jogadores
+                const nj = (data.jogadores || []).length;
+                if (nj > 0) {
+                    const sub = document.getElementById('cirrose-event-subtitle');
+                    sub.textContent = (ev.local || '1ª Edição') + ` · ${nj} jogadores`;
+                }
+            } catch(e) {
+                console.error('Erro ao carregar Copa Cirrose:', e);
+            }
+        }
+
+        function cirroOpenManage() {
+            window.open('/copa-cirrose.html', '_blank');
+        }
+
+        function cirroOpenPublic() {
+            window.open('/copa-cirrose-publico.html', '_blank');
+        }
+
+        cirroLoadEvent();
     </script>
 </body>
 </html>
