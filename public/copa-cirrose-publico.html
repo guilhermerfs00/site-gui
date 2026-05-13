@@ -89,7 +89,7 @@
         .gc-cat-sel label{font-size:.8rem;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.7px}
         .gc-cat-sel select{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#fff;border-radius:10px;padding:7px 12px;font-family:'Poppins',sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;outline:none}
         .gc-cat-sel select:focus{border-color:rgba(220,20,60,.5)}
-        .gc-classif-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin-bottom:20px}
+        .gc-classif-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:12px;margin-bottom:20px}
         .gc-classif-grid .group-card{margin-bottom:0}
         .gc-rounds-section{margin-top:0}
         .gc-round-block{margin-bottom:14px}
@@ -146,15 +146,20 @@
 
 
         /* shots ranking */
-        .shot-item{display:flex;align-items:center;gap:10px;padding:11px 14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:12px;margin-bottom:7px;transition:background .2s}
+        .shot-item{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:16px;margin-bottom:9px;transition:background .2s,border-color .2s}
         .shot-item:hover{background:rgba(255,255,255,.07)}
-        .shot-rank{font-size:1.1rem;flex-shrink:0;width:26px;text-align:center}
-        .shot-nome{flex:1;font-size:.88rem;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-        .shot-bar-wrap{flex:2;max-width:100px}
-        .shot-bar{height:5px;border-radius:5px;background:linear-gradient(90deg,#b8860b,#ffd700);min-width:4px;transition:width .6s ease}
-        .shot-total{font-size:1.1rem;font-weight:900;color:#ffd700;flex-shrink:0}
-        .shot-unit{font-size:.62rem;color:rgba(255,255,255,.3);margin-left:2px}
-        .shot-breakdown{font-size:.65rem;color:rgba(255,255,255,.3);margin-left:4px;white-space:nowrap}
+        .shot-item.shot-1st{border-color:rgba(255,215,0,.25);background:rgba(255,215,0,.04);box-shadow:0 0 20px rgba(255,215,0,.07)}
+        .shot-rank{font-size:1.6rem;flex-shrink:0;width:34px;text-align:center;line-height:1;padding-top:2px}
+        .shot-body{flex:1;min-width:0}
+        .shot-top{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:7px}
+        .shot-nome{font-size:.92rem;font-weight:700;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+        .shot-total-wrap{display:flex;align-items:baseline;gap:3px;flex-shrink:0}
+        .shot-total{font-size:1.4rem;font-weight:900;color:#ffd700;line-height:1}
+        .shot-unit{font-size:.62rem;color:rgba(255,255,255,.35);font-weight:600}
+        .shot-bar-wrap{margin-bottom:9px}
+        .shot-bar{height:5px;border-radius:5px;background:linear-gradient(90deg,#b8860b,#ffd700);min-width:4px;transition:width .8s ease}
+        .shot-tags{display:flex;flex-wrap:wrap;gap:5px}
+        .shot-tag{font-size:.65rem;color:rgba(255,255,255,.55);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);border-radius:8px;padding:3px 9px;white-space:nowrap}
         .shot-regra-item{display:flex;flex-wrap:wrap;gap:8px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06)}
         .shot-regra-item:last-child{border-bottom:none}
         .shot-regra-nome{font-size:.8rem;font-weight:700;color:rgba(255,255,255,.7);flex:1 0 100%;margin-bottom:4px}
@@ -567,10 +572,14 @@ function renderGrupos() {
             const sgC = s.sg>0?'gsgp':s.sg<0?'gsgn':'gsg0';
             return `<tr>
                 <td><span class="cp ${posC}">${i+1}</span></td>
-                <td style="max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:4px">${esc(findJ(s.id)?.nome||'?')}${i<classif?' <span style="font-size:.52rem;color:#6ee7b7;vertical-align:middle">✓</span>':''}</td>
+                <td style="max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:4px">${esc(findJ(s.id)?.nome||'?')}${i<classif?' <span style="font-size:.52rem;color:#6ee7b7;vertical-align:middle">✓</span>':''}</td>
                 <td class="gpts">${s.pts}</td>
-                <td style="font-size:.7rem;color:rgba(255,255,255,.4);text-align:center">${s.pj}</td>
-                <td style="font-size:.68rem;color:rgba(255,255,255,.4);white-space:nowrap;text-align:center">${s.v}V ${s.e}E</td>
+                <td style="font-size:.68rem;color:rgba(255,255,255,.4);text-align:center">${s.pj}</td>
+                <td style="font-size:.68rem;color:rgba(255,255,255,.4);text-align:center">${s.v}</td>
+                <td style="font-size:.68rem;color:rgba(255,255,255,.4);text-align:center">${s.e}</td>
+                <td style="font-size:.68rem;color:rgba(255,255,255,.4);text-align:center">${s.d}</td>
+                <td style="font-size:.68rem;color:rgba(255,255,255,.4);text-align:center">${s.gf}</td>
+                <td style="font-size:.68rem;color:rgba(255,255,255,.4);text-align:center">${s.gc}</td>
                 <td class="${sgC}">${s.sg>0?'+':''}${s.sg}</td>
             </tr>`;
         }).join('');
@@ -585,7 +594,23 @@ function renderGrupos() {
             </div>
             <div class="gcside">
                 <div class="gcside-title">&#128202; Classifica&ccedil;&atilde;o</div>
-                <table class="gct"><tbody>${rows}</tbody></table>
+                <div style="overflow-x:auto">
+                <table class="gct">
+                    <thead><tr>
+                        <th style="font-size:.58rem;color:rgba(255,255,255,.35);font-weight:700;padding:3px 4px;border-bottom:1px solid rgba(255,255,255,.08);text-align:center">#</th>
+                        <th style="font-size:.58rem;color:rgba(255,255,255,.35);font-weight:700;padding:3px 4px;border-bottom:1px solid rgba(255,255,255,.08);text-align:left">Jogador</th>
+                        <th style="font-size:.58rem;color:rgba(255,255,255,.35);font-weight:700;padding:3px 4px;border-bottom:1px solid rgba(255,255,255,.08);text-align:center">Pts</th>
+                        <th style="font-size:.58rem;color:rgba(255,255,255,.35);font-weight:700;padding:3px 4px;border-bottom:1px solid rgba(255,255,255,.08);text-align:center">PJ</th>
+                        <th style="font-size:.58rem;color:rgba(255,255,255,.35);font-weight:700;padding:3px 4px;border-bottom:1px solid rgba(255,255,255,.08);text-align:center">V</th>
+                        <th style="font-size:.58rem;color:rgba(255,255,255,.35);font-weight:700;padding:3px 4px;border-bottom:1px solid rgba(255,255,255,.08);text-align:center">E</th>
+                        <th style="font-size:.58rem;color:rgba(255,255,255,.35);font-weight:700;padding:3px 4px;border-bottom:1px solid rgba(255,255,255,.08);text-align:center">D</th>
+                        <th style="font-size:.58rem;color:rgba(255,255,255,.35);font-weight:700;padding:3px 4px;border-bottom:1px solid rgba(255,255,255,.08);text-align:center">GF</th>
+                        <th style="font-size:.58rem;color:rgba(255,255,255,.35);font-weight:700;padding:3px 4px;border-bottom:1px solid rgba(255,255,255,.08);text-align:center">GC</th>
+                        <th style="font-size:.58rem;color:rgba(255,255,255,.35);font-weight:700;padding:3px 4px;border-bottom:1px solid rgba(255,255,255,.08);text-align:center">SG</th>
+                    </tr></thead>
+                    <tbody>${rows}</tbody>
+                </table>
+                </div>
             </div>
         </div>`;
     }).join('');
@@ -775,18 +800,22 @@ function renderShots() {
         const medals = ['🥇','🥈','🥉'];
         el.innerHTML = list.map((s, i) => {
             const pct = max > 0 ? Math.round(s.total / max * 100) : 0;
-            const bd = [];
-            if (s.porGolSofrido) bd.push(`${s.porGolSofrido} gols sofridos`);
-            if (s.porGolFeito)   bd.push(`${s.porGolFeito} gols feitos`);
-            if (s.porDerrota)    bd.push(`${s.porDerrota} derrota${s.porDerrota!==1?'s':''}`);
-            if (s.porVitoria)    bd.push(`${s.porVitoria} vitória${s.porVitoria!==1?'s':''}`);
-            return `<div class="shot-item">
-                <span class="shot-rank">${medals[i] || (i+1)}</span>
-                <span class="shot-nome">${esc(s.nome)}</span>
-                <div class="shot-bar-wrap"><div class="shot-bar" style="width:${pct}%"></div></div>
-                <span class="shot-total">${s.total}</span>
-                <span class="shot-unit">shot${s.total!==1?'s':''}</span>
-                ${bd.length ? `<span class="shot-breakdown">(${bd.join(' · ')})</span>` : ''}
+            const tags = [];
+            if (s.porGolSofrido) tags.push(`🏐 ${s.porGolSofrido} gol${s.porGolSofrido!==1?'s':''} sofrido${s.porGolSofrido!==1?'s':''}`);
+            if (s.porGolFeito)   tags.push(`⚽ ${s.porGolFeito} gol${s.porGolFeito!==1?'s':''} feito${s.porGolFeito!==1?'s':''}`);
+            if (s.porDerrota)    tags.push(`❌ ${s.porDerrota} derrota${s.porDerrota!==1?'s':''}`);
+            if (s.porVitoria)    tags.push(`✅ ${s.porVitoria} vitória${s.porVitoria!==1?'s':''}`);
+            const tagsHtml = tags.map(t => `<span class="shot-tag">${t}</span>`).join('');
+            return `<div class="shot-item${i===0?' shot-1st':''}">
+                <span class="shot-rank">${medals[i] || `<span style="font-size:.9rem;font-weight:800;color:rgba(255,255,255,.4)">${i+1}</span>`}</span>
+                <div class="shot-body">
+                    <div class="shot-top">
+                        <span class="shot-nome">${esc(s.nome)}</span>
+                        <div class="shot-total-wrap"><span class="shot-total">${s.total}</span><span class="shot-unit">shot${s.total!==1?'s':''}</span></div>
+                    </div>
+                    <div class="shot-bar-wrap"><div class="shot-bar" style="width:${pct}%"></div></div>
+                    ${tags.length ? `<div class="shot-tags">${tagsHtml}</div>` : ''}
+                </div>
             </div>`;
         }).join('');
     }
