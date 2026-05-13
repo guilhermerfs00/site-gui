@@ -433,6 +433,29 @@
         <div style="background:rgba(220,20,60,.08);border:1px solid rgba(220,20,60,.2);border-radius:10px;padding:10px 14px;font-size:.78rem;color:rgba(255,255,255,.5);margin-bottom:12px">
             💡 Os atletas cadastrados serão distribuídos igualmente entre as chaves. No mata-mata, os classificados de chaves diferentes se enfrentam.
         </div>
+        <div style="background:rgba(184,134,11,.07);border:1px solid rgba(255,215,0,.18);border-radius:10px;padding:12px 14px;margin-bottom:12px">
+            <div style="font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:rgba(255,215,0,.7);margin-bottom:10px">🍺 Regra de Shot</div>
+            <div class="row2">
+                <div>
+                    <label>Tomar um gol &rarr; bebe (shots)</label>
+                    <input type="number" id="f-shot-tomou-gol" min="0" max="99" value="2" style="width:100%">
+                </div>
+                <div>
+                    <label>Fazer um gol &rarr; bebe (shots)</label>
+                    <input type="number" id="f-shot-fez-gol" min="0" max="99" value="1" style="width:100%">
+                </div>
+            </div>
+            <div class="row2" style="margin-top:8px">
+                <div>
+                    <label>Perder a partida &rarr; bebe (shots)</label>
+                    <input type="number" id="f-shot-perdeu" min="0" max="99" value="2" style="width:100%">
+                </div>
+                <div>
+                    <label>Ganhar a partida &rarr; bebe (shots)</label>
+                    <input type="number" id="f-shot-ganhou" min="0" max="99" value="1" style="width:100%">
+                </div>
+            </div>
+        </div>
         <div class="modal-actions">
             <button class="btn btn-s" onclick="fecharModal('modal-cat')">Cancelar</button>
             <button class="btn btn-p" onclick="salvarCategoria()">💾 Salvar</button>
@@ -464,6 +487,19 @@
     </div>
 </div>
 
+<!-- ===== MODAL CONFIRM ===== -->
+<div class="modal-overlay" id="modal-confirm">
+    <div class="modal" style="max-width:400px;text-align:center">
+        <div style="font-size:2.8rem;margin-bottom:10px" id="modal-confirm-icon">⚠️</div>
+        <h3 id="modal-confirm-title" style="font-size:1.1rem;margin-bottom:12px"></h3>
+        <div id="modal-confirm-msg" style="font-size:.85rem;color:rgba(255,255,255,.65);line-height:1.7;margin-bottom:20px;background:rgba(220,20,60,.07);border:1px solid rgba(220,20,60,.18);border-radius:10px;padding:12px 16px;text-align:left"></div>
+        <div class="modal-actions" style="justify-content:center;gap:12px">
+            <button class="btn btn-s" onclick="fecharModal('modal-confirm')">✖ Cancelar</button>
+            <button class="btn btn-p" id="modal-confirm-ok">✅ Confirmar</button>
+        </div>
+    </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -488,6 +524,13 @@ async function api(url, method='GET', body=null) {
 function val(id) { const el = document.getElementById(id); return el ? el.value.trim() : ''; }
 function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function fecharModal(id) { document.getElementById(id).classList.remove('show'); }
+function showConfirm(icon, title, msg, onConfirm) {
+    document.getElementById('modal-confirm-icon').textContent = icon;
+    document.getElementById('modal-confirm-title').textContent = title;
+    document.getElementById('modal-confirm-msg').innerHTML = msg.replace(/\n/g,'<br>');
+    document.getElementById('modal-confirm').classList.add('show');
+    document.getElementById('modal-confirm-ok').onclick = () => { fecharModal('modal-confirm'); onConfirm(); };
+}
 function toast(msg, type='success') {
     const t = document.getElementById('toast');
     t.textContent = msg; t.className = 'toast '+type+' show';
@@ -556,6 +599,7 @@ function renderCategorias() {
             <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px">
                 <span class="cat-tag">🗂 <strong>${c.numChaves||1}</strong> chave${(c.numChaves||1)>1?'s':''}</span>
                 <span class="cat-tag">🏅 <strong>${c.classificadosPorChave||2}</strong> classif./chave</span>
+                <span class="cat-tag">🍺 <strong>${c.shotTomouGol??2}</strong>shot/gol sofrido &middot; <strong>${c.shotFezGol??1}</strong>/feito &middot; <strong>${c.shotPerdeu??2}</strong>/derrota &middot; <strong>${c.shotGanhou??1}</strong>/vitória</span>
                 ${partidas ? `<span class="cat-tag">⚽ <strong>${partidas}</strong> partidas</span>` : ''}
             </div>
             <div class="cat-actions">
@@ -571,13 +615,17 @@ function abrirModalCat(cat) {
     document.getElementById('f-nome').value = cat ? cat.nome : 'Padrão';
     document.getElementById('f-num-chaves').value = cat ? (cat.numChaves||2) : 2;
     document.getElementById('f-classif-chave').value = cat ? (cat.classificadosPorChave||2) : 2;
+    document.getElementById('f-shot-tomou-gol').value = cat ? (cat.shotTomouGol ?? 2) : 2;
+    document.getElementById('f-shot-fez-gol').value   = cat ? (cat.shotFezGol   ?? 1) : 1;
+    document.getElementById('f-shot-perdeu').value    = cat ? (cat.shotPerdeu   ?? 2) : 2;
+    document.getElementById('f-shot-ganhou').value    = cat ? (cat.shotGanhou   ?? 1) : 1;
     document.getElementById('modal-cat').classList.add('show');
     setTimeout(()=>{ const el=document.getElementById('f-nome'); el?.focus(); el?.select(); }, 80);
 }
 function editarCategoria(id) { const c = (D.categorias||[]).find(x=>x.id===id); if(c) abrirModalCat(c); }
 async function salvarCategoria() {
     const nome = val('f-nome'); if (!nome) return toast('Preencha o nome','error');
-    const body = { nome, numChaves:parseInt(val('f-num-chaves'))||1, classificadosPorChave:parseInt(val('f-classif-chave'))||2 };
+    const body = { nome, numChaves:parseInt(val('f-num-chaves'))||1, classificadosPorChave:parseInt(val('f-classif-chave'))||2, shotTomouGol:parseFloat(val('f-shot-tomou-gol'))??2, shotFezGol:parseFloat(val('f-shot-fez-gol'))??1, shotPerdeu:parseFloat(val('f-shot-perdeu'))??2, shotGanhou:parseFloat(val('f-shot-ganhou'))??1 };
     const id = val('f-id');
     try {
         if (id) {
@@ -689,14 +737,18 @@ async function gerarChave() {
     const cat = catById(catId);
     const total = (D.jogadores||[]).length;
     if (total < 2) return toast('Mínimo 2 atletas cadastrados','error');
-    if (!confirm(`Gerar chave para "${cat.nome}" com ${total} atletas em ${cat.numChaves||1} chave(s)?\n\nPartidas existentes desta categoria serão apagadas.`)) return;
-    try {
-        const r = await api('/api/cirrose/gerar-chave','POST',{categoriaId:catId});
-        const data = await api('/api/cirrose');
-        Object.assign(D, data);
-        document.getElementById('gerar-resultado').innerHTML = `<div class="badge badge-ok" style="font-size:.82rem;padding:6px 14px">✓ Chave gerada! ${r.partidas.length} partidas criadas.</div>`;
-        renderStepper(); toast(`Chave gerada! ${r.partidas.length} partidas.`,'success');
-    } catch(e) { toast('Erro: '+e.message,'error'); }
+    showConfirm('⚔️', `Gerar Chave — ${cat.nome}`,
+        `${total} atletas · ${cat.numChaves||1} chave(s)\n\n⚠️ Partidas existentes desta categoria serão apagadas.`,
+        async () => {
+            try {
+                const r = await api('/api/cirrose/gerar-chave','POST',{categoriaId:catId});
+                const data = await api('/api/cirrose');
+                Object.assign(D, data);
+                document.getElementById('gerar-resultado').innerHTML = `<div class="badge badge-ok" style="font-size:.82rem;padding:6px 14px">✓ Chave gerada! ${r.partidas.length} partidas criadas.</div>`;
+                renderStepper(); toast(`Chave gerada! ${r.partidas.length} partidas.`,'success');
+            } catch(e) { toast('Erro: '+e.message,'error'); }
+        }
+    );
 }
 async function gerarMataMata() {
     const catId = parseInt(val('chave-categoria'));
@@ -707,16 +759,20 @@ async function gerarMataMata() {
     if (!partidasGrupos.length) return toast('Gere a chave de grupos primeiro.','error');
     const pendentes = partidasGrupos.filter(p=>p.status!=='encerrado');
     if (pendentes.length > 0) return toast(`Ainda há ${pendentes.length} partida(s) de grupos não encerrada(s). Conclua todas antes de gerar o Mata-Mata.`,'error');
-    if (!confirm(`Gerar Mata-Mata para "${cat.nome}"?\n\nSerão classificados os ${cat.classificadosPorChave||2} melhores de cada chave.`)) return;
-    try {
-        const r = await api('/api/cirrose/gerar-mata-mata','POST',{categoriaId:catId});
-        const data = await api('/api/cirrose');
-        Object.assign(D, data);
-        renderStepper(); toast(`Mata-mata gerado! ${r.partidas.length} partidas.`,'success');
-        s4Tab('mm', document.getElementById('tab-s4-mm'));
-        document.getElementById('mm-categoria').value = catId;
-        renderMM();
-    } catch(e) { toast('Erro: '+e.message,'error'); }
+    showConfirm('🏆', `Gerar Mata-Mata — ${cat.nome}`,
+        `Serão classificados os <strong style="color:#ffd700">${cat.classificadosPorChave||2}</strong> melhores de cada chave para o confronto eliminatório.`,
+        async () => {
+            try {
+                const r = await api('/api/cirrose/gerar-mata-mata','POST',{categoriaId:catId});
+                const data = await api('/api/cirrose');
+                Object.assign(D, data);
+                renderStepper(); toast(`Mata-mata gerado! ${r.partidas.length} partidas.`,'success');
+                s4Tab('mm', document.getElementById('tab-s4-mm'));
+                document.getElementById('mm-categoria').value = catId;
+                renderMM();
+            } catch(e) { toast('Erro: '+e.message,'error'); }
+        }
+    );
 }
 
 // --- Render Grupos ---

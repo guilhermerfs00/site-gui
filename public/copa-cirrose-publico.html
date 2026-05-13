@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🏆 Grande Copa Cirrose - 1ª Edição</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Poppins', sans-serif; background: #0f0f1a; color: #fff; min-height: 100vh; }
@@ -16,7 +17,8 @@
         .bg .o:nth-child(4) { width: 300px; height: 300px; background: #4a0080; top: 50%; left: 40%; animation-delay: -14s; }
         @keyframes orbFloat { 0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-40px) scale(1.05)} }
         .wrap { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 20px; }
-        .hero { text-align: center; padding: 40px 20px; }
+        .hero { text-align: center; padding: 40px 20px; position:relative; overflow:hidden; }
+        .hero::before{content:'';position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 300' fill='none' stroke='white' stroke-width='1.5'%3E%3Crect x='4' y='4' width='492' height='292'/%3E%3Cline x1='250' y1='4' x2='250' y2='296'/%3E%3Ccircle cx='250' cy='150' r='55'/%3E%3Ccircle cx='250' cy='150' r='4' fill='white'/%3E%3Crect x='4' y='100' width='70' height='100'/%3E%3Crect x='426' y='100' width='70' height='100'/%3E%3Crect x='4' y='118' width='25' height='64'/%3E%3Crect x='471' y='118' width='25' height='64'/%3E%3C/svg%3E");background-size:110%;background-position:center;opacity:.06;pointer-events:none;z-index:0}
         .hero .icon { font-size: 4rem; margin-bottom: 12px; }
         .hero h1 { font-size: 2rem; font-weight: 900; background: linear-gradient(135deg, #ffd700, #ff6b00); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .hero .subtitle { font-size: 0.9rem; color: rgba(255,255,255,0.5); margin-top: 6px; }
@@ -141,9 +143,113 @@
         .mr-st.live{background:rgba(239,68,68,.2);color:#f87171;border:1px solid rgba(239,68,68,.4)}
         .mr-st.done{background:rgba(56,239,125,.12);color:#6ee7b7;border:1px solid rgba(56,239,125,.25)}
         .mr-st.draw{background:rgba(251,191,36,.12);color:#fbbf24;border:1px solid rgba(251,191,36,.25)}
-        @media(max-width:600px){.group-body{grid-template-columns:1fr}.gcside-left{border-right:none;border-bottom:1px solid rgba(255,255,255,.06)}}
 
-        @media (max-width: 600px) { .hero h1 { font-size: 1.4rem; } .pj-gols { font-size: 1.5rem; } }
+
+        /* shots ranking */
+        .shot-item{display:flex;align-items:center;gap:10px;padding:11px 14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:12px;margin-bottom:7px;transition:background .2s}
+        .shot-item:hover{background:rgba(255,255,255,.07)}
+        .shot-rank{font-size:1.1rem;flex-shrink:0;width:26px;text-align:center}
+        .shot-nome{flex:1;font-size:.88rem;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+        .shot-bar-wrap{flex:2;max-width:100px}
+        .shot-bar{height:5px;border-radius:5px;background:linear-gradient(90deg,#b8860b,#ffd700);min-width:4px;transition:width .6s ease}
+        .shot-total{font-size:1.1rem;font-weight:900;color:#ffd700;flex-shrink:0}
+        .shot-unit{font-size:.62rem;color:rgba(255,255,255,.3);margin-left:2px}
+        .shot-breakdown{font-size:.65rem;color:rgba(255,255,255,.3);margin-left:4px;white-space:nowrap}
+        .shot-regra-item{display:flex;flex-wrap:wrap;gap:8px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+        .shot-regra-item:last-child{border-bottom:none}
+        .shot-regra-nome{font-size:.8rem;font-weight:700;color:rgba(255,255,255,.7);flex:1 0 100%;margin-bottom:4px}
+        .shot-regra-tag{font-size:.7rem;background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.2);border-radius:8px;padding:3px 9px;color:rgba(255,215,0,.8)}
+        @media (max-width: 680px) {
+            body { padding-bottom: 70px; }
+            .wrap { padding: 12px 12px 80px; }
+            .hero { padding: 20px 12px 16px; }
+            .hero .icon { font-size: 2.6rem; margin-bottom: 8px; }
+            .hero h1 { font-size: 1.35rem; }
+            .hero .subtitle { font-size: .78rem; }
+            .evento-chip { font-size: .72rem; padding: 4px 12px; }
+            .hero .evento-info { gap: 8px; margin-top: 10px; }
+            .glass { padding: 14px 14px; border-radius: 14px; margin-bottom: 14px; }
+            .glass h2 { font-size: .95rem; margin-bottom: 12px; }
+            /* Nav → barra fixa no rodapé */
+            .nav {
+                position: fixed;
+                bottom: 0; left: 0; right: 0;
+                margin: 0;
+                padding: 8px 8px calc(8px + env(safe-area-inset-bottom));
+                background: rgba(10,10,30,.97);
+                backdrop-filter: blur(20px);
+                border-top: 1px solid rgba(255,255,255,.1);
+                z-index: 50;
+                display: grid;
+                grid-template-columns: repeat(6, 1fr);
+                gap: 4px;
+            }
+            .nav-tab {
+                padding: 7px 4px 5px;
+                border-radius: 10px;
+                font-size: .6rem;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 2px;
+                border: none;
+                line-height: 1.2;
+            }
+            /* emojis maiores nas abas */
+            .nav-tab::first-line { font-size: .95rem; }
+            /* Tabela de classificação: esconder colunas menos importantes */
+            .classif-table th:nth-child(5),
+            .classif-table td:nth-child(5),
+            .classif-table th:nth-child(6),
+            .classif-table td:nth-child(6),
+            .classif-table th:nth-child(7),
+            .classif-table td:nth-child(7) { display: none; }
+            .classif-table th, .classif-table td { padding: 8px 5px; font-size: .75rem; }
+            /* Partida card */
+            .partida-card { padding: 12px 14px; border-radius: 12px; }
+            .pj-nome { font-size: .82rem; }
+            .pj-gols { font-size: 1.7rem; }
+            /* Scoreboard ao vivo */
+            .sb-player-nome { font-size: .78rem; }
+            .sb-gols { font-size: 2.4rem; }
+            /* Pódio */
+            .p1 { width: 90px; height: 90px; }
+            .p2 { width: 76px; height: 68px; }
+            .p3 { width: 76px; height: 54px; }
+            .podio-nome { font-size: .72rem; }
+            /* Bracket */
+            .bracket-match { width: 160px; }
+            /* Jogadores grid */
+            .jogadores-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+            /* Group card body */
+            .group-body { grid-template-columns: 1fr; }
+            .gcside-left { border-right: none; border-bottom: 1px solid rgba(255,255,255,.06); }
+            /* Group prog bar */
+            .group-prog-bar { width: 50px; }
+        }
+
+        /* ===== FOOTBALL BROADCAST ===== */
+        .partida-card.em-jogo{background:linear-gradient(180deg,#0e0e0e,#1a0000);border-color:rgba(239,68,68,.65);padding:0;box-shadow:0 0 28px rgba(239,68,68,.1)}
+        .sb-live-bar{background:linear-gradient(90deg,#dc143c,#8b0000);display:flex;align-items:center;justify-content:center;gap:8px;padding:6px 14px;font-size:.6rem;font-weight:800;letter-spacing:2px;text-transform:uppercase}
+        .sb-live-dot{width:7px;height:7px;border-radius:50%;background:#fff;animation:pulseR 1s ease infinite;flex-shrink:0}
+        .sb-live-fase{opacity:.6;font-size:.6rem;margin-left:4px}
+        .sb-score-row{display:grid;grid-template-columns:1fr 40px 1fr;align-items:center;padding:16px 12px 14px;gap:4px}
+        .sb-player{text-align:center}
+        .sb-player-nome{font-size:.9rem;font-weight:700;margin-bottom:8px;line-height:1.2}
+        .sb-player-nome.venc{color:#ffd700}
+        .sb-gols{font-size:3rem;font-weight:900;line-height:1;color:#fff;font-variant-numeric:tabular-nums;animation:golGlow 3s ease infinite}
+        @keyframes golGlow{0%,100%{text-shadow:0 2px 12px rgba(255,255,255,.15)}50%{text-shadow:0 2px 24px rgba(255,215,0,.45)}}
+        .sb-sep{font-size:.9rem;font-weight:900;color:rgba(255,255,255,.2);text-align:center}
+        /* Artilheiros */
+        .artilheiro-item{display:flex;align-items:center;gap:10px;padding:10px 12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:12px;margin-bottom:6px;transition:background .2s}
+        .artilheiro-item:hover{background:rgba(255,255,255,.07)}
+        .art-rank{font-size:1.1rem;flex-shrink:0;width:24px;text-align:center}
+        .art-nome{flex:1;font-size:.87rem;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+        .art-bar-wrap{flex:2;max-width:90px}
+        .art-bar{height:4px;border-radius:4px;background:linear-gradient(90deg,#dc143c,#ffd700);min-width:4px;transition:width .6s ease}
+        .art-gols{font-size:1.1rem;font-weight:900;color:#ffd700;flex-shrink:0}
+        /* Badge de partidas ao vivo na aba */
+        .tab-live-count{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:#dc143c;color:#fff;font-size:.6rem;font-weight:900;margin-left:5px;animation:pulseR 1.5s ease infinite;vertical-align:middle}
     </style>
 </head>
 <body>
@@ -156,10 +262,12 @@
         <div class="evento-info" id="evento-info"></div>
     </div>
     <div class="nav">
-        <button class="nav-tab active" onclick="switchTab('aovivo')">🔴 Ao Vivo</button>
-        <button class="nav-tab" onclick="switchTab('grupos')">📊 Grupos</button>
-        <button class="nav-tab" onclick="switchTab('bracket')">⚔️ Mata-Mata</button>
-        <button class="nav-tab" onclick="switchTab('jogadores')">👥 Jogadores</button>
+        <button class="nav-tab active" id="tab-aovivo" onclick="switchTab('aovivo')"><span style="font-size:1.1rem">🔴</span><span>Ao Vivo</span></button>
+        <button class="nav-tab" onclick="switchTab('grupos')"><span style="font-size:1.1rem">📊</span><span>Grupos</span></button>
+        <button class="nav-tab" onclick="switchTab('bracket')"><span style="font-size:1.1rem">⚔️</span><span>Mata-Mata</span></button>
+        <button class="nav-tab" onclick="switchTab('jogadores')"><span style="font-size:1.1rem">👥</span><span>Jogadores</span></button>
+        <button class="nav-tab" onclick="switchTab('shots')"><span style="font-size:1.1rem">🍺</span><span>Shots</span></button>
+        <button class="nav-tab" onclick="switchTab('qrcode')"><span style="font-size:1.1rem">📲</span><span>QR Code</span></button>
     </div>
 
     <div class="panel active" id="panel-aovivo">
@@ -167,6 +275,7 @@
             <h2>🔴 Ao Vivo</h2>
             <div id="aovivo-content"></div>
         </div>
+        <div class="glass" id="aovivo-bracket-inline" style="display:none"></div>
         <div class="glass">
             <h2>⏳ Próximas Partidas</h2>
             <div id="proximas-content"></div>
@@ -194,14 +303,43 @@
         </div>
     </div>
 
+    <div class="panel" id="panel-shots">
+        <div class="glass">
+            <h2>🍺 Ranking de Shots</h2>
+            <p style="font-size:.78rem;color:rgba(255,255,255,.4);margin-bottom:16px">Calculado com base nas regras da categoria: gols sofridos, gols feitos, vitórias e derrotas.</p>
+            <div id="shots-content"><div class="empty">Carregando...</div></div>
+        </div>
+        <div class="glass" id="shots-regras-box" style="display:none">
+            <h2 style="font-size:.9rem">📝 Regras por Categoria</h2>
+            <div id="shots-regras-content"></div>
+        </div>
+    </div>
+
+    <div class="panel" id="panel-qrcode">
+        <div class="glass" style="text-align:center;padding:36px 24px">
+            <h2 style="justify-content:center;margin-bottom:6px">📲 Acesse pelo Celular</h2>
+            <p style="font-size:.85rem;color:rgba(255,255,255,.5);margin-bottom:28px">Aponte a câmera para o QR Code e acompanhe ao vivo</p>
+            <div id="qr-box" style="display:inline-block;padding:16px;background:#fff;border-radius:16px;box-shadow:0 0 40px rgba(255,215,0,.15)"></div>
+            <div id="qr-url" style="margin-top:18px;font-size:.78rem;color:rgba(255,255,255,.35);word-break:break-all;max-width:360px;margin-left:auto;margin-right:auto;letter-spacing:.3px"></div>
+            <button id="btn-copiar" onclick="copiarLink()" style="margin-top:20px;display:inline-flex;align-items:center;gap:8px;padding:13px 28px;border:none;border-radius:14px;font-family:'Poppins',sans-serif;font-size:.88rem;font-weight:700;cursor:pointer;background:linear-gradient(135deg,#b8860b,#ffd700);color:#000;box-shadow:0 4px 20px rgba(255,215,0,.25);transition:all .25s">
+                <span id="btn-copiar-icon">📋</span>
+                <span id="btn-copiar-txt">Copiar Link</span>
+            </button>
+        </div>
+    </div>
+
     <div class="panel" id="panel-jogadores">
         <div class="glass">
             <h2>🏆 Classificação Final / Tabela</h2>
             <div id="podio-pub"></div>
             <table class="classif-table" style="margin-top:16px;">
-                <thead><tr><th>#</th><th>Jogador</th><th>PJ</th><th>V</th><th>D</th><th>GF</th><th>GC</th><th>SG</th></tr></thead>
+                <thead><tr><th>#</th><th>Jogador</th><th>Pts</th><th>PJ</th><th>V</th><th>E</th><th>D</th><th>GF</th><th>GC</th><th>SG</th></tr></thead>
                 <tbody id="tbody-pub"></tbody>
             </table>
+        </div>
+        <div class="glass">
+            <h2>⚽ Artilheiros</h2>
+            <div id="artilheiros-pub"><div class="empty">Carregando...</div></div>
         </div>
         <div class="glass">
             <h2>👥 Participantes</h2>
@@ -213,13 +351,55 @@
 <script>
 let D = { evento: {}, jogadores: [], partidas: [], fase: 'cadastro' };
 
+let activeTab = 'aovivo';
+
 function switchTab(tab) {
+    activeTab = tab;
     document.querySelectorAll('.nav-tab').forEach((t,i) => {
-        const tabs = ['aovivo','grupos','bracket','jogadores'];
+        const tabs = ['aovivo','grupos','bracket','jogadores','shots','qrcode'];
         t.classList.toggle('active', tabs[i] === tab);
     });
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     document.getElementById('panel-'+tab).classList.add('active');
+    if (tab === 'qrcode') renderQR();
+    renderTab(tab);
+}
+
+let qrRendered = false;
+function renderQR() {
+    if (qrRendered) return;
+    qrRendered = true;
+    const url = location.href.split('?')[0];
+    document.getElementById('qr-url').textContent = url;
+    new QRCode(document.getElementById('qr-box'), {
+        text: url,
+        width: 220,
+        height: 220,
+        colorDark: '#000000',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.H
+    });
+}
+
+function copiarLink() {
+    const url = location.href.split('?')[0];
+    const btn = document.getElementById('btn-copiar');
+    const icon = document.getElementById('btn-copiar-icon');
+    const txt  = document.getElementById('btn-copiar-txt');
+    navigator.clipboard.writeText(url).then(() => {
+        btn.style.background = 'linear-gradient(135deg,#059669,#38ef7d)';
+        btn.style.boxShadow  = '0 4px 20px rgba(56,239,125,.35)';
+        icon.textContent = '✅';
+        txt.textContent  = 'Copiado!';
+        setTimeout(() => {
+            btn.style.background = 'linear-gradient(135deg,#b8860b,#ffd700)';
+            btn.style.boxShadow  = '0 4px 20px rgba(255,215,0,.25)';
+            icon.textContent = '📋';
+            txt.textContent  = 'Copiar Link';
+        }, 2500);
+    }).catch(() => {
+        prompt('Copie o link:', url);
+    });
 }
 
 async function load() {
@@ -233,9 +413,14 @@ async function load() {
 function render() {
     renderHero();
     renderAoVivo();
-    renderGrupos();
-    renderBracket();
-    renderJogadores();
+    renderTab(activeTab);
+}
+
+function renderTab(tab) {
+    if (tab === 'grupos')   renderGrupos();
+    if (tab === 'bracket')  renderBracket();
+    if (tab === 'jogadores') renderJogadores();
+    if (tab === 'shots')    renderShots();
 }
 
 function renderHero() {
@@ -253,11 +438,49 @@ function renderAoVivo() {
     const agendadas = D.partidas.filter(p => p.status === 'agendado');
     const ultimas = D.partidas.filter(p => p.status === 'encerrado').slice(-6).reverse();
 
+    // ---- Ao Vivo ----
     const aoVivoEl = document.getElementById('aovivo-content');
     if (!emJogo.length) {
         aoVivoEl.innerHTML = '<div class="empty">Nenhuma partida em andamento</div>';
     } else {
         aoVivoEl.innerHTML = `<div class="live-badge"><span class="live-dot"></span>AO VIVO</div>` + emJogo.map(p => renderPub(p, true)).join('');
+    }
+    const liveTab = document.getElementById('tab-aovivo');
+    if (liveTab) {
+        const liveSpan = emJogo.length ? `<span class="tab-live-count">${emJogo.length}</span>` : '';
+        liveTab.innerHTML = `<span style="font-size:1.1rem">🔴</span><span>Ao Vivo${liveSpan}</span>`;
+    }
+
+    // ---- Bracket inline (aparece quando há mata-mata gerado) ----
+    const mmPartidas = (D.partidas||[]).filter(p => p.fase !== 'grupos');
+    const mmEl = document.getElementById('aovivo-bracket-inline');
+    if (mmPartidas.length) {
+        const fases = ['oitavas','quartas','semifinal','final','terceiro'];
+        const fp = fases.filter(f => mmPartidas.some(p => p.fase === f));
+        const fl = { oitavas:'Oitavas', quartas:'Quartas', semifinal:'Semifinal', final:'Final', terceiro:'3º Lugar' };
+        const bracketHtml = fp.map(f => {
+            const ps = mmPartidas.filter(p => p.fase === f).sort((a,b)=>(a.bracketPos||0)-(b.bracketPos||0));
+            return `<div class="bracket-round">
+                <div class="bracket-round-title">${fl[f]||f}</div>
+                ${ps.map(p => {
+                    const j1 = findJ(p.j1Id), j2 = findJ(p.j2Id);
+                    const cls = p.status==='em_jogo'?'em-jogo':p.status==='encerrado'?'encerrado':'';
+                    return `<div class="bracket-match ${cls}">
+                        <div class="bm-row${p.vencedorId===p.j1Id?' win':''}">${esc(j1?.nome||'A definir')}<span class="bm-gols">${p.status!=='agendado'?p.gols1:'-'}</span></div>
+                        <div class="bm-row${p.vencedorId===p.j2Id?' win':''}">${esc(j2?.nome||'A definir')}<span class="bm-gols">${p.status!=='agendado'?p.gols2:'-'}</span></div>
+                    </div>`;
+                }).join('')}
+            </div>`;
+        }).join('');
+        mmEl.innerHTML = `
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap">
+                <h2 style="margin:0;font-size:1.05rem">⚔️ Chaveamento — Mata-Mata</h2>
+                <span style="font-size:.72rem;color:rgba(255,255,255,.4);background:rgba(255,255,255,.06);padding:3px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.1)">${mmPartidas.filter(p=>p.status==='encerrado').length}/${mmPartidas.length} jogos</span>
+            </div>
+            <div style="overflow-x:auto;padding-bottom:8px"><div class="bracket">${bracketHtml}</div></div>`;
+        mmEl.style.display = 'block';
+    } else {
+        mmEl.style.display = 'none';
     }
 
     const prox = document.getElementById('proximas-content');
@@ -421,7 +644,7 @@ function renderBracket() {
 
 function renderJogadores() {
     const stats = calcStats();
-    const sorted = Object.values(stats).sort((a,b)=>b.v-a.v||(b.gf-b.gc)-(a.gf-a.gc)||b.gf-a.gf);
+    const sorted = Object.values(stats).sort((a,b)=>b.pts-a.pts||(b.gf-b.gc)-(a.gf-a.gc)||b.gf-a.gf);
 
     const final = D.partidas.find(p => p.fase === 'final' && p.status === 'encerrado');
     const terceiro = D.partidas.find(p => p.fase === 'terceiro' && p.status === 'encerrado');
@@ -438,26 +661,62 @@ function renderJogadores() {
     } else { podioEl.innerHTML = ''; }
 
     document.getElementById('tbody-pub').innerHTML = sorted.map((s,i) => `
-        <tr><td><span class="pos ${i===0?'pos-1':i===1?'pos-2':i===2?'pos-3':'pos-other'}">${i+1}</span></td><td>${esc(s.nome)}</td><td>${s.pj}</td><td>${s.v}</td><td>${s.d}</td><td>${s.gf}</td><td>${s.gc}</td><td style="color:${s.gf-s.gc>=0?'#4ade80':'#f87171'}">${s.gf-s.gc>=0?'+':''}${s.gf-s.gc}</td></tr>
+        <tr><td><span class="pos ${i===0?'pos-1':i===1?'pos-2':i===2?'pos-3':'pos-other'}">${i+1}</span></td><td>${esc(s.nome)}</td><td style="color:#ffd700;font-weight:900">${s.pts}</td><td>${s.pj}</td><td>${s.v}</td><td>${s.e}</td><td>${s.d}</td><td>${s.gf}</td><td>${s.gc}</td><td style="color:${s.gf-s.gc>=0?'#4ade80':'#f87171'}">${s.gf-s.gc>=0?'+':''}${s.gf-s.gc}</td></tr>
     `).join('');
 
+    const artEl = document.getElementById('artilheiros-pub');
+    if (artEl) artEl.innerHTML = renderArtilheirosList();
     document.getElementById('jog-grid').innerHTML = D.jogadores.map(j => `
         <div class="jog-card"><div class="jog-avatar" style="background:${color(j.id)}">${esc(j.nome.charAt(0).toUpperCase())}</div><div class="jog-nome">${esc(j.nome)}</div></div>
     `).join('');
 }
 
+function renderArtilheirosList() {
+    const gols = {};
+    D.jogadores.forEach(j => { gols[j.id] = { nome: j.nome, g: 0 }; });
+    D.partidas.filter(p=>p.status==='encerrado').forEach(p => {
+        if (gols[p.j1Id]) gols[p.j1Id].g += (p.gols1||0);
+        if (gols[p.j2Id]) gols[p.j2Id].g += (p.gols2||0);
+    });
+    const sorted = Object.values(gols).filter(x=>x.g>0).sort((a,b)=>b.g-a.g).slice(0,8);
+    if (!sorted.length) return '<div class="empty">Nenhum gol marcado ainda</div>';
+    const max = sorted[0].g;
+    const medals = ['🥇','🥈','🥉'];
+    return sorted.map((s,i) => {
+        const pct = Math.round(s.g/max*100);
+        return `<div class="artilheiro-item">
+            <span class="art-rank">${medals[i]||'⚽'}</span>
+            <span class="art-nome">${esc(s.nome)}</span>
+            <div class="art-bar-wrap"><div class="art-bar" style="width:${pct}%"></div></div>
+            <span class="art-gols">${s.g}</span>
+            <span style="font-size:.65rem;color:rgba(255,255,255,.3);margin-left:1px">gol${s.g!==1?'s':''}</span>
+        </div>`;
+    }).join('');
+}
+
 function renderPub(p, live) {
     const j1 = findJ(p.j1Id), j2 = findJ(p.j2Id);
-    const sl = { agendado:'Agendado', em_jogo:'🔴 Em Jogo', encerrado:'✅ Encerrado' };
-    const bc = { agendado:'badge-agendado', em_jogo:'badge-em_jogo', encerrado:'badge-encerrado' };
-    const cc = p.status==='em_jogo'?'em-jogo':p.status==='encerrado'?'encerrado':'';
-    const v1 = p.vencedorId===p.j1Id, v2 = p.vencedorId===p.j2Id;
     const fl = { grupos:'Grupos', oitavas:'Oitavas', quartas:'Quartas', semifinal:'Semifinal', final:'Final', terceiro:'3º Lugar' };
+    const faseStr = `${fl[p.fase]||p.fase}${p.rodada?' · Rodada '+p.rodada:''}`;
+    const v1 = p.vencedorId===p.j1Id, v2 = p.vencedorId===p.j2Id;
+    if (p.status === 'em_jogo') {
+        return `<div class="partida-card em-jogo">
+            <div class="sb-live-bar"><span class="sb-live-dot"></span><span>AO VIVO</span><span class="sb-live-fase">&middot; ${faseStr}</span></div>
+            <div class="sb-score-row">
+                <div class="sb-player"><div class="sb-player-nome">${esc(j1?.nome||'?')}</div><div class="sb-gols">${p.gols1||0}</div></div>
+                <div class="sb-sep">&times;</div>
+                <div class="sb-player"><div class="sb-player-nome">${esc(j2?.nome||'?')}</div><div class="sb-gols">${p.gols2||0}</div></div>
+            </div>
+        </div>`;
+    }
+    const bc = { agendado:'badge-agendado', encerrado:'badge-encerrado' };
+    const sl = { agendado:'⏳ A Jogar', encerrado:'✅ Encerrado' };
+    const cc = p.status==='encerrado'?'encerrado':'';
     return `<div class="partida-card ${cc}">
-        <div class="partida-header"><span class="partida-fase">${fl[p.fase]||p.fase}${p.rodada?' · Rodada '+p.rodada:''}</span><span class="badge ${bc[p.status]||'badge-agendado'}">${sl[p.status]||p.status}</span></div>
+        <div class="partida-header"><span class="partida-fase">${faseStr}</span><span class="badge ${bc[p.status]||'badge-agendado'}">${sl[p.status]||p.status}</span></div>
         <div class="partida-body">
             <div class="pj"><div class="pj-nome" style="color:${v1?'#4ade80':'#fff'}">${esc(j1?.nome||'?')}</div><div class="pj-gols">${p.status!=='agendado'?p.gols1:'-'}</div>${v1?'<div class="pj-win">🏆</div>':''}</div>
-            <div class="vs">VS</div>
+            <div class="vs">&times;</div>
             <div class="pj"><div class="pj-nome" style="color:${v2?'#4ade80':'#fff'}">${esc(j2?.nome||'?')}</div><div class="pj-gols">${p.status!=='agendado'?p.gols2:'-'}</div>${v2?'<div class="pj-win">🏆</div>':''}</div>
         </div>
     </div>`;
@@ -465,16 +724,89 @@ function renderPub(p, live) {
 
 function calcStats() {
     const stats = {};
-    D.jogadores.forEach(j => { stats[j.id] = { id: j.id, nome: j.nome, pj: 0, v: 0, d: 0, gf: 0, gc: 0 }; });
+    D.jogadores.forEach(j => { stats[j.id] = { id: j.id, nome: j.nome, pj: 0, v: 0, e: 0, d: 0, pts: 0, gf: 0, gc: 0 }; });
     D.partidas.filter(p => p.status === 'encerrado').forEach(p => {
         const s1 = stats[p.j1Id], s2 = stats[p.j2Id];
         if (!s1 || !s2) return;
         s1.pj++; s2.pj++;
         s1.gf += p.gols1||0; s1.gc += p.gols2||0;
         s2.gf += p.gols2||0; s2.gc += p.gols1||0;
-        if (p.vencedorId===p.j1Id){s1.v++;s2.d++;}else if(p.vencedorId===p.j2Id){s2.v++;s1.d++;}else{s1.d++;s2.d++;}
+        if (p.vencedorId===p.j1Id)     { s1.v++; s2.d++; s1.pts+=3; }
+        else if (p.vencedorId===p.j2Id) { s2.v++; s1.d++; s2.pts+=3; }
+        else                            { s1.e++; s2.e++; s1.pts+=1; s2.pts+=1; }
     });
     return stats;
+}
+
+function calcShots() {
+    const shots = {};
+    D.jogadores.forEach(j => {
+        shots[j.id] = { id: j.id, nome: j.nome, total: 0, porGolSofrido: 0, porGolFeito: 0, porDerrota: 0, porVitoria: 0 };
+    });
+    D.partidas.filter(p => p.status === 'encerrado').forEach(p => {
+        const cat = (D.categorias||[]).find(c => c.id === p.categoriaId);
+        const r = {
+            tomouGol: cat?.shotTomouGol ?? 2,
+            fezGol:   cat?.shotFezGol   ?? 1,
+            perdeu:   cat?.shotPerdeu   ?? 2,
+            ganhou:   cat?.shotGanhou   ?? 1
+        };
+        const s1 = shots[p.j1Id], s2 = shots[p.j2Id];
+        if (!s1 || !s2) return;
+        s1.porGolSofrido += (p.gols2||0) * r.tomouGol;
+        s2.porGolSofrido += (p.gols1||0) * r.tomouGol;
+        s1.porGolFeito   += (p.gols1||0) * r.fezGol;
+        s2.porGolFeito   += (p.gols2||0) * r.fezGol;
+        if (p.vencedorId === p.j1Id)      { s1.porVitoria += r.ganhou; s2.porDerrota += r.perdeu; }
+        else if (p.vencedorId === p.j2Id) { s2.porVitoria += r.ganhou; s1.porDerrota += r.perdeu; }
+    });
+    Object.values(shots).forEach(s => { s.total = s.porGolSofrido + s.porGolFeito + s.porVitoria + s.porDerrota; });
+    return Object.values(shots).sort((a,b) => b.total - a.total);
+}
+
+function renderShots() {
+    const list = calcShots();
+    const el = document.getElementById('shots-content');
+    const played = list.filter(s => s.total > 0);
+    if (!played.length) {
+        el.innerHTML = '<div class="empty">Nenhum shot registrado ainda — as partidas precisam ser encerradas</div>';
+    } else {
+        const max = played[0].total;
+        const medals = ['🥇','🥈','🥉'];
+        el.innerHTML = list.map((s, i) => {
+            const pct = max > 0 ? Math.round(s.total / max * 100) : 0;
+            const bd = [];
+            if (s.porGolSofrido) bd.push(`${s.porGolSofrido} gols sofridos`);
+            if (s.porGolFeito)   bd.push(`${s.porGolFeito} gols feitos`);
+            if (s.porDerrota)    bd.push(`${s.porDerrota} derrota${s.porDerrota!==1?'s':''}`);
+            if (s.porVitoria)    bd.push(`${s.porVitoria} vitória${s.porVitoria!==1?'s':''}`);
+            return `<div class="shot-item">
+                <span class="shot-rank">${medals[i] || (i+1)}</span>
+                <span class="shot-nome">${esc(s.nome)}</span>
+                <div class="shot-bar-wrap"><div class="shot-bar" style="width:${pct}%"></div></div>
+                <span class="shot-total">${s.total}</span>
+                <span class="shot-unit">shot${s.total!==1?'s':''}</span>
+                ${bd.length ? `<span class="shot-breakdown">(${bd.join(' · ')})</span>` : ''}
+            </div>`;
+        }).join('');
+    }
+
+    // Regras por categoria
+    const cats = (D.categorias||[]);
+    const regrasBox = document.getElementById('shots-regras-box');
+    const regrasCt  = document.getElementById('shots-regras-content');
+    if (cats.length) {
+        regrasCt.innerHTML = cats.map(c => `<div class="shot-regra-item">
+            <span class="shot-regra-nome">🏆 ${esc(c.nome)}</span>
+            <span class="shot-regra-tag">🏐 Gol sofrido: <strong>${c.shotTomouGol??2}</strong></span>
+            <span class="shot-regra-tag">⚽ Gol feito: <strong>${c.shotFezGol??1}</strong></span>
+            <span class="shot-regra-tag">❌ Derrota: <strong>${c.shotPerdeu??2}</strong></span>
+            <span class="shot-regra-tag">✅ Vitória: <strong>${c.shotGanhou??1}</strong></span>
+        </div>`).join('');
+        regrasBox.style.display = 'block';
+    } else {
+        regrasBox.style.display = 'none';
+    }
 }
 
 function findJ(id) { return D.jogadores.find(j => j.id === id); }
@@ -483,14 +815,31 @@ function esc(t) { const d=document.createElement('div'); d.textContent=t||''; re
 function formatDate(d) { if (!d) return ''; const [y,m,dd]=d.split('-'); return `${dd}/${m}/${y}`; }
 
 load();
-setInterval(load, 10000);
 
-// WebSocket
-try {
-    const ws = new WebSocket('ws://'+location.host);
-    ws.onmessage = e => { try { const m=JSON.parse(e.data); if(m.type==='cirrose-update'){D=m.data;render();} } catch{} };
-    ws.onclose = () => setTimeout(() => { try { ws.close(); } catch{} }, 3000);
-} catch {}
+// Polling de fallback (só se o WS estiver desconectado)
+let wsConnected = false;
+setInterval(() => { if (!wsConnected) load(); }, 3000);
+
+// WebSocket com reconexão automática
+let wsRetryDelay = 1000;
+function connectWS() {
+    try {
+        const ws = new WebSocket('ws://'+location.host);
+        ws.onopen  = () => { wsConnected = true; wsRetryDelay = 1000; };
+        ws.onmessage = e => {
+            try {
+                const m = JSON.parse(e.data);
+                if (m.type === 'cirrose-update') { D = m.data; render(); }
+            } catch {}
+        };
+        ws.onclose = ws.onerror = () => {
+            wsConnected = false;
+            setTimeout(connectWS, wsRetryDelay);
+            wsRetryDelay = Math.min(wsRetryDelay * 2, 15000);
+        };
+    } catch { setTimeout(connectWS, wsRetryDelay); }
+}
+connectWS();
 </script>
 </body>
 </html>

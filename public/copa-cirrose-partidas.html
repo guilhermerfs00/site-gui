@@ -168,6 +168,10 @@
         .btn-gerar-mm:active{transform:scale(.97)}
         .btn-gerar-mm:disabled{opacity:.5;cursor:default;transform:none}
 
+        /* GOL CELEBRATION */
+        .gol-flash{position:fixed;top:42%;left:50%;transform:translate(-50%,-50%);z-index:9999;font-size:2.8rem;font-weight:900;color:#ffd700;pointer-events:none;text-shadow:0 0 30px rgba(255,215,0,.8),0 0 60px rgba(255,215,0,.3);animation:golFly .95s ease forwards;white-space:nowrap;letter-spacing:2px}
+        @keyframes golFly{0%{opacity:0;transform:translate(-50%,-50%) scale(.2)}25%{opacity:1;transform:translate(-50%,-50%) scale(1.35)}60%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-68%) scale(1.05)}}
+
         @media(max-width:560px){
             .pc-gols{font-size:2rem}
             .pc-nome{font-size:.8rem}
@@ -510,7 +514,7 @@ async function salvarEncerramento(id, vencedorId) {
         await api('/api/cirrose/partidas/'+id,'PUT',{status:'encerrado',vencedorId});
         atualizarPartida(id, {status:'encerrado',vencedorId});
         await checarAvancoBracket((D.partidas||[]).find(p=>p.id===id));
-        renderStats(); renderPartidas();
+        renderStats(); renderBannerMataMata(); renderPartidas();
         toast('Partida encerrada! 🏆','success');
     } catch(e) { toast('Erro: '+e.message,'error'); }
 }
@@ -534,6 +538,13 @@ async function ajustarGol(e, id, player, delta) {
         p[field]=newVal;
         const el=document.getElementById('g'+player+'-'+id);
         if(el){ el.textContent=newVal; el.style.transform='scale(1.3)'; setTimeout(()=>el.style.transform='',150); }
+        if (delta > 0) {
+            const div = document.createElement('div');
+            div.className = 'gol-flash';
+            div.textContent = '⚽ GOL!';
+            document.body.appendChild(div);
+            setTimeout(() => div.remove(), 950);
+        }
     } catch(e) { toast('Erro: '+e.message,'error'); }
 }
 

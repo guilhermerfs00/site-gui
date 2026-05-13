@@ -1737,6 +1737,7 @@ const server = http.createServer((req, res) => {
 
     // ==================== API COPA CIRROSE ====================
     const CIRROSE_FILE = path.join(__dirname, 'data', 'copa-cirrose.json');
+    const CIRROSE_CAT_PADRAO = { id: 1, nome: 'Padrão', numChaves: 2, classificadosPorChave: 2, shotTomouGol: 2, shotFezGol: 1, shotPerdeu: 2, shotGanhou: 1 };
     function readCirrose() {
         try {
             const d = JSON.parse(fs.readFileSync(CIRROSE_FILE, 'utf8'));
@@ -1744,9 +1745,11 @@ const server = http.createServer((req, res) => {
             if (!d.quadras) d.quadras = [];
             if (!d.categorias) d.categorias = [];
             if (!d.inscricoes) d.inscricoes = [];
+            // garante categoria padrão
+            if (d.categorias.length === 0) d.categorias = [{ ...CIRROSE_CAT_PADRAO }];
             return d;
         } catch(e) {
-            return { evento: { nome: 'Grande Copa Cirrose - 1ª Edição', data: '', horaInicio: '09:00', local: '', descricao: '', status: 'agendado' }, quadras: [], categorias: [], jogadores: [], inscricoes: [], partidas: [], fase: 'cadastro' };
+            return { evento: { nome: 'Grande Copa Cirrose - 1ª Edição', data: '', horaInicio: '09:00', local: '', descricao: '', status: 'agendado' }, quadras: [], categorias: [{ ...CIRROSE_CAT_PADRAO }], jogadores: [], inscricoes: [], partidas: [], fase: 'cadastro' };
         }
     }
     function writeCirrose(d) { fs.writeFileSync(CIRROSE_FILE, JSON.stringify(d, null, 2), 'utf8'); }
@@ -1795,7 +1798,7 @@ const server = http.createServer((req, res) => {
             const nome = (body.nome || '').trim();
             if (!nome) { res.writeHead(400); res.end(JSON.stringify({ erro: 'Nome obrigatório' })); return; }
             const maxId = (d.categorias || []).reduce((m, c) => Math.max(m, c.id), 0);
-            const cat = { id: maxId + 1, nome, numChaves: body.numChaves || 1, classificadosPorChave: body.classificadosPorChave || 2 };
+            const cat = { id: maxId + 1, nome, numChaves: body.numChaves || 1, classificadosPorChave: body.classificadosPorChave || 2, shotTomouGol: body.shotTomouGol !== undefined ? Number(body.shotTomouGol) : 2, shotFezGol: body.shotFezGol !== undefined ? Number(body.shotFezGol) : 1, shotPerdeu: body.shotPerdeu !== undefined ? Number(body.shotPerdeu) : 2, shotGanhou: body.shotGanhou !== undefined ? Number(body.shotGanhou) : 1 };
             d.categorias = d.categorias || []; d.categorias.push(cat);
             writeCirrose(d); sendJSON(res, cat);
         }); return;
@@ -1807,8 +1810,8 @@ const server = http.createServer((req, res) => {
             const d = readCirrose();
             const idx = (d.categorias || []).findIndex(c => c.id === id);
             if (idx < 0) { res.writeHead(404); res.end(JSON.stringify({ erro: 'Categoria não encontrada' })); return; }
-            const allowed = ['nome','numChaves','classificadosPorChave'];
-            allowed.forEach(k => { if (body[k] !== undefined) d.categorias[idx][k] = body[k]; });
+            const allowed = ['nome','numChaves','classificadosPorChave','shotTomouGol','shotFezGol','shotPerdeu','shotGanhou'];
+            allowed.forEach(k => { if (body[k] !== undefined) d.categorias[idx][k] = body[k] !== '' ? Number(body[k]) || body[k] : body[k]; });
             writeCirrose(d); sendJSON(res, d.categorias[idx]);
         }); return;
     }
@@ -1992,6 +1995,7 @@ const server = http.createServer((req, res) => {
             const allowed = ['gols1','gols2','status','vencedorId','j1Id','j2Id'];
             allowed.forEach(k => { if (body[k] !== undefined) d.partidas[idx][k] = body[k]; });
             writeCirrose(d); sendJSON(res, d.partidas[idx]);
+            try { wss.clients.forEach(cl => { if (cl.readyState === 1) cl.send(JSON.stringify({ type: 'cirrose-update', data: d })); }); } catch(_) {}
         }); return;
     }
     // POST /api/cirrose/partidas (nova partida bracket)
