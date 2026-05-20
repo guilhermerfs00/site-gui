@@ -28,6 +28,8 @@
         .nav-tab { padding: 10px 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.6); cursor: pointer; font-family: 'Poppins',sans-serif; font-size: 0.85rem; font-weight: 600; transition: all 0.2s; }
         .nav-tab:hover { background: rgba(255,255,255,0.1); color: #fff; }
         .nav-tab.active { background: linear-gradient(135deg, #8b0000, #b8860b); color: #fff; border-color: transparent; }
+        .nav-tab.odds-new { position: relative; }
+        .nav-tab.odds-new::after { content: ''; position: absolute; top: 5px; right: 5px; width: 9px; height: 9px; border-radius: 50%; background: #f87171; box-shadow: 0 0 6px rgba(248,113,113,.7); animation: pulseR 1s ease infinite; }
         .panel { display: none; }
         .panel.active { display: block; }
         .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 24px; margin-bottom: 20px; }
@@ -181,7 +183,7 @@
         .odds-promo-sub{font-size:.75rem;color:rgba(255,255,255,.5);line-height:1.4}
         .odds-promo-ticker{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px}
         .odds-promo-chip{background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.2);border-radius:20px;padding:4px 12px;font-size:.68rem;font-weight:700;color:#ffd700}
-        .odds-disclaimer{font-size:.63rem;color:rgba(255,255,255,.2);text-align:center;padding:12px 6px;line-height:1.6}
+        .odds-disclaimer{display:none}
         .odds-empty-promo{text-align:center;padding:32px 16px;color:rgba(255,255,255,.3);font-size:.9rem}
         .odds-empty-promo .big{font-size:3rem;display:block;margin-bottom:10px}
         /* Bet buttons inside match card */
@@ -196,6 +198,18 @@
         .odds-bet-label.fav-label{color:#ffd700}
         .odds-bet-odd{font-size:1.15rem;font-weight:900;color:#00e676;flex-shrink:0;line-height:1}
         .odds-bet-btn.fav .odds-bet-odd{color:#ffd700}
+        /* Claridade — tela de odds mais visível ao ar livre */
+        #odds-content .glass{background:rgba(255,255,255,.10);border-color:rgba(255,255,255,.18)}
+        #odds-content .odds-card{background:rgba(255,255,255,.08);border-color:rgba(0,200,83,.32)}
+        #odds-content .odds-card.live{background:rgba(239,68,68,.07);border-color:rgba(239,68,68,.55)}
+        #odds-content .odds-card-header{background:rgba(255,255,255,.07)}
+        #odds-content .user-balance-bar{background:rgba(255,255,255,.11);border-color:rgba(255,255,255,.2)}
+        #odds-content .cpf-card{background:rgba(255,255,255,.10);border-color:rgba(255,255,255,.2)}
+        #odds-content .odds-bet-btn{background:rgba(255,255,255,.10);border-color:rgba(255,255,255,.22)}
+        #odds-content .odds-bet-btn.fav{background:rgba(255,215,0,.11);border-color:rgba(255,215,0,.38)}
+        #odds-content .odds-bet-label{color:rgba(255,255,255,.82)}
+        #odds-content .aposta-pessoa-card{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.14)}
+        #odds-content .aposta-pessoa-header{background:rgba(255,255,255,.06)}
         /* Bet slip modal */
         .bet-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(6px);z-index:200;display:flex;align-items:flex-end;justify-content:center}
         .bet-slip{background:linear-gradient(180deg,#1e1e32,#0f0f1a);border:1px solid rgba(255,255,255,.12);border-radius:24px 24px 0 0;width:100%;max-width:520px;max-height:92vh;overflow-y:auto;animation:slideUp .25s ease}
@@ -326,6 +340,40 @@
             .gcside-left { border-right: none; border-bottom: 1px solid rgba(255,255,255,.06); }
             /* Group prog bar */
             .group-prog-bar { width: 50px; }
+            /* ===== ODDS MOBILE ===== */
+            .odds-hero-promo { padding: 12px 14px; margin-bottom: 12px; }
+            .odds-hero-promo::before { font-size: 4rem; }
+            .odds-promo-title { font-size: .95rem; }
+            .odds-promo-sub { font-size: .68rem; }
+            .odds-promo-ticker { margin-top: 8px; gap: 5px; }
+            .odds-promo-chip { font-size: .6rem; padding: 3px 8px; }
+            .user-balance-bar { padding: 10px 12px; gap: 8px; }
+            .user-balance-val { font-size: .95rem; }
+            .odds-panel-header { margin-bottom: 12px; gap: 7px; }
+            .odds-card { border-radius: 13px; margin-bottom: 10px; }
+            .odds-card-header { padding: 8px 12px; }
+            .odds-bet-grid { gap: 6px; }
+            .odds-bet-btn { padding: 10px 11px; border-radius: 11px; }
+            .odds-bet-odd { font-size: 1.05rem; }
+            .odds-bet-label { font-size: .67rem; }
+            .odds-section-label { font-size: .58rem; }
+            /* Shot request banner */
+            .shot-req-banner { flex-direction: column !important; align-items: stretch !important; gap: 10px !important; padding: 12px 14px !important; }
+            .shot-req-banner .shot-req-body { flex-direction: row !important; align-items: center !important; gap: 12px !important; }
+            .shot-req-banner > button, .shot-req-banner > div:last-child { width: 100% !important; justify-content: center !important; border-radius: 12px !important; }
+            /* CPF screen */
+            .cpf-screen { padding: 4px 0 24px; }
+            .cpf-card { padding: 20px 14px 20px; border-radius: 16px; }
+            .cpf-title { font-size: 1.05rem; }
+            .cpf-sub { font-size: .73rem; }
+            .cpf-prize { font-size: .8rem; padding: 9px 12px; }
+            /* Apostas histórico */
+            .aposta-pessoa-header { padding: 10px 12px; gap: 8px; }
+            .aposta-pessoa-avatar { width: 32px; height: 32px; font-size: .9rem; }
+            .aposta-item { padding: 8px 12px; }
+            .aposta-item-bet { font-size: .76rem; }
+            .aposta-item-odd { font-size: .62rem; }
+            .aposta-saldo-val { font-size: .95rem; }
         }
 
         /* ===== FOOTBALL BROADCAST ===== */
@@ -491,6 +539,12 @@
 let D = { evento: {}, jogadores: [], partidas: [], fase: 'cadastro' };
 
 let activeTab = 'aovivo';
+let lastBettingRound = null;
+
+function getAvailableBettingRound() {
+    const ag = (D?.partidas || []).filter(p => p.status === 'agendado').sort((a,b) => (a.rodada||0)-(b.rodada||0));
+    return ag.length > 0 ? ag[0].rodada : null;
+}
 
 function switchTab(tab) {
     activeTab = tab;
@@ -498,6 +552,7 @@ function switchTab(tab) {
         const tabs = ['aovivo','grupos','bracket','jogadores','shots','odds','qrcode'];
         t.classList.toggle('active', tabs[i] === tab);
     });
+    if (tab === 'odds') document.getElementById('tab-odds')?.classList.remove('odds-new');
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     document.getElementById('panel-'+tab).classList.add('active');
     if (tab === 'qrcode') renderQR();
@@ -545,6 +600,7 @@ async function load() {
     try {
         const r = await fetch('/api/cirrose');
         D = await r.json();
+        lastBettingRound = getAvailableBettingRound();
         render();
     } catch {}
 }
@@ -999,6 +1055,21 @@ function fmtCpf(v) {
 }
 function cpfDigits(v) { return (v||'').replace(/\D/g,''); }
 
+function validarCpf(d) {
+    // Rejeita CPFs com todos dígitos iguais (ex: 111.111.111-11)
+    if (/^(\d)\1{10}$/.test(d)) return false;
+    // Primeiro dígito verificador
+    let soma = 0;
+    for (let i = 0; i < 9; i++) soma += parseInt(d[i]) * (10 - i);
+    let r = soma % 11;
+    if ((r < 2 ? 0 : 11 - r) !== parseInt(d[9])) return false;
+    // Segundo dígito verificador
+    soma = 0;
+    for (let i = 0; i < 10; i++) soma += parseInt(d[i]) * (11 - i);
+    r = soma % 11;
+    return (r < 2 ? 0 : 11 - r) === parseInt(d[10]);
+}
+
 function loadDados() {
     try { apostas  = JSON.parse(localStorage.getItem('apostas_cirrose') || '[]'); } catch { apostas = []; }
     try { usuarios = JSON.parse(localStorage.getItem('usuarios_cirrose') || '{}'); } catch { usuarios = {}; }
@@ -1052,16 +1123,27 @@ function calcOddsPartidas() {
         ? enc.reduce((a,q) => a + (q.gols1||0) + (q.gols2||0), 0) / enc.length
         : 3.5;
     currentOddsMap = {};
-    const margin = 0.30; // margem da casa 30% — mais chance de perder
+    // Configuração de dificuldade das odds (definida em copa-cirrose.html)
+    const ODDS_DIFF = {
+        'muito-facil':  { margin:0.03, priorPts:2.5, priorDenom:5,   cap:4.0,  floor:1.12, ouBase:1.85 },
+        'facil':        { margin:0.05, priorPts:1.5, priorDenom:3,   cap:6.0,  floor:1.06, ouBase:1.75 },
+        'medio':        { margin:0.07, priorPts:0.8, priorDenom:1.5, cap:10.0, floor:1.02, ouBase:1.65 },
+        'dificil':      { margin:0.13, priorPts:0.4, priorDenom:0.8, cap:12.0, floor:1.01, ouBase:1.50 },
+        'muito-dificil':{ margin:0.20, priorPts:0.1, priorDenom:0.2, cap:15.0, floor:1.01, ouBase:1.35 }
+    };
+    let _dk; try { _dk = localStorage.getItem('odds_dificuldade') || 'medio'; } catch { _dk = 'medio'; }
+    const cfg = ODDS_DIFF[_dk] || ODDS_DIFF['medio'];
+    const margin = cfg.margin;
     const result = D.partidas.filter(p => p.status === 'agendado').map(p => {
         const s1 = stats[p.j1Id] || { pj:0, pts:0 };
         const s2 = stats[p.j2Id] || { pj:0, pts:0 };
-        const aprv = (s) => s.pj > 0 ? s.pts / (s.pj * 3) : 0.5;
-        const a1 = aprv(s1) + 0.05, a2 = aprv(s2) + 0.05;
+        // Suavização bayesiana configurável pela dificuldade
+        const aprv = (s) => (s.pts + cfg.priorPts) / (s.pj * 3 + cfg.priorDenom);
+        const a1 = aprv(s1), a2 = aprv(s2);
         const total = a1 + a2;
         const prob1 = a1 / total, prob2 = a2 / total;
-        const baseV1 = Math.max(1.05, +((1/prob1 * (1+margin)).toFixed(2)));
-        const baseV2 = Math.max(1.05, +((1/prob2 * (1+margin)).toFixed(2)));
+        const baseV1 = Math.min(cfg.cap, Math.max(cfg.floor, +((1/(prob1*(1+margin))).toFixed(2))));
+        const baseV2 = Math.min(cfg.cap, Math.max(cfg.floor, +((1/(prob2*(1+margin))).toFixed(2))));
         // Pressão de mercado: blend odds pelo dinheiro apostado em cada lado
         const betsM = apostas.filter(a => a.matchId === p.id && a.status === 'pendente');
         const moneyV1    = betsM.filter(a => a.tipo === 'vitoria_j1').reduce((s,a) => s+a.valor, 0);
@@ -1071,23 +1153,23 @@ function calcOddsPartidas() {
         const totalV = moneyV1 + moneyV2;
         let oddV1 = baseV1, oddV2 = baseV2;
         if (totalV >= 20) {
-            const mktV1 = moneyV1 > 0 ? Math.max(1.05, (totalV*(1-margin))/moneyV1) : baseV1;
-            const mktV2 = moneyV2 > 0 ? Math.max(1.05, (totalV*(1-margin))/moneyV2) : baseV2;
+            const mktV1 = moneyV1 > 0 ? Math.max(cfg.floor, (totalV*(1-margin))/moneyV1) : baseV1;
+            const mktV2 = moneyV2 > 0 ? Math.max(cfg.floor, (totalV*(1-margin))/moneyV2) : baseV2;
             const w = Math.min(0.20, totalV / 500);
-            oddV1 = Math.max(1.05, parseFloat((baseV1*(1-w) + mktV1*w).toFixed(2)));
-            oddV2 = Math.max(1.05, parseFloat((baseV2*(1-w) + mktV2*w).toFixed(2)));
+            oddV1 = Math.max(cfg.floor, parseFloat((baseV1*(1-w) + mktV1*w).toFixed(2)));
+            oddV2 = Math.max(cfg.floor, parseFloat((baseV2*(1-w) + mktV2*w).toFixed(2)));
         }
         const totalOU = moneyOver + moneyUnder;
-        const linha = Math.max(2, Math.round(avgGoals));
+        const linha = Math.max(5, Math.round(avgGoals * 1.4));
         const confianca = Math.min(1, enc.length / 4);
-        let overOdd  = parseFloat((1.55 + (1-confianca)*0.10).toFixed(2));
-        let underOdd = parseFloat((1.65 + (1-confianca)*0.10).toFixed(2));
+        let overOdd  = parseFloat((cfg.ouBase + (1-confianca)*0.10).toFixed(2));
+        let underOdd = parseFloat((cfg.ouBase + (1-confianca)*0.10).toFixed(2));
         if (totalOU >= 20) {
-            const mktO = moneyOver  > 0 ? Math.max(1.05, (totalOU*(1-margin))/moneyOver)  : overOdd;
-            const mktU = moneyUnder > 0 ? Math.max(1.05, (totalOU*(1-margin))/moneyUnder) : underOdd;
+            const mktO = moneyOver  > 0 ? Math.max(cfg.floor, (totalOU*(1-margin))/moneyOver)  : overOdd;
+            const mktU = moneyUnder > 0 ? Math.max(cfg.floor, (totalOU*(1-margin))/moneyUnder) : underOdd;
             const w = Math.min(0.20, totalOU / 500);
-            overOdd  = Math.max(1.05, parseFloat((overOdd*(1-w)  + mktO*w).toFixed(2)));
-            underOdd = Math.max(1.05, parseFloat((underOdd*(1-w) + mktU*w).toFixed(2)));
+            overOdd  = Math.max(cfg.floor, parseFloat((overOdd*(1-w)  + mktO*w).toFixed(2)));
+            underOdd = Math.max(cfg.floor, parseFloat((underOdd*(1-w) + mktU*w).toFixed(2)));
         }
         const item = {
             partida: p,
@@ -1107,7 +1189,17 @@ function openBetSlip(matchId, tipo, linha) {
     if (!currentCpf || !getUsuario(currentCpf)) { renderOdds(); return; }
     const o = currentOddsMap[matchId];
     if (!o) { renderOdds(); return; }
+    loadDados();
     const u = getUsuario(currentCpf);
+    if (!u || u.saldo <= 0) {
+        showToast('⚠️ Sem saldo! Solicite um shot ao admin para recarregar.');
+        return;
+    }
+    const jaApostouJogo = apostas.some(a => a.cpf === currentCpf && a.matchId === matchId);
+    if (jaApostouJogo) {
+        showToast('⛔ Você já apostou nessa partida!');
+        return;
+    }
     const j1Nome = o.j1?.nome || '?', j2Nome = o.j2?.nome || '?';
     const odd = tipo === 'vitoria_j1' ? o.oddV1
               : tipo === 'vitoria_j2' ? o.oddV2
@@ -1164,6 +1256,7 @@ function closeBetModal() {
 
 function submitBet() {
     if (!betState || !currentCpf) return;
+    loadDados();
     const u = getUsuario(currentCpf);
     if (!u) return;
     const val = parseFloat(document.getElementById('bet-amount')?.value || 0);
@@ -1214,7 +1307,7 @@ function showToast(msg) {
         t.style.cssText = 'position:fixed;bottom:85px;left:50%;transform:translateX(-50%) translateZ(0);background:rgba(0,200,83,.93);color:#000;font-weight:700;padding:10px 20px;border-radius:30px;font-size:.82rem;z-index:400;transition:opacity .4s;pointer-events:none;white-space:nowrap;box-shadow:0 4px 20px rgba(0,200,83,.4);max-width:90vw;text-align:center';
         document.body.appendChild(t);
     }
-    t.textContent = msg;
+    t.innerHTML = msg;
     t.style.opacity = '1';
     clearTimeout(t._to);
     t._to = setTimeout(() => { t.style.opacity = '0'; }, 3200);
@@ -1226,18 +1319,20 @@ function renderCpfScreen() {
         <div class="cpf-card">
             <div style="font-size:2.6rem;margin-bottom:6px">🎰</div>
             <div class="cpf-title">Casa de Apostas Cirrose™</div>
-            <div class="cpf-sub">Preencha os campos abaixo para receber seu bônus e começar a apostar!</div>
-            <div class="cpf-prize">🎁 R$ 200,00 fictícios de bônus!</div>
+            <div id="cpf-card-sub" class="cpf-sub">Preencha os campos abaixo para receber seu bônus e começar a apostar!</div>
+            <div id="cpf-card-prize" class="cpf-prize">🎁 R$ 200,00 fictícios de bônus!</div>
+            <!-- Retorno: banner de boas-vindas (oculto por padrão) -->
+            <div id="cpf-welcome-back" style="display:none;background:linear-gradient(135deg,rgba(74,222,128,.13),rgba(74,222,128,.04));border:1px solid rgba(74,222,128,.35);border-radius:12px;padding:11px 14px;font-size:.85rem;font-weight:700;color:#4ade80;margin-bottom:4px;text-align:left"></div>
             <div class="bet-field" style="margin-top:18px;text-align:left">
                 <label class="bet-label">📋 Seu CPF <span style="color:#f87171">*</span></label>
                 <input id="cpf-input" class="bet-input" type="tel" inputmode="numeric"
                     placeholder="000.000.000-00" maxlength="14"
                     autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-                    oninput="this.value=fmtCpf(this.value);this.classList.remove('error');document.getElementById('cpf-err').style.display='none'"
+                    oninput="this.value=fmtCpf(this.value);this.classList.remove('error');document.getElementById('cpf-err').style.display='none';checkCpfReturning()"
                     onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('cpf-nome')?.focus()}">
                 <div id="cpf-err" style="display:none;color:#f87171;font-size:.72rem;margin-top:5px"></div>
             </div>
-            <div class="bet-field" style="text-align:left">
+            <div id="cpf-nome-row" class="bet-field" style="text-align:left">
                 <label class="bet-label">👤 Como te chamam? <span style="color:#f87171">*</span></label>
                 <input id="cpf-nome" class="bet-input" type="text" inputmode="text"
                     placeholder="Seu apelido ou nome" maxlength="30"
@@ -1245,7 +1340,6 @@ function renderCpfScreen() {
                     oninput="this.classList.remove('error');document.getElementById('cpf-nome-err').style.display='none'"
                     onkeydown="if(event.key==='Enter'){event.preventDefault();submitCpf()}">
                 <div id="cpf-nome-err" style="display:none;color:#f87171;font-size:.72rem;margin-top:5px"></div>
-                <div style="font-size:.65rem;color:rgba(255,255,255,.28);margin-top:4px">Se já cadastrado, deixe em branco para entrar apenas com o CPF.</div>
             </div>
             <button type="button" class="bet-confirm-btn" style="margin-top:10px"
                 onpointerdown="event.preventDefault()"
@@ -1257,6 +1351,41 @@ function renderCpfScreen() {
     </div>`;
 }
 
+function checkCpfReturning() {
+    const d = cpfDigits(document.getElementById('cpf-input')?.value || '');
+    const nomeRow    = document.getElementById('cpf-nome-row');
+    const welcomeEl  = document.getElementById('cpf-welcome-back');
+    const subEl      = document.getElementById('cpf-card-sub');
+    const prizeEl    = document.getElementById('cpf-card-prize');
+    if (d.length === 11) {
+        loadDados();
+        if (!validarCpf(d)) {
+            const errEl = document.getElementById('cpf-err');
+            if (errEl) { errEl.textContent = '⚠️ CPF inválido — verifique os dígitos'; errEl.style.display = 'block'; }
+            if (welcomeEl) welcomeEl.style.display = 'none';
+            if (nomeRow)   nomeRow.style.display   = 'block';
+            if (subEl)     subEl.textContent       = 'Preencha os campos abaixo para receber seu bônus e começar a apostar!';
+            if (prizeEl)   prizeEl.style.display   = 'block';
+            return;
+        }
+        const ex = getUsuario(d);
+        if (ex) {
+            const minhasPend = apostas.filter(a => a.cpf === d && a.status === 'pendente').length;
+            const pendStr = minhasPend > 0 ? ` · ${minhasPend} aposta${minhasPend>1?'s':''} em aberto` : '';
+            if (welcomeEl) { welcomeEl.style.display = 'block'; welcomeEl.innerHTML = `👋 Bem-vindo de volta, <strong>${esc(ex.nome)}</strong>!<br><span style="font-size:.75rem;color:rgba(74,222,128,.7);font-weight:400">Saldo: R$ ${ex.saldo.toFixed(2)}${pendStr}</span>`; }
+            if (nomeRow)   nomeRow.style.display   = 'none';
+            if (subEl)     subEl.textContent        = 'CPF reconhecido — clique em Entrar para continuar.';
+            if (prizeEl)   prizeEl.style.display    = 'none';
+            return;
+        }
+    }
+    // CPF incompleto ou não cadastrado: estado padrão
+    if (welcomeEl) welcomeEl.style.display = 'none';
+    if (nomeRow)   nomeRow.style.display   = 'block';
+    if (subEl)     subEl.textContent       = 'Preencha os campos abaixo para receber seu bônus e começar a apostar!';
+    if (prizeEl)   prizeEl.style.display   = 'block';
+}
+
 function submitCpf() {
     const cpfEl    = document.getElementById('cpf-input');
     const errEl    = document.getElementById('cpf-err');
@@ -1264,6 +1393,8 @@ function submitCpf() {
     const nomeErrEl= document.getElementById('cpf-nome-err');
     const d    = cpfDigits(cpfEl?.value || '');
     const nome = nomeEl?.value?.trim() || '';
+    // Garante dados frescos do localStorage antes de verificar usuário
+    loadDados();
     // Valida CPF
     if (d.length !== 11) {
         cpfEl.classList.add('error');
@@ -1271,13 +1402,22 @@ function submitCpf() {
         errEl.style.display = 'block';
         return;
     }
+    if (!validarCpf(d)) {
+        cpfEl.classList.add('error');
+        errEl.textContent = '⚠️ CPF inválido — verifique os dígitos';
+        errEl.style.display = 'block';
+        return;
+    }
     errEl.style.display = 'none';
-    // Usuário já cadastrado: entra diretamente
+    // Usuário já cadastrado: restaura estado completo (saldo + apostas)
     const existente = getUsuario(d);
     if (existente) {
         currentCpf = d;
         try { localStorage.setItem('apostas_cpf', d); } catch {}
         renderOdds();
+        const minhasPend = apostas.filter(a => a.cpf === d && a.status === 'pendente').length;
+        const pendStr = minhasPend > 0 ? ` | ${minhasPend} aposta${minhasPend>1?'s':''} em aberto` : '';
+        showToast(`👋 Bem-vindo de volta, ${esc(existente.nome)}! Saldo: R$ ${existente.saldo.toFixed(2)}${pendStr}`);
         return;
     }
     // Novo usuário: exige nome
@@ -1291,7 +1431,7 @@ function submitCpf() {
     currentCpf = d;
     try { localStorage.setItem('apostas_cpf', d); } catch {}
     renderOdds();
-    showToast(`🎉 Bem-vindo, ${nome}! Você recebeu R$ 200,00 fictícios!`);
+    showToast(`🎉 Bem-vindo, ${esc(nome)}! Você recebeu R$ 200,00 fictícios!`);
 }
 
 function logoutCpf() {
@@ -1309,39 +1449,41 @@ function requestShot() {
     const u = getUsuario(currentCpf);
     shots.push({ id: Date.now(), cpf: currentCpf, nome: u.nome, ts: new Date().toISOString(), status: 'pendente' });
     try { localStorage.setItem('shots_cirrose', JSON.stringify(shots)); } catch {}
-    showToast(`🥃 Pedido registrado, ${u.nome}! Mostre pro admin e aguarde.`);
+    showToast(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 48" width="18" height="24" style="vertical-align:middle;margin-right:5px"><defs><linearGradient id="tst" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fcd34d"/><stop offset="60%" stop-color="#d97706"/><stop offset="100%" stop-color="#92400e"/></linearGradient></defs><path d="M 4 3 L 32 3 L 26 40 L 10 40 Z" fill="rgba(0,0,0,0.15)" stroke="rgba(0,0,0,0.55)" stroke-width="1.5" stroke-linejoin="round"/><path d="M 6 14 L 30 14 L 26 40 L 10 40 Z" fill="url(#tst)" opacity="0.95"/><ellipse cx="18" cy="14" rx="12" ry="2" fill="rgba(255,255,255,0.35)"/><rect x="9" y="41" width="18" height="4" rx="2" fill="rgba(0,0,0,0.3)"/><path d="M 7 4 L 9 4 L 13 35 L 11 35 Z" fill="rgba(255,255,255,0.2)"/></svg> Pedido registrado, ${esc(u.nome)}! Mostre pro admin e aguarde.`);
     renderOdds();
 }
 
 // -------- Match card --------
-function renderOddsMatchCard(o, fl, live) {
+function renderOddsMatchCard(o, fl, live, bloqueado = false) {
     const p = o.partida;
-    const faseStr = `${fl[p.fase]||p.fase}${p.rodada?' · Rodada '+p.rodada:''}`;
+    const faseStr = `${fl[p.fase]||p.fase}${p.rodada?' · R'+p.rodada:''}`;
     const j1Nome = o.j1?.nome || '?';
     const j2Nome = o.j2?.nome || '?';
     const fav = o.favorite;
+    const btnStyle = bloqueado ? 'opacity:.35;pointer-events:none;cursor:not-allowed' : '';
     const totalApostado = apostas.filter(a => a.matchId === p.id).reduce((s,a) => s + a.valor, 0);
-    const apostasBadge = totalApostado > 0
-        ? `<span style="font-size:.62rem;color:rgba(255,215,0,.7);background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.2);border-radius:8px;padding:2px 8px">R$ ${totalApostado.toFixed(0)} no pool</span>`
-        : '';
+    const p1pct = Math.round(o.prob1 * 100);
+    const p2pct = 100 - p1pct;
     // Barra de distribuição de dinheiro V1 vs V2
     const totalV = o.moneyV1 + o.moneyV2;
     const barHtml = totalV > 0 ? `
-        <div style="display:flex;height:4px;border-radius:4px;overflow:hidden;margin:8px 16px 0">
-            <div style="flex:${Math.max(0.05,o.moneyV1)};background:rgba(0,200,83,.55)"></div>
-            <div style="flex:${Math.max(0.05,o.moneyV2)};background:rgba(248,113,113,.55)"></div>
-        </div>
-        <div style="display:flex;justify-content:space-between;padding:2px 16px 0;font-size:.55rem;color:rgba(255,255,255,.25)">
-            <span>${esc(j1Nome)}: R$${o.moneyV1.toFixed(0)}</span>
-            <span style="color:rgba(255,255,255,.12)">mercado ativo</span>
-            <span>${esc(j2Nome)}: R$${o.moneyV2.toFixed(0)}</span>
+        <div style="margin:4px 16px 0">
+            <div style="display:flex;height:5px;border-radius:4px;overflow:hidden">
+                <div style="flex:${Math.max(0.05,o.moneyV1)};background:rgba(0,200,83,.5)"></div>
+                <div style="flex:${Math.max(0.05,o.moneyV2)};background:rgba(248,113,113,.5)"></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:3px 0 0;font-size:.55rem;color:rgba(255,255,255,.25)">
+                <span>R$${o.moneyV1.toFixed(0)}</span>
+                <span style="color:rgba(255,215,0,.3)">R$${totalV.toFixed(0)} no pool</span>
+                <span>R$${o.moneyV2.toFixed(0)}</span>
+            </div>
         </div>` : '';
     return `<div class="odds-card${live?' live':''}">
         <div class="odds-card-header">
             <span class="odds-fase">${esc(faseStr)}</span>
             <div style="display:flex;align-items:center;gap:6px">
-                ${apostasBadge}
-                ${live ? '<span class="odds-live-mini">🔴 AO VIVO</span>' : '<span style="font-size:.63rem;color:rgba(255,255,255,.3)">Aberta</span>'}
+                ${totalApostado > 0 ? `<span style="font-size:.62rem;color:rgba(255,215,0,.7);background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.2);border-radius:8px;padding:2px 8px">R$ ${totalApostado.toFixed(0)} apostados</span>` : ''}
+                ${live ? '<span class="odds-live-mini">🔴 AO VIVO</span>' : '<span style="display:inline-flex;align-items:center;gap:5px;font-size:.65rem;font-weight:800;color:#4ade80;background:rgba(74,222,128,.13);border:1px solid rgba(74,222,128,.4);border-radius:8px;padding:3px 10px"><span style="width:7px;height:7px;border-radius:50%;background:#4ade80;box-shadow:0 0 5px rgba(74,222,128,.7);animation:pulseR 1.4s ease infinite;flex-shrink:0"></span>Apostas Abertas</span>'}
             </div>
         </div>
         ${live ? `<div style="display:flex;align-items:center;justify-content:center;gap:16px;padding:10px 16px 6px">
@@ -1350,28 +1492,50 @@ function renderOddsMatchCard(o, fl, live) {
             <span style="color:rgba(255,255,255,.25);font-size:.8rem">×</span>
             <span style="font-size:2rem;font-weight:900;color:#ffd700;animation:golGlow 3s ease infinite">${p.gols2||0}</span>
             <span style="font-size:.85rem;font-weight:700">${esc(j2Nome)}</span>
-        </div>` : ''}
+        </div>` : `<div style="display:flex;align-items:center;padding:12px 16px 4px;gap:4px">
+            <div style="flex:1;text-align:center">
+                <div style="font-size:.95rem;font-weight:800;color:${fav==='j1'?'#ffd700':'rgba(255,255,255,.85)'};line-height:1.2">${esc(j1Nome)}</div>
+                <div style="font-size:.62rem;margin-top:3px;color:${fav==='j1'?'rgba(255,215,0,.55)':'rgba(255,255,255,.25)'}">${p1pct}% favorito</div>
+            </div>
+            <div style="padding:0 10px;font-size:.7rem;font-weight:800;color:rgba(255,255,255,.15);flex-shrink:0">VS</div>
+            <div style="flex:1;text-align:center">
+                <div style="font-size:.95rem;font-weight:800;color:${fav==='j2'?'#ffd700':'rgba(255,255,255,.85)'};line-height:1.2">${esc(j2Nome)}</div>
+                <div style="font-size:.62rem;margin-top:3px;color:${fav==='j2'?'rgba(255,215,0,.55)':'rgba(255,255,255,.25)'}">${p2pct}% favorito</div>
+            </div>
+        </div>`}
         ${barHtml}
-        <div style="padding:12px 16px 4px">
+        <div style="padding:10px 16px 4px">
             <div class="odds-section-label">⚽ Resultado da Partida</div>
             <div class="odds-bet-grid">
-                <button class="odds-bet-btn${fav==='j1'?' fav':''}" onclick="openBetSlip(${p.id},'vitoria_j1',0)">
-                    <span class="odds-bet-label${fav==='j1'?' fav-label':''}">${fav==='j1'?'🏆 ':''}${esc(j1Nome)} vence</span>
+                <button class="odds-bet-btn${fav==='j1'?' fav':''}" onclick="openBetSlip(${p.id},'vitoria_j1',0)" style="${btnStyle}">
+                    <div style="flex:1">
+                        <span class="odds-bet-label${fav==='j1'?' fav-label':''}">${fav==='j1'?'🏆 ':''}${esc(j1Nome)}</span>
+                        <div style="font-size:.55rem;color:rgba(255,255,255,.2);margin-top:2px">retorna R$ ${o.oddV1.toFixed(2)} por R$1</div>
+                    </div>
                     <span class="odds-bet-odd">${o.oddV1.toFixed(2)}</span>
                 </button>
-                <button class="odds-bet-btn${fav==='j2'?' fav':''}" onclick="openBetSlip(${p.id},'vitoria_j2',0)">
-                    <span class="odds-bet-label${fav==='j2'?' fav-label':''}">${fav==='j2'?'🏆 ':''}${esc(j2Nome)} vence</span>
+                <button class="odds-bet-btn${fav==='j2'?' fav':''}" onclick="openBetSlip(${p.id},'vitoria_j2',0)" style="${btnStyle}">
+                    <div style="flex:1">
+                        <span class="odds-bet-label${fav==='j2'?' fav-label':''}">${fav==='j2'?'🏆 ':''}${esc(j2Nome)}</span>
+                        <div style="font-size:.55rem;color:rgba(255,255,255,.2);margin-top:2px">retorna R$ ${o.oddV2.toFixed(2)} por R$1</div>
+                    </div>
                     <span class="odds-bet-odd">${o.oddV2.toFixed(2)}</span>
                 </button>
             </div>
             <div class="odds-section-label">🥅 Total de Gols (linha: ${o.linha})</div>
             <div class="odds-bet-grid" style="margin-bottom:14px">
-                <button class="odds-bet-btn" onclick="openBetSlip(${p.id},'over',${o.linha})">
-                    <span class="odds-bet-label">📈 Mais de ${o.linha} gols</span>
+                <button class="odds-bet-btn" onclick="openBetSlip(${p.id},'over',${o.linha})" style="${btnStyle}">
+                    <div style="flex:1">
+                        <span class="odds-bet-label">📈 Mais de ${o.linha}</span>
+                        <div style="font-size:.55rem;color:rgba(255,255,255,.2);margin-top:2px">retorna R$ ${o.overOdd.toFixed(2)} por R$1</div>
+                    </div>
                     <span class="odds-bet-odd">${o.overOdd.toFixed(2)}</span>
                 </button>
-                <button class="odds-bet-btn" onclick="openBetSlip(${p.id},'under',${o.linha})">
-                    <span class="odds-bet-label">📉 Máx ${o.linha} gols</span>
+                <button class="odds-bet-btn" onclick="openBetSlip(${p.id},'under',${o.linha})" style="${btnStyle}">
+                    <div style="flex:1">
+                        <span class="odds-bet-label">📉 Máx ${o.linha} gols</span>
+                        <div style="font-size:.55rem;color:rgba(255,255,255,.2);margin-top:2px">retorna R$ ${o.underOdd.toFixed(2)} por R$1</div>
+                    </div>
                     <span class="odds-bet-odd">${o.underOdd.toFixed(2)}</span>
                 </button>
             </div>
@@ -1491,44 +1655,80 @@ function renderOdds() {
             <div class="user-balance-val${u.saldo>200?' up':u.saldo<=0?' zero':''}"">R$ ${u.saldo.toFixed(2)}</div>
             <div style="font-size:.56rem;color:rgba(255,255,255,.28)">${minhasPend>0?`${minhasPend} em aberto`:'disponível'}</div>
         </div>
-        <button onclick="logoutCpf()" style="margin-left:10px;padding:7px 11px;border:1px solid rgba(255,255,255,.13);border-radius:10px;background:transparent;color:rgba(255,255,255,.35);font-size:.62rem;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;flex-shrink:0;transition:all .2s" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.35)'">Trocar</button>
     </div>`;
-    html += `<div class="odds-hero-promo">
-        <div class="odds-promo-title">🎰 Casa de Apostas Cirrose™</div>
-        <div class="odds-promo-sub">Odds dinâmicas — quanto mais dinheiro num lado, menores as odds. Mercado em tempo real!</div>
-        <div class="odds-promo-ticker">
-            <span class="odds-promo-chip">🎫 ${totalA} aposta${totalA!==1?'s':''}</span>
-            <span class="odds-promo-chip" style="color:#fbbf24;border-color:rgba(251,191,36,.3)">⏳ ${pendCount} aberta${pendCount!==1?'s':''}</span>
-            <span class="odds-promo-chip" style="color:#34d399;border-color:rgba(52,211,153,.3)">💰 Pool: R$ ${poolTotal.toFixed(0)}</span>
-        </div>
-    </div>`;
+
     // Shot request banner
     const shots_pendentes = (() => { try { const s = JSON.parse(localStorage.getItem('shots_cirrose')||'[]'); return s.filter(x=>x.cpf===currentCpf&&x.status==='pendente').length; } catch { return 0; } })();
-    html += `<div style="background:rgba(255,215,0,.07);border:1px solid rgba(255,215,0,.22);border-radius:16px;padding:14px 18px;margin-bottom:14px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
-        <div style="font-size:2rem">🥃</div>
-        <div style="flex:1;min-width:0">
-            <div style="font-size:.92rem;font-weight:800;color:#ffd700">Topa um shot de verdade?</div>
-            <div style="font-size:.72rem;color:rgba(255,255,255,.45);margin-top:2px">Solicite ao admin — se aprovado, você ganha R$25 na sua conta!</div>
+    html += `<div class="shot-req-banner" style="background:rgba(255,215,0,.07);border:1px solid rgba(255,215,0,.22);border-radius:16px;padding:14px 18px;margin-bottom:14px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+        <div class="shot-req-body" style="display:flex;align-items:center;gap:14px;flex:1;min-width:0">
+          <div style="flex-shrink:0">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 68" width="54" height="54" style="filter:drop-shadow(0 2px 12px rgba(245,158,11,.65))">
+            <defs>
+              <linearGradient id="sliq1" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#fcd34d"/>
+                <stop offset="60%" stop-color="#d97706"/>
+                <stop offset="100%" stop-color="#92400e"/>
+              </linearGradient>
+            </defs>
+            <path d="M 8 4 L 44 4 L 37 57 L 15 57 Z" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.55)" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M 10 19 L 42 19 L 37 57 L 15 57 Z" fill="url(#sliq1)" opacity="0.9"/>
+            <ellipse cx="26" cy="19" rx="16" ry="2.8" fill="rgba(255,255,255,0.22)"/>
+            <rect x="13" y="58" width="26" height="5" rx="2.5" fill="rgba(255,255,255,0.38)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+            <path d="M 11 6 L 13.5 6 L 18 50 L 15.5 50 Z" fill="rgba(255,255,255,0.2)"/>
+            <circle cx="23" cy="36" r="1.8" fill="rgba(255,255,255,0.22)"/>
+            <circle cx="31" cy="46" r="1.2" fill="rgba(255,255,255,0.18)"/>
+            <circle cx="27" cy="29" r="1" fill="rgba(255,255,255,0.15)"/>
+          </svg>
+          </div>
+          <div style="min-width:0">
+              <div style="font-size:.92rem;font-weight:800;color:#ffd700">Topa um shot de verdade?</div>
+              <div style="font-size:.72rem;color:rgba(255,255,255,.45);margin-top:2px">Solicite ao admin — se aprovado, você ganha R$25 na sua conta!</div>
+          </div>
         </div>
         ${ shots_pendentes > 0
-            ? `<span style="padding:8px 16px;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3);border-radius:10px;font-size:.78rem;font-weight:700;color:#fbbf24">⏳ Aguardando aprovação...</span>`
-            : `<button onclick="requestShot()" style="padding:9px 18px;background:linear-gradient(135deg,#b8860b,#ffd700);border:none;border-radius:12px;color:#000;font-size:.82rem;font-weight:800;cursor:pointer;font-family:Poppins,sans-serif;flex-shrink:0">🥃 Pedir Shot (+R$25)</button>`
+            ? `<div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.35);border-radius:14px;flex-shrink:0">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 48" width="30" height="30" style="flex-shrink:0;animation:pulseR 2s ease infinite">
+                  <defs><linearGradient id="waitliq" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fcd34d"/><stop offset="60%" stop-color="#d97706"/><stop offset="100%" stop-color="#92400e"/></linearGradient></defs>
+                  <path d="M 4 3 L 32 3 L 26 40 L 10 40 Z" fill="rgba(255,255,255,0.07)" stroke="rgba(251,191,36,0.65)" stroke-width="1.5" stroke-linejoin="round"/>
+                  <path d="M 6 15 L 30 15 L 26 40 L 10 40 Z" fill="url(#waitliq)" opacity="0.88"/>
+                  <ellipse cx="18" cy="15" rx="12" ry="1.8" fill="rgba(255,255,255,0.28)"/>
+                  <rect x="9" y="41" width="18" height="4" rx="2" fill="rgba(251,191,36,0.35)"/>
+                  <path d="M 7 4 L 9 4 L 13 34 L 11 34 Z" fill="rgba(255,255,255,0.18)"/>
+                </svg>
+                <div>
+                  <div style="font-size:.78rem;font-weight:800;color:#fbbf24">&#x23F3; Aguardando aprovação</div>
+                  <div style="font-size:.62rem;color:rgba(251,191,36,.5);margin-top:2px">Admin confirmará em breve e crédito será liberado</div>
+                </div>
+              </div>`
+            : `<button onclick="requestShot()" style="padding:9px 16px 9px 10px;background:linear-gradient(135deg,#b8860b,#ffd700);border:none;border-radius:12px;color:#000;font-size:.82rem;font-weight:800;cursor:pointer;font-family:Poppins,sans-serif;flex-shrink:0;display:inline-flex;align-items:center;gap:7px;box-shadow:0 3px 12px rgba(184,134,11,.45)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 48" width="22" height="22" style="flex-shrink:0"><defs><linearGradient id="btnliq" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fff7d6"/><stop offset="55%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#78350f"/></linearGradient></defs><path d="M 4 3 L 32 3 L 26 40 L 10 40 Z" fill="rgba(0,0,0,0.18)" stroke="rgba(0,0,0,0.5)" stroke-width="1.5" stroke-linejoin="round"/><path d="M 6 14 L 30 14 L 26 40 L 10 40 Z" fill="url(#btnliq)" opacity="0.95"/><ellipse cx="18" cy="14" rx="12" ry="2" fill="rgba(255,255,255,0.35)"/><rect x="9" y="41" width="18" height="4" rx="2" fill="rgba(0,0,0,0.35)"/><path d="M 7 4 L 9 4 L 13 35 L 11 35 Z" fill="rgba(255,255,255,0.22)"/><circle cx="16" cy="26" r="1.4" fill="rgba(255,255,255,0.3)"/><circle cx="21" cy="33" r="1" fill="rgba(255,255,255,0.25)"/></svg>Pedir Shot (+R$25)</button>`
         }
     </div>`;
-    const preJogo = oddsData.filter(o => o.partida.status === 'agendado');
-    if (preJogo.length) {
-        html += `<div class="glass" style="margin-bottom:14px">
+    const preJogo = oddsData.filter(o => o.partida.status === 'agendado')
+        .sort((a,b) => (a.partida.rodada||0) - (b.partida.rodada||0));
+    if (preJogo.length > 0) {
+        const rodadaAtual = preJogo[0].partida.rodada;
+        const jogosRodada = preJogo.filter(o => o.partida.rodada === rodadaAtual);
+        const apostasFeitas = jogosRodada.filter(o => apostas.some(a => a.cpf === currentCpf && a.matchId === o.partida.id)).length;
+        html += `<div class="glass" style="margin-bottom:14px;border-color:rgba(74,222,128,.45);box-shadow:0 0 22px rgba(74,222,128,.14)">
             <div class="odds-panel-header">
-                <div class="odds-live-badge" style="background:rgba(59,130,246,.15);border-color:rgba(59,130,246,.3);color:#60a5fa"><span class="odds-live-dot" style="background:#60a5fa"></span>PRÉ-JOGO</div>
-                <span class="bookmaker-badge">Apostas abertas antes do jogo</span>
+                <div class="odds-live-badge"><span class="odds-live-dot"></span>APOSTAS ABERTAS</div>
+                <div style="display:flex;align-items:center;gap:8px">
+                    <span class="bookmaker-badge">${rodadaAtual ? `Rodada ${rodadaAtual}` : 'Pré-jogo'}</span>
+                    ${apostasFeitas > 0 ? `<span class="bookmaker-badge" style="color:rgba(52,211,153,.75);border-color:rgba(52,211,153,.25)">${apostasFeitas}/${jogosRodada.length} ✅</span>` : ''}
+                </div>
             </div>`;
-        preJogo.forEach(o => { html += renderOddsMatchCard(o, fl, false); });
+        jogosRodada.forEach(o => {
+            const jaApostouJogo = apostas.some(a => a.cpf === currentCpf && a.matchId === o.partida.id);
+            if (jaApostouJogo) {
+                html += `<div style="margin:0 0 8px;padding:7px 12px;background:rgba(52,211,153,.07);border:1px solid rgba(52,211,153,.2);border-radius:10px;font-size:.73rem;color:rgba(52,211,153,.85);font-weight:600">✅ Aposta registrada — aguardando resultado.</div>`;
+            }
+            html += renderOddsMatchCard(o, fl, false, jaApostouJogo);
+        });
         html += `</div>`;
     } else {
         html += `<div class="glass" style="margin-bottom:14px"><div class="odds-empty-promo"><span class="big">⏳</span>Nenhuma partida agendada no momento<br><span style="font-size:.75rem">As apostas fecham quando o jogo começa!</span></div></div>`;
     }
     html += renderApostasHistorico();
-    html += `<div class="odds-disclaimer">⚠️ Casa de Apostas Cirrose™ — Dinheiro 100% fictício.<br>Odds se ajustam automaticamente ao volume apostado em cada lado. 🎰</div>`;
     content.innerHTML = html;
 }
 
@@ -1549,7 +1749,21 @@ function connectWS() {
         ws.onmessage = e => {
             try {
                 const m = JSON.parse(e.data);
-                if (m.type === 'cirrose-update') { D = m.data; render(); }
+                if (m.type === 'cirrose-update') {
+                    const prevRound = lastBettingRound;
+                    D = m.data;
+                    const newRound = getAvailableBettingRound();
+                    if (newRound !== null && newRound !== prevRound && prevRound !== null) {
+                        // Nova rodada desbloqueada: troca de aba e notifica
+                        switchTab('odds');
+                        setTimeout(() => showToast(`🎰 Apostas abertas — Rodada ${newRound}! Faça suas apostas!`), 200);
+                    } else if (newRound !== null && activeTab !== 'odds') {
+                        // Ainda há jogos para apostar mas usuário está em outra aba
+                        document.getElementById('tab-odds')?.classList.add('odds-new');
+                    }
+                    lastBettingRound = newRound;
+                    render();
+                }
             } catch {}
         };
         ws.onclose = ws.onerror = () => {

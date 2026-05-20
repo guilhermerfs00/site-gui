@@ -20,8 +20,248 @@
       "shotGanhou": 1
     }
   ],
-  "jogadores": [],
+  "jogadores": [
+    {
+      "id": 1,
+      "nome": "Juao xupa bilola",
+      "tel": ""
+    },
+    {
+      "id": 2,
+      "nome": "gui",
+      "tel": ""
+    },
+    {
+      "id": 3,
+      "nome": "pedro",
+      "tel": ""
+    },
+    {
+      "id": 4,
+      "nome": "felix",
+      "tel": ""
+    },
+    {
+      "id": 5,
+      "nome": "romulo",
+      "tel": ""
+    },
+    {
+      "id": 6,
+      "nome": "dudu",
+      "tel": ""
+    },
+    {
+      "id": 7,
+      "nome": "afonso",
+      "tel": ""
+    },
+    {
+      "id": 8,
+      "nome": "dudu",
+      "tel": ""
+    }
+  ],
   "inscricoes": [],
-  "partidas": [],
-  "fase": "cadastro"
+  "partidas": [
+    {
+      "id": 1,
+      "categoriaId": 1,
+      "chaveId": "A",
+      "j1Id": 1,
+      "j2Id": 7,
+      "fase": "grupos",
+      "rodada": 1,
+      "bracketPos": null,
+      "gols1": 2,
+      "gols2": 0,
+      "status": "encerrado",
+      "vencedorId": 1
+    },
+    {
+      "id": 2,
+      "categoriaId": 1,
+      "chaveId": "A",
+      "j1Id": 3,
+      "j2Id": 5,
+      "fase": "grupos",
+      "rodada": 1,
+      "bracketPos": null,
+      "gols1": 1,
+      "gols2": 2,
+      "status": "encerrado",
+      "vencedorId": 5
+    },
+    {
+      "id": 3,
+      "categoriaId": 1,
+      "chaveId": "A",
+      "j1Id": 1,
+      "j2Id": 5,
+      "fase": "grupos",
+      "rodada": 2,
+      "bracketPos": null,
+      "gols1": 0,
+      "gols2": 2,
+      "status": "encerrado",
+      "vencedorId": 5
+    },
+    {
+      "id": 4,
+      "categoriaId": 1,
+      "chaveId": "A",
+      "j1Id": 7,
+      "j2Id": 3,
+      "fase": "grupos",
+      "rodada": 2,
+      "bracketPos": null,
+      "gols1": 0,
+      "gols2": 0,
+      "status": "encerrado",
+      "vencedorId": null
+    },
+    {
+      "id": 5,
+      "categoriaId": 1,
+      "chaveId": "A",
+      "j1Id": 1,
+      "j2Id": 3,
+      "fase": "grupos",
+      "rodada": 3,
+      "bracketPos": null,
+      "gols1": 3,
+      "gols2": 0,
+      "status": "encerrado",
+      "vencedorId": 1
+    },
+    {
+      "id": 6,
+      "categoriaId": 1,
+      "chaveId": "A",
+      "j1Id": 5,
+      "j2Id": 7,
+      "fase": "grupos",
+      "rodada": 3,
+      "bracketPos": null,
+      "gols1": 0,
+      "gols2": 2,
+      "status": "encerrado",
+      "vencedorId": 7
+    },
+    {
+      "id": 7,
+      "categoriaId": 1,
+      "chaveId": "B",
+      "j1Id": 2,
+      "j2Id": 8,
+      "fase": "grupos",
+      "rodada": 1,
+      "bracketPos": null,
+      "gols1": 1,
+      "gols2": 0,
+      "status": "encerrado",
+      "vencedorId": 2
+    },
+    {
+      "id": 8,
+      "categoriaId": 1,
+      "chaveId": "B",
+      "j1Id": 4,
+      "j2Id": 6,
+      "fase": "grupos",
+      "rodada": 1,
+      "bracketPos": null,
+      "gols1": 2,
+      "gols2": 0,
+      "status": "encerrado",
+      "vencedorId": 4
+    },
+    {
+      "id": 9,
+      "categoriaId": 1,
+      "chaveId": "B",
+      "j1Id": 2,
+      "j2Id": 6,
+      "fase": "grupos",
+      "rodada": 2,
+      "bracketPos": null,
+      "gols1": 2,
+      "gols2": 1,
+      "status": "encerrado",
+      "vencedorId": 2
+    },
+    {
+      "id": 10,
+      "categoriaId": 1,
+      "chaveId": "B",
+      "j1Id": 8,
+      "j2Id": 4,
+      "fase": "grupos",
+      "rodada": 2,
+      "bracketPos": null,
+      "gols1": 1,
+      "gols2": 2,
+      "status": "encerrado",
+      "vencedorId": 4
+    },
+    {
+      "id": 11,
+      "categoriaId": 1,
+      "chaveId": "B",
+      "j1Id": 2,
+      "j2Id": 4,
+      "fase": "grupos",
+      "rodada": 3,
+      "bracketPos": null,
+      "gols1": 2,
+      "gols2": 0,
+      "status": "encerrado",
+      "vencedorId": 2
+    },
+    {
+      "id": 12,
+      "categoriaId": 1,
+      "chaveId": "B",
+      "j1Id": 6,
+      "j2Id": 8,
+      "fase": "grupos",
+      "rodada": 3,
+      "bracketPos": null,
+      "gols1": 2,
+      "gols2": 0,
+      "status": "encerrado",
+      "vencedorId": 6
+    },
+    {
+      "id": 13,
+      "categoriaId": 1,
+      "chaveId": null,
+      "j1Id": 2,
+      "j2Id": 4,
+      "fase": "semifinal",
+      "bracketPos": 0,
+      "gols1": 0,
+      "gols2": 0,
+      "status": "em_jogo",
+      "vencedorId": null,
+      "rodada": null,
+      "byeSeedOpponent": null
+    },
+    {
+      "id": 14,
+      "categoriaId": 1,
+      "chaveId": null,
+      "j1Id": 1,
+      "j2Id": 5,
+      "fase": "semifinal",
+      "bracketPos": 1,
+      "gols1": 0,
+      "gols2": 0,
+      "status": "agendado",
+      "vencedorId": null,
+      "rodada": null,
+      "byeSeedOpponent": null
+    }
+  ],
+  "fase": "mata-mata"
 }
