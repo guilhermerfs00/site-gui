@@ -4,7 +4,9 @@
   "description": "Quiz Battle - Jogo de perguntas e respostas em tempo real",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "tunnel": "\"C:\\Program Files (x86)\\cloudflared\\cloudflared.exe\" tunnel --url http://localhost:3000",
+    "stop": "taskkill /F /IM node.exe & taskkill /F /IM cloudflared.exe"
   },
   "dependencies": {
     "ws": "^8.16.0"

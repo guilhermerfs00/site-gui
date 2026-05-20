@@ -1899,9 +1899,19 @@ const server = http.createServer((req, res) => {
             d.partidas = (d.partidas || []).filter(p => !(p.categoriaId === categoriaId && p.fase === 'grupos'));
             const numChaves = cat.numChaves || 1;
             const letters = 'ABCDEFGH';
-            // Distribuir atletas pelas chaves (round-robin distribution)
-            const grupos = Array.from({length: numChaves}, () => []);
-            inscritos.forEach((id, i) => grupos[i % numChaves].push(id));
+            let grupos;
+            if (body.grupos && Array.isArray(body.grupos) && body.grupos.length) {
+                // Distribuição manual: validar que todos são IDs válidos
+                const validIds = new Set(inscritos);
+                grupos = body.grupos.map(g => (g.jogadorIds || []).filter(id => validIds.has(id)));
+                // garantir tamanho correto
+                while (grupos.length < numChaves) grupos.push([]);
+                grupos = grupos.slice(0, numChaves);
+            } else {
+                // Distribuição automática round-robin
+                grupos = Array.from({length: numChaves}, () => []);
+                inscritos.forEach((id, i) => grupos[i % numChaves].push(id));
+            }
             let pid = (d.partidas.reduce((m, p) => Math.max(m, p.id), 0)) + 1;
             const novasPartidas = [];
             for (let g = 0; g < numChaves; g++) {
@@ -1940,27 +1950,88 @@ const server = http.createServer((req, res) => {
             const numChaves = cat.numChaves || 1;
             const classifPorChave = cat.classificadosPorChave || 2;
             const letters = 'ABCDEFGH';
-            const classificados = [];
-            for (let g = 0; g < numChaves; g++) {
-                const chaveId = letters[g];
+
+            // Helper: calcula classificação completa de uma chave (Pts,PJ,V,E,D,GF,GC,SG)
+            function calcGroupStats(chaveId) {
                 const chavePartidas = pg.filter(p => p.chaveId === chaveId);
                 const playerIds = new Set();
                 chavePartidas.forEach(p => { if(p.j1Id) playerIds.add(p.j1Id); if(p.j2Id) playerIds.add(p.j2Id); });
                 const stats = {};
-                playerIds.forEach(id => { stats[id] = { id, v:0, e:0, pts:0, sg:0, gf:0 }; });
+                playerIds.forEach(id => { stats[id] = { id, v:0, e:0, d:0, pts:0, pj:0, gf:0, gc:0, sg:0 }; });
                 chavePartidas.filter(p => p.status === 'encerrado').forEach(p => {
                     const s1 = stats[p.j1Id], s2 = stats[p.j2Id]; if(!s1||!s2) return;
+                    s1.pj++; s2.pj++;
                     s1.gf += p.gols1; s2.gf += p.gols2;
+                    s1.gc += p.gols2; s2.gc += p.gols1;
                     s1.sg += p.gols1 - p.gols2; s2.sg += p.gols2 - p.gols1;
-                    if (p.vencedorId === p.j1Id) { s1.v++; } else if (p.vencedorId === p.j2Id) { s2.v++; } else { s1.e++; s2.e++; }
+                    if (p.vencedorId === p.j1Id) { s1.v++; s2.d++; }
+                    else if (p.vencedorId === p.j2Id) { s2.v++; s1.d++; }
+                    else { s1.e++; s2.e++; }
                 });
                 Object.values(stats).forEach(s => { s.pts = s.v * 3 + s.e; });
-                const sorted = Object.values(stats).sort((a, b) => b.pts - a.pts || b.sg - a.sg || b.gf - a.gf);
-                sorted.slice(0, classifPorChave).forEach(s => classificados.push(s.id));
+                return Object.values(stats).sort((a, b) =>
+                    b.pts - a.pts || b.pj - a.pj || b.v - a.v || b.e - a.e || a.d - b.d || b.gf - a.gf || a.gc - b.gc || b.sg - a.sg
+                );
+            }
+
+            // Classificados ordenados por posição (todos os 1ºs, depois todos os 2ºs, etc.)
+            // Dentro de cada posição, ordena pelo melhor desempenho: Pts → SG → GF → GC → V
+            const classificados = [];
+            for (let pos = 0; pos < classifPorChave; pos++) {
+                const nessaPosicao = [];
+                for (let g = 0; g < numChaves; g++) {
+                    const sorted = calcGroupStats(letters[g]);
+                    if (sorted.length > pos) nessaPosicao.push(sorted[pos]);
+                }
+                nessaPosicao.sort((a, b) =>
+                    b.pts - a.pts || b.sg  - a.sg  || b.gf - a.gf ||
+                    a.gc  - b.gc  || b.v   - a.v   || b.e  - a.e
+                );
+                nessaPosicao.forEach(p => classificados.push(p.id));
+            }
+
+            // Número ímpar de chaves: wildcard = melhor primeiro-não-classificado de qualquer chave
+            // Critérios: Pts → PJ → V → E → D → GF → GC → SG
+            let wildcardInfo = null;
+            if (numChaves % 2 === 1) {
+                const candidatos = [];
+                for (let g = 0; g < numChaves; g++) {
+                    const sorted = calcGroupStats(letters[g]);
+                    // O candidato de cada chave é o 1º jogador NÃO classificado (posição classifPorChave)
+                    const pos = classifPorChave;
+                    if (sorted.length > pos) {
+                        const candidato = sorted[pos];
+                        if (!classificados.includes(candidato.id)) {
+                            candidatos.push({ ...candidato, chaveId: letters[g], posicao: pos + 1 });
+                        }
+                    }
+                }
+                if (candidatos.length > 0) {
+                    candidatos.sort((a, b) =>
+                        b.pts  - a.pts  ||
+                        b.pj   - a.pj   ||
+                        b.v    - a.v    ||
+                        b.e    - a.e    ||
+                        a.d    - b.d    ||
+                        b.gf   - a.gf   ||
+                        a.gc   - b.gc   ||
+                        b.sg   - a.sg
+                    );
+                    const wc = candidatos[0];
+                    classificados.push(wc.id);
+                    wildcardInfo = {
+                        jogadorId: wc.id,
+                        chaveId:   wc.chaveId,
+                        posicao:   wc.posicao,
+                        stats:     { pts: wc.pts, pj: wc.pj, v: wc.v, e: wc.e, d: wc.d, gf: wc.gf, gc: wc.gc, sg: wc.sg },
+                        disputado:  candidatos.length > 1,
+                        candidatos: candidatos.map(c => ({ jogadorId: c.id, chaveId: c.chaveId, pts: c.pts, pj: c.pj, v: c.v, e: c.e, d: c.d, gf: c.gf, gc: c.gc, sg: c.sg }))
+                    };
+                }
             }
             // Remover partidas de mata-mata antigas desta categoria
             d.partidas = (d.partidas || []).filter(p => !(p.categoriaId === categoriaId && p.fase !== 'grupos'));
-            // Determinar bracket
+            // Determinar bracket sem BYEs: todas as partidas terão jogadores reais
             const n = classificados.length;
             let size = 1; while (size < n) size *= 2;
             const fases = ['oitavas','quartas','semifinal','final'];
@@ -1973,15 +2044,52 @@ const server = http.createServer((req, res) => {
             let pid = (d.partidas.reduce((m, p) => Math.max(m, p.id), 0)) + 1;
             const numMatches = size / 2;
             const partidasMM = [];
+
+            // Passo 1: identificar posições BYE (onde j2 seria null)
+            const byeSeeds = {}; // bracketPos → jogadorId
             for (let i = 0; i < numMatches; i++) {
                 const j1 = classificados[i] || null;
                 const j2 = classificados[size - 1 - i] || null;
-                partidasMM.push({ id: pid++, categoriaId, chaveId: null, j1Id: j1, j2Id: j2, fase: primFase, bracketPos: i, gols1: 0, gols2: 0, status: 'agendado', vencedorId: j2 === null && j1 ? j1 : (j1 === null && j2 ? j2 : null), rodada: null });
+                if (j1 && !j2) byeSeeds[i] = j1;
+            }
+
+            // Passo 2: criar somente partidas reais (ambos jogadores presentes)
+            for (let i = 0; i < numMatches; i++) {
+                const j1 = classificados[i] || null;
+                const j2 = classificados[size - 1 - i] || null;
+                if (j1 && j2) {
+                    // Se o irmão do bracket é um bye, guardar o bye como oponente futuro
+                    const sibPos = i % 2 === 0 ? i + 1 : i - 1;
+                    const byeSeedOpponent = byeSeeds[sibPos] !== undefined ? byeSeeds[sibPos] : null;
+                    partidasMM.push({
+                        id: pid++, categoriaId, chaveId: null,
+                        j1Id: j1, j2Id: j2,
+                        fase: primFase, bracketPos: i,
+                        gols1: 0, gols2: 0, status: 'agendado', vencedorId: null, rodada: null,
+                        byeSeedOpponent
+                    });
+                }
+            }
+
+            // Passo 3: criar partidas imediatas quando AMBAS as posições são byes
+            const nextFase = fases[faseidx + 1];
+            if (nextFase) {
+                for (let i = 0; i < numMatches; i += 2) {
+                    if (byeSeeds[i] !== undefined && byeSeeds[i + 1] !== undefined) {
+                        partidasMM.push({
+                            id: pid++, categoriaId, chaveId: null,
+                            j1Id: byeSeeds[i], j2Id: byeSeeds[i + 1],
+                            fase: nextFase, bracketPos: i / 2,
+                            gols1: 0, gols2: 0, status: 'agendado', vencedorId: null, rodada: null,
+                            byeSeedOpponent: null
+                        });
+                    }
+                }
             }
             d.fase = 'mata-mata';
             d.partidas = [...d.partidas, ...partidasMM];
             writeCirrose(d);
-            sendJSON(res, { partidas: partidasMM });
+            sendJSON(res, { partidas: partidasMM, classificados, wildcard: wildcardInfo });
         }); return;
     }
 
@@ -2014,7 +2122,8 @@ const server = http.createServer((req, res) => {
     }
     // POST /api/cirrose/resetar
     if (url === '/api/cirrose/resetar' && req.method === 'POST') {
-        const vazio = { evento: { nome: 'Grande Copa Cirrose - 1ª Edição', data: '', horaInicio: '09:00', local: '', descricao: '', status: 'agendado' }, quadras: [], categorias: [], jogadores: [], inscricoes: [], partidas: [], fase: 'cadastro' };
+        const dAtual = readCirrose();
+        const vazio = { evento: { nome: 'Grande Copa Cirrose - 1ª Edição', data: '', horaInicio: '09:00', local: '', descricao: '', status: 'agendado' }, quadras: [], categorias: dAtual.categorias || [], jogadores: [], inscricoes: [], partidas: [], fase: 'cadastro' };
         writeCirrose(vazio); sendJSON(res, vazio); return;
     }
     // ==================== FIM API COPA CIRROSE ====================

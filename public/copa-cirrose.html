@@ -261,6 +261,17 @@
             .step-dot{width:34px;height:34px;font-size:.78rem}
             .top-bar{flex-direction:column;align-items:flex-start}
         }
+        /* Manual assign */
+        .manual-assign-grid{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-start}
+        .manual-col{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:10px;min-width:120px;flex:1}
+        .manual-col-head{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:rgba(255,215,0,.8);margin-bottom:8px;text-align:center}
+        .manual-chip{background:rgba(255,255,255,.07);border-radius:6px;padding:5px 8px;margin-bottom:5px;font-size:.78rem;display:flex;align-items:center;justify-content:space-between;gap:6px}
+        .mc-nome{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+        .ma-btns{display:flex;gap:3px;flex-shrink:0}
+        .ma-btn{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:4px;font-size:.68rem;padding:2px 6px;cursor:pointer;font-weight:700}
+        .ma-btn:hover{background:rgba(255,215,0,.35);border-color:rgba(255,215,0,.5)}
+        .ma-rm{background:rgba(220,20,60,.25);border:1px solid rgba(220,20,60,.4);color:#fff;border-radius:4px;font-size:.75rem;padding:1px 6px;cursor:pointer;flex-shrink:0}
+        .ma-rm:hover{background:rgba(220,20,60,.55)}
     </style>
 </head>
 <body>
@@ -273,6 +284,7 @@
         <div class="top-btns">
             <button class="btn btn-gold" onclick="window.open('/copa-cirrose-publico.html','_blank')">👁️ Placar Público</button>
             <button class="btn btn-p" onclick="window.location.href='/copa-cirrose-partidas.html'">⚔️ Partidas</button>
+            <button class="btn" style="background:rgba(255,215,0,.15);color:#ffd700;border:1px solid rgba(255,215,0,.4)" onclick="openShotsPanel()">🥃 Shots <span id="shots-badge" style="display:none;background:#dc143c;color:#fff;border-radius:50%;width:18px;height:18px;font-size:.6rem;font-weight:800;display:inline-flex;align-items:center;justify-content:center;margin-left:4px">0</span></button>
             <button class="btn btn-d" onclick="resetarTudo()">🗑️ Resetar Tudo</button>
             <button class="btn btn-s" onclick="window.location.href='/'">← Início</button>
         </div>
@@ -311,62 +323,36 @@
     <div class="panel" id="panel-4">
         <div class="sec-head"><span class="sec-icon">⚔️</span><div><h2>Chaves & Mata-Mata</h2><p>Gere as chaves e gerencie as partidas ao vivo</p></div></div>
 
-        <div class="tabs">
-            <div class="tab active" id="tab-s4-gerar" onclick="s4Tab('gerar',this)">🏆 Gerar</div>
-            <div class="tab" id="tab-s4-grupos" onclick="s4Tab('grupos',this)">📋 Grupos</div>
-            <div class="tab" id="tab-s4-classif" onclick="s4Tab('classif',this)">📊 Classificação</div>
-            <div class="tab" id="tab-s4-mm" onclick="s4Tab('mm',this)">⚔️ Mata-Mata</div>
-        </div>
-
         <!-- Gerar -->
         <div id="s4-gerar">
             <div class="glass">
-                <h2>🏆 Gerar Chave / Bracket</h2>
-                <p style="font-size:.82rem;color:rgba(255,255,255,.4);margin-bottom:14px">Selecione uma categoria para gerar os grupos e partidas automaticamente (todos contra todos por chave).</p>
+                <h2>🏆 Gerar Chave</h2>
+                <p style="font-size:.82rem;color:rgba(255,255,255,.4);margin-bottom:14px">Selecione uma categoria e escolha como distribuir os atletas pelas chaves.</p>
                 <div class="row2">
-                    <div><label>Categoria</label><select id="chave-categoria" onchange="mostrarInfoCategoria()"><option value="">Selecione...</option></select></div>
+                    <div><label>Categoria</label><select id="chave-categoria" onchange="onCategoriaChange()"><option value="">Selecione...</option></select></div>
                     <div id="chave-info-box"></div>
                 </div>
-                <div style="display:flex;gap:10px;margin-top:4px;flex-wrap:wrap">
-                    <button class="btn btn-p btn-lg" onclick="gerarChave()">⚽ Gerar Chave</button>
-                    <button class="btn btn-gold btn-lg" onclick="gerarMataMata()">⚔️ Gerar Mata-Mata</button>
+                <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap">
+                    <button class="btn btn-p btn-lg" onclick="gerarChave()">⚽ Gerar Chave Automática</button>
+                    <button class="btn btn-s btn-lg" onclick="abrirManualAssign()">⚽ Gerar Chave Manual</button>
                 </div>
                 <div id="gerar-resultado" style="margin-top:14px"></div>
-            </div>
-        </div>
-
-        <!-- Grupos -->
-        <div id="s4-grupos" style="display:none">
-            <div class="glass">
-                <h2>📋 Partidas dos Grupos</h2>
-                <div style="margin-bottom:14px">
-                    <label>Categoria</label><select id="grupos-categoria" onchange="renderGrupos()" style="margin-bottom:0"><option value="">Selecione...</option></select>
+                <!-- Manual assign UI -->
+                <div id="manual-assign" style="display:none;margin-top:18px">
+                    <div style="font-size:.8rem;color:rgba(255,215,0,.7);font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px">✏️ Distribuição Manual</div>
+                    <div style="font-size:.78rem;color:rgba(255,255,255,.45);margin-bottom:12px">Clique na letra da chave para mover o atleta. Clique × para devolvê-lo ao pool.</div>
+                    <div class="manual-assign-grid">
+                        <div class="manual-col" id="manual-pool-col">
+                            <div class="manual-col-head" style="color:rgba(255,255,255,.5)">Sem Chave</div>
+                            <div id="pool-atletas"></div>
+                        </div>
+                        <div id="manual-groups" style="display:contents"></div>
+                    </div>
+                    <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+                        <button class="btn btn-p" onclick="confirmarChaveManual()">✅ Confirmar Distribuição</button>
+                        <button class="btn btn-s" onclick="document.getElementById('manual-assign').style.display='none'">✖ Cancelar</button>
+                    </div>
                 </div>
-                <div id="grupos-container"></div>
-            </div>
-        </div>
-
-        <!-- Classificação -->
-        <div id="s4-classif" style="display:none">
-            <div class="glass">
-                <h2>📊 Classificação dos Grupos</h2>
-                <div style="margin-bottom:14px">
-                    <label>Categoria</label><select id="classif-categoria" onchange="renderClassif()" style="margin-bottom:0"><option value="">Selecione...</option></select>
-                </div>
-                <div id="classif-container"></div>
-            </div>
-        </div>
-
-        <!-- Mata-Mata -->
-        <div id="s4-mm" style="display:none">
-            <div class="glass">
-                <h2>⚔️ Mata-Mata</h2>
-                <div style="margin-bottom:14px">
-                    <label>Categoria</label><select id="mm-categoria" onchange="renderMM()" style="margin-bottom:0"><option value="">Selecione...</option></select>
-                </div>
-                <div style="overflow-x:auto;margin-bottom:16px"><div class="bracket" id="bracket-container"></div></div>
-                <div class="empty" id="empty-mm">Mata-mata ainda não gerado. Conclua os grupos e clique em "Gerar Mata-Mata".</div>
-                <div id="partidas-mm"></div>
             </div>
         </div>
 
@@ -375,6 +361,17 @@
 
     <!-- ===== STEP 5: PRONTO ===== -->
     <div class="panel" id="panel-5">
+
+    <!-- ===== SHOTS PANEL (fora do stepper) ===== -->
+    <div id="panel-shots" style="display:none;margin-bottom:16px">
+        <div class="glass">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;flex-wrap:wrap;gap:8px">
+                <h2 style="font-size:1.1rem;font-weight:800;color:#ffd700;margin:0">🥃 Shots & Créditos</h2>
+                <button onclick="document.getElementById('panel-shots').style.display='none'" style="background:transparent;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.4);border-radius:8px;padding:4px 12px;font-size:.75rem;cursor:pointer;font-family:Poppins,sans-serif">Fechar ✕</button>
+            </div>
+            <div id="shots-content"></div>
+        </div>
+    </div>
         <div class="glass">
             <div class="ready-card">
                 <span class="big-icon">🏆</span>
@@ -585,7 +582,100 @@ async function init() {
         const data = await api('/api/cirrose');
         Object.assign(D, data);
         currentStep = 2; renderStepper(); renderCategorias();
+        updateShotsBadge();
+        setInterval(updateShotsBadge, 3000);
     } catch(e) { toast('Erro ao carregar: '+e.message,'error'); }
+}
+
+// ===== SHOTS & CRÉDITOS =====
+function openShotsPanel() {
+    const panel = document.getElementById('panel-shots');
+    const isOpen = panel.style.display !== 'none';
+    panel.style.display = isOpen ? 'none' : 'block';
+    if (!isOpen) { renderShotsAdmin(); window.scrollTo({top:0,behavior:'smooth'}); }
+}
+function updateShotsBadge() {
+    try {
+        const shots = JSON.parse(localStorage.getItem('shots_cirrose')||'[]');
+        const pendentes = shots.filter(s => s.status === 'pendente').length;
+        const badge = document.getElementById('shots-badge');
+        if (badge) { badge.textContent = pendentes; badge.style.display = pendentes > 0 ? 'inline-flex' : 'none'; }
+    } catch {}
+}
+function renderShotsAdmin() {
+    let shots = [], usuarios = {};
+    try { shots = JSON.parse(localStorage.getItem('shots_cirrose')||'[]'); } catch {}
+    try { usuarios = JSON.parse(localStorage.getItem('usuarios_cirrose')||'{}'); } catch {}
+    const pendentes = shots.filter(s => s.status === 'pendente');
+    const entregues = shots.filter(s => s.status === 'entregue');
+    const el = document.getElementById('shots-content');
+    if (!el) return;
+    let html = `<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px">
+        <span style="padding:6px 14px;background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.3);border-radius:10px;font-size:.8rem;font-weight:700;color:#ffd700">⏳ ${pendentes.length} pendente${pendentes.length!==1?'s':''}</span>
+        <span style="padding:6px 14px;background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.2);border-radius:10px;font-size:.8rem;font-weight:700;color:#34d399">✅ ${entregues.length} entregue${entregues.length!==1?'s':''}</span>
+        <button onclick="renderShotsAdmin()" style="padding:6px 14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:10px;font-size:.78rem;color:rgba(255,255,255,.5);cursor:pointer;font-family:Poppins,sans-serif">🔄 Atualizar</button>
+    </div>`;
+    // Crédito manual
+    const userList = Object.values(usuarios);
+    html += `<div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:14px;margin-bottom:18px">
+        <div style="font-size:.72rem;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px">💰 Adicionar R$25 manualmente</div>
+        ${userList.length ? `<div style="display:flex;gap:8px;flex-wrap:wrap">${userList.map(u=>`<button onclick="creditarManual('${u.cpf}')" style="padding:7px 14px;background:rgba(220,20,60,.12);border:1px solid rgba(220,20,60,.3);border-radius:10px;font-size:.78rem;font-weight:700;color:#f87171;cursor:pointer;font-family:Poppins,sans-serif">${esc(u.nome)}<br><span style="font-size:.62rem;font-weight:400;color:rgba(255,255,255,.3)">R$${(u.saldo||0).toFixed(0)}</span></button>`).join('')}</div>` : '<div style="font-size:.75rem;color:rgba(255,255,255,.2)">Nenhum apostador cadastrado ainda</div>'}
+    </div>`;
+    if (!shots.length) {
+        html += `<div style="text-align:center;padding:30px;color:rgba(255,255,255,.2);font-size:.85rem">🥃 Nenhum pedido de shot ainda</div>`;
+    } else {
+        if (pendentes.length) {
+            html += `<div style="font-size:.72rem;font-weight:700;color:#fbbf24;text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px">⏳ Aguardando aprovação</div>`;
+            pendentes.forEach(s => {
+                const u = usuarios[s.cpf];
+                html += `<div style="background:rgba(255,215,0,.07);border:1px solid rgba(255,215,0,.25);border-radius:12px;padding:12px 16px;margin-bottom:8px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+                    <div style="font-size:1.6rem">🥃</div>
+                    <div style="flex:1;min-width:0">
+                        <div style="font-size:.92rem;font-weight:700;color:#fff">${esc(s.nome)}</div>
+                        <div style="font-size:.65rem;color:rgba(255,255,255,.35);margin-top:2px">${new Date(s.ts).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})} · Saldo: R$${(u?.saldo||0).toFixed(2)}</div>
+                    </div>
+                    <button onclick="aprovarShot('${s.id}')" style="padding:9px 20px;background:linear-gradient(135deg,#dc143c,#8b0000);border:none;border-radius:10px;color:#fff;font-size:.82rem;font-weight:700;cursor:pointer;font-family:Poppins,sans-serif">✅ Aprovar +R$25</button>
+                </div>`;
+            });
+        }
+        if (entregues.length) {
+            html += `<div style="font-size:.72rem;font-weight:700;color:rgba(52,211,153,.6);text-transform:uppercase;letter-spacing:.8px;margin:14px 0 8px">✅ Entregues</div>`;
+            entregues.slice().reverse().forEach(s => {
+                html += `<div style="background:rgba(52,211,153,.04);border:1px solid rgba(52,211,153,.1);border-radius:10px;padding:10px 14px;margin-bottom:6px;display:flex;align-items:center;gap:10px">
+                    <div style="flex:1"><span style="font-size:.82rem;font-weight:600;color:rgba(255,255,255,.55)">${esc(s.nome)}</span><span style="font-size:.62rem;color:rgba(255,255,255,.2);margin-left:8px">${new Date(s.ts).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</span></div>
+                    <span style="font-size:.72rem;color:#34d399;font-weight:700">+R$25 ✓</span>
+                </div>`;
+            });
+        }
+    }
+    el.innerHTML = html;
+    updateShotsBadge();
+}
+function aprovarShot(id) {
+    let shots = [], usuarios = {};
+    try { shots = JSON.parse(localStorage.getItem('shots_cirrose')||'[]'); } catch {}
+    try { usuarios = JSON.parse(localStorage.getItem('usuarios_cirrose')||'{}'); } catch {}
+    const s = shots.find(x => String(x.id) === String(id));
+    if (!s) return toast('Pedido não encontrado','error');
+    s.status = 'entregue';
+    s.aprovadoEm = new Date().toISOString();
+    if (usuarios[s.cpf]) {
+        usuarios[s.cpf].saldo = (usuarios[s.cpf].saldo || 0) + 25;
+    }
+    try { localStorage.setItem('shots_cirrose', JSON.stringify(shots)); } catch {}
+    try { localStorage.setItem('usuarios_cirrose', JSON.stringify(usuarios)); } catch {}
+    toast(`✅ Shot aprovado! +R$25 para ${s.nome}`, 'success');
+    renderShotsAdmin();
+}
+function creditarManual(cpf) {
+    let usuarios = {};
+    try { usuarios = JSON.parse(localStorage.getItem('usuarios_cirrose')||'{}'); } catch {}
+    if (!usuarios[cpf]) return toast('Usuário não encontrado','error');
+    if (!confirm(`Adicionar R$25 para ${usuarios[cpf].nome}?\nSaldo atual: R$${(usuarios[cpf].saldo||0).toFixed(2)}`)) return;
+    usuarios[cpf].saldo = (usuarios[cpf].saldo || 0) + 25;
+    try { localStorage.setItem('usuarios_cirrose', JSON.stringify(usuarios)); } catch {}
+    toast(`💰 +R$25 para ${usuarios[cpf].nome}! Novo saldo: R$${usuarios[cpf].saldo.toFixed(2)}`, 'success');
+    renderShotsAdmin();
 }
 
 // ===== STEP 2: CATEGORIAS =====
@@ -698,23 +788,12 @@ async function deletarAtleta(id) {
 
 // ===== STEP 4: CHAVE =====
 function s4Tab(name, tabEl) {
-    ['gerar','grupos','classif','mm'].forEach(t => {
-        document.getElementById('s4-'+t).style.display = t===name ? 'block' : 'none';
-        const tab = document.getElementById('tab-s4-'+t);
-        if (tab) tab.classList.toggle('active', t===name);
-    });
-    if (name==='grupos') renderGrupos();
-    if (name==='classif') renderClassif();
-    if (name==='mm') renderMM();
+    // mantido para compatibilidade interna; painel único agora
 }
 function populateChaveSelects() {
     const cats = D.categorias||[];
     const html = '<option value="">Selecione...</option>' + cats.map(c=>`<option value="${c.id}">${esc(c.nome)}</option>`).join('');
-    ['chave-categoria','grupos-categoria','classif-categoria','mm-categoria'].forEach(id => {
-        const el = document.getElementById(id); if(!el) return;
-        el.innerHTML = html;
-        if (cats.length) el.value = cats[0].id;
-    });
+    const el = document.getElementById('chave-categoria'); if(el) { el.innerHTML = html; if(cats.length) el.value = cats[0].id; }
     mostrarInfoCategoria();
 }
 function mostrarInfoCategoria() {
@@ -730,6 +809,11 @@ function mostrarInfoCategoria() {
         ~<strong style="color:#ffd700">${porChave}</strong> por chave ·
         🏅 <strong style="color:#6ee7b7">${cat.classificadosPorChave||2}</strong> classif./chave
     </div>`;
+}
+function onCategoriaChange() {
+    mostrarInfoCategoria();
+    document.getElementById('manual-assign').style.display = 'none';
+    document.getElementById('gerar-resultado').innerHTML = '';
 }
 async function gerarChave() {
     const catId = parseInt(val('chave-categoria'));
@@ -750,29 +834,108 @@ async function gerarChave() {
         }
     );
 }
-async function gerarMataMata() {
+
+// ===== CHAVE MANUAL =====
+let manualGroups = {};
+function abrirManualAssign() {
     const catId = parseInt(val('chave-categoria'));
     if (!catId) return toast('Selecione uma categoria','error');
     const cat = catById(catId);
-    // Verificar se todas as partidas de grupos estão encerradas
-    const partidasGrupos = (D.partidas||[]).filter(p=>p.categoriaId===catId && p.fase==='grupos');
-    if (!partidasGrupos.length) return toast('Gere a chave de grupos primeiro.','error');
-    const pendentes = partidasGrupos.filter(p=>p.status!=='encerrado');
-    if (pendentes.length > 0) return toast(`Ainda há ${pendentes.length} partida(s) de grupos não encerrada(s). Conclua todas antes de gerar o Mata-Mata.`,'error');
-    showConfirm('🏆', `Gerar Mata-Mata — ${cat.nome}`,
-        `Serão classificados os <strong style="color:#ffd700">${cat.classificadosPorChave||2}</strong> melhores de cada chave para o confronto eliminatório.`,
+    const numChaves = cat.numChaves || 1;
+    const letters = 'ABCDEFGH';
+    manualGroups = {};
+    for (let i = 0; i < numChaves; i++) manualGroups[letters[i]] = [];
+    document.getElementById('gerar-resultado').innerHTML = '';
+    document.getElementById('manual-assign').style.display = 'block';
+    renderManualAssign(catId, numChaves);
+}
+function renderManualAssign(catId, numChaves) {
+    const letters = 'ABCDEFGH';
+    const assignedIds = Object.values(manualGroups).flat();
+    const unassigned = (D.jogadores||[]).filter(j => !assignedIds.includes(j.id));
+    // Pool
+    const poolEl = document.getElementById('pool-atletas');
+    if (unassigned.length === 0) {
+        poolEl.innerHTML = '<div style="color:rgba(255,255,255,.3);font-size:.75rem;text-align:center;padding:8px">Todos distribuídos ✓</div>';
+    } else {
+        poolEl.innerHTML = unassigned.map(j => {
+            const btns = Array.from({length: numChaves}, (_, i) => {
+                const l = letters[i];
+                return `<button class="ma-btn" onclick="moveToGroup(${j.id},'${l}')">${l}</button>`;
+            }).join('');
+            return `<div class="manual-chip"><span class="mc-nome">${esc(j.nome)}</span><div class="ma-btns">${btns}</div></div>`;
+        }).join('');
+    }
+    // Group columns
+    const groupsEl = document.getElementById('manual-groups');
+    groupsEl.innerHTML = Array.from({length: numChaves}, (_, i) => {
+        const l = letters[i];
+        const members = manualGroups[l].map(id => {
+            const j = (D.jogadores||[]).find(x => x.id === id);
+            return `<div class="manual-chip"><span class="mc-nome">${esc(j?.nome||String(id))}</span><button class="ma-rm" onclick="removeFromGroup(${id},'${l}')">×</button></div>`;
+        }).join('') || '<div style="color:rgba(255,255,255,.2);font-size:.72rem;text-align:center;padding:6px">vazia</div>';
+        return `<div class="manual-col"><div class="manual-col-head">Chave ${l}</div>${members}</div>`;
+    }).join('');
+}
+function moveToGroup(jogadorId, letter) {
+    Object.keys(manualGroups).forEach(l => { manualGroups[l] = manualGroups[l].filter(id => id !== jogadorId); });
+    manualGroups[letter].push(jogadorId);
+    const catId = parseInt(val('chave-categoria'));
+    renderManualAssign(catId, catById(catId).numChaves||1);
+}
+function removeFromGroup(jogadorId, letter) {
+    manualGroups[letter] = manualGroups[letter].filter(id => id !== jogadorId);
+    const catId = parseInt(val('chave-categoria'));
+    renderManualAssign(catId, catById(catId).numChaves||1);
+}
+async function confirmarChaveManual() {
+    const catId = parseInt(val('chave-categoria'));
+    if (!catId) return toast('Selecione uma categoria','error');
+    const cat = catById(catId);
+    const numChaves = cat.numChaves || 1;
+    const letters = 'ABCDEFGH';
+    const assignedIds = Object.values(manualGroups).flat();
+    const unassigned = (D.jogadores||[]).filter(j => !assignedIds.includes(j.id));
+    if (unassigned.length > 0) return toast(`${unassigned.length} atleta(s) ainda sem chave. Distribua todos antes de confirmar.`,'error');
+    const grupos = Array.from({length: numChaves}, (_, i) => ({ chaveLetra: letters[i], jogadorIds: manualGroups[letters[i]] }));
+    const resumo = grupos.map(g => `Chave ${g.chaveLetra}: ${g.jogadorIds.length} atletas`).join('\n');
+    showConfirm('⚽', `Confirmar Chave Manual — ${cat.nome}`,
+        `${resumo}\n\n⚠️ Partidas existentes desta categoria serão apagadas.`,
         async () => {
             try {
-                const r = await api('/api/cirrose/gerar-mata-mata','POST',{categoriaId:catId});
+                const r = await api('/api/cirrose/gerar-chave','POST',{categoriaId:catId, grupos});
                 const data = await api('/api/cirrose');
                 Object.assign(D, data);
-                renderStepper(); toast(`Mata-mata gerado! ${r.partidas.length} partidas.`,'success');
-                s4Tab('mm', document.getElementById('tab-s4-mm'));
-                document.getElementById('mm-categoria').value = catId;
-                renderMM();
+                document.getElementById('manual-assign').style.display = 'none';
+                document.getElementById('gerar-resultado').innerHTML = `<div class="badge badge-ok" style="font-size:.82rem;padding:6px 14px">✓ Chave manual gerada! ${r.partidas.length} partidas criadas.</div>`;
+                renderStepper(); toast(`Chave manual gerada! ${r.partidas.length} partidas.`,'success');
             } catch(e) { toast('Erro: '+e.message,'error'); }
         }
     );
+}
+
+// Geração automática do mata-mata ao concluir todos os grupos
+async function checarAutoMataMata(p) {
+    if (p.fase !== 'grupos') return;
+    const catId = p.categoriaId;
+    const todas = (D.partidas||[]).filter(x => x.categoriaId === catId && x.fase === 'grupos');
+    if (!todas.length) return;
+    if (todas.some(x => x.status !== 'encerrado')) return; // ainda há pendentes
+    if ((D.partidas||[]).some(x => x.categoriaId === catId && x.fase !== 'grupos')) return; // já existe MM
+    try {
+        const r = await api('/api/cirrose/gerar-mata-mata','POST',{categoriaId:catId});
+        const data = await api('/api/cirrose');
+        Object.assign(D, data);
+        renderStepper();
+        if (r.wildcard) {
+            const wc = r.wildcard;
+            const nome = nomeById(wc.jogadorId);
+            const s = wc.stats;
+            toast(`🏆 Mata-mata gerado! Wildcard: ${nome} (Chave ${wc.chaveId}) — ${s.pts}pts · ${s.v}V ${s.e}E ${s.d}D · SG${s.sg >= 0 ? '+' : ''}${s.sg}`, 'success');
+        } else {
+            toast(`🏆 Grupos concluídos! Mata-mata gerado automaticamente (${r.partidas.length} partidas).`, 'success');
+        }
+    } catch(e) { toast('Erro ao gerar mata-mata: '+e.message,'error'); }
 }
 
 // --- Render Grupos ---
@@ -1055,6 +1218,7 @@ async function encerrarPartida() {
         fecharModal('modal-placar');
         await checarAvancoBracket(p);
         atualizarVisuais();
+        await checarAutoMataMata(p);
         toast('Partida encerrada!','success');
     } catch(e) { toast('Erro: '+e.message,'error'); }
 }
@@ -1065,21 +1229,34 @@ async function checarAvancoBracket(p) {
     if (faseIdx < 0) return;
     const proximaFase = faseOrder[faseIdx+1] || 'final';
     const nextPos = Math.floor((p.bracketPos||0) / 2);
+    const thisSlot = (p.bracketPos||0) % 2 === 0 ? 'j1Id' : 'j2Id';
+    const siblingSlot = thisSlot === 'j1Id' ? 'j2Id' : 'j1Id';
+    const siblingBracketPos = (p.bracketPos||0) % 2 === 0 ? (p.bracketPos||0)+1 : (p.bracketPos||0)-1;
+
+    // Determinar o oponente da próxima rodada: bye seed guardado ou vencedor do irmão
+    const siblingMatch = (D.partidas||[]).find(x=>x.categoriaId===p.categoriaId && x.fase===p.fase && x.bracketPos===siblingBracketPos);
+    const otherPlayer = p.byeSeedOpponent || (siblingMatch && siblingMatch.vencedorId) || null;
+
     let nextPartida = (D.partidas||[]).find(x=>x.categoriaId===p.categoriaId && x.fase===proximaFase && x.bracketPos===nextPos);
     if (!nextPartida) {
-        const slot = (p.bracketPos||0) % 2 === 0 ? 'j1Id' : 'j2Id';
+        if (otherPlayer) {
+            // Ambos jogadores conhecidos: criar partida com os dois!
+            const j1 = thisSlot === 'j1Id' ? p.vencedorId : otherPlayer;
+            const j2 = thisSlot === 'j2Id' ? p.vencedorId : otherPlayer;
+            try {
+                nextPartida = await api('/api/cirrose/partidas','POST',{
+                    categoriaId:p.categoriaId, chaveId:null, fase:proximaFase,
+                    bracketPos:nextPos, j1Id:j1, j2Id:j2, status:'agendado'
+                });
+                D.partidas = D.partidas||[]; D.partidas.push(nextPartida);
+            } catch(e) { console.error(e); }
+        }
+        // Se otherPlayer for null: aguardar a partida irmã terminar
+    } else if (!nextPartida[thisSlot]) {
+        // Partida pré-criada (bye-bye): preencher o slot que falta
         try {
-            nextPartida = await api('/api/cirrose/partidas','POST',{
-                categoriaId:p.categoriaId, chaveId:null, fase:proximaFase,
-                bracketPos:nextPos, [slot]:p.vencedorId, status:'agendado'
-            });
-            D.partidas = D.partidas||[]; D.partidas.push(nextPartida);
-        } catch(e) { console.error(e); }
-    } else {
-        const slot = (p.bracketPos||0) % 2 === 0 ? 'j1Id' : 'j2Id';
-        try {
-            await api('/api/cirrose/partidas/'+nextPartida.id,'PUT',{[slot]:p.vencedorId});
-            nextPartida[slot] = p.vencedorId;
+            await api('/api/cirrose/partidas/'+nextPartida.id,'PUT',{[thisSlot]:p.vencedorId});
+            nextPartida[thisSlot] = p.vencedorId;
         } catch(e) { console.error(e); }
     }
     if (p.fase === 'semifinal') {
@@ -1100,7 +1277,7 @@ async function checarAvancoBracket(p) {
     }
 }
 function atualizarVisuais() {
-    renderGrupos(); renderClassif(); renderMM(); renderStepper();
+    renderStepper();
 }
 
 // ===== STEP 5: PRONTO =====
@@ -1117,12 +1294,18 @@ function renderPronto() {
     </div>`;
 }
 async function resetarTudo() {
-    if (!confirm('⚠️ ATENÇÃO: Isso apagará TODOS os dados da Copa Cirrose. Confirmar?')) return;
+    if (!confirm('⚠️ ATENÇÃO: Isso apagará atletas, partidas, apostas e saldos da Copa Cirrose.\nAs categorias serão mantidas. Confirmar?')) return;
     try {
         const data = await api('/api/cirrose/resetar','POST');
         Object.assign(D, data);
+        // Reseta localStorage das odds
+        localStorage.removeItem('usuarios_cirrose');
+        localStorage.removeItem('apostas_cirrose');
+        localStorage.removeItem('apostas_cpf');
+        localStorage.removeItem('shots_cirrose');
         renderStepper(); renderCategorias();
-        toast('Dados resetados','success'); goStep(2);
+        updateShotsBadge();
+        toast('Dados resetados (categorias preservadas)','success'); goStep(2);
     } catch(e) { toast('Erro: '+e.message,'error'); }
 }
 

@@ -288,38 +288,38 @@ function populateCatSelect() {
         (D.categorias||[]).map(c=>`<option value="${c.id}">${esc(c.nome)}</option>`).join('');
 }
 
-// ===== BANNER MATA-MATA =====
+// ===== BANNER MATA-MATA (auto-geração) =====
 function renderBannerMataMata() {
-    const banners = (D.categorias||[]).map(cat => {
+    document.getElementById('banner-mata-mata').innerHTML = '';
+    (D.categorias||[]).forEach(cat => {
         const grupos = (D.partidas||[]).filter(p => p.categoriaId===cat.id && p.fase==='grupos');
-        if (!grupos.length) return '';
-        const todosDone = grupos.every(p => p.status==='encerrado');
-        if (!todosDone) return '';
-        const temMM = (D.partidas||[]).some(p => p.categoriaId===cat.id && p.fase!=='grupos');
-        if (temMM) return '';
-        return `<div class="mm-banner">
-            <div class="mm-banner-icon">⚔️</div>
-            <div class="mm-banner-body">
-                <div class="mm-banner-title">Fase de grupos encerrada — ${esc(cat.nome)}</div>
-                <div class="mm-banner-sub">Todos os ${grupos.length} jogos encerrados. Pronto para gerar o mata-mata!</div>
-            </div>
-            <button class="btn-gerar-mm" id="btn-mm-${cat.id}" onclick="gerarMataMata(${cat.id})">&#9654; Gerar Mata-Mata</button>
-        </div>`;
-    }).join('');
-    document.getElementById('banner-mata-mata').innerHTML = banners;
+        if (!grupos.length) return;
+        if (!grupos.every(p => p.status==='encerrado')) return;
+        if ((D.partidas||[]).some(p => p.categoriaId===cat.id && p.fase!=='grupos')) return;
+        // Todos os grupos encerrados e sem mata-mata — gerar automaticamente
+        gerarMataMata(cat.id);
+    });
 }
 
 async function gerarMataMata(catId) {
     const btn = document.getElementById('btn-mm-'+catId);
     if (btn) { btn.disabled = true; btn.textContent = 'Gerando…'; }
     try {
-        await api('/api/cirrose/gerar-mata-mata','POST',{categoriaId:catId});
+        const r = await api('/api/cirrose/gerar-mata-mata','POST',{categoriaId:catId});
         const data = await api('/api/cirrose');
         Object.assign(D, data);
         renderStats();
         renderBannerMataMata();
         renderPartidas();
-        toast('⚔️ Mata-mata gerado!','success');
+        if (r.wildcard) {
+            const wc = r.wildcard;
+            const s = wc.stats;
+            const jog = (D.jogadores||[]).find(j => j.id === wc.jogadorId);
+            const nome = jog ? jog.nome : `#${wc.jogadorId}`;
+            toast(`⚔️ Mata-mata gerado! Wildcard: ${nome} (Chave ${wc.chaveId}) — ${s.pts}pts · ${s.v}V ${s.e}E ${s.d}D · SG${s.sg >= 0 ? '+' : ''}${s.sg}`, 'success');
+        } else {
+            toast('⚔️ Mata-mata gerado!', 'success');
+        }
     } catch(e) {
         toast('Erro: '+e.message,'error');
         if (btn) { btn.disabled = false; btn.textContent = '▶ Gerar Mata-Mata'; }
@@ -571,17 +571,31 @@ async function checarAvancoBracket(p) {
     const faseIdx=faseOrder.indexOf(p.fase); if(faseIdx<0) return;
     const proxFase=faseOrder[faseIdx+1]||'final';
     const nextPos=Math.floor((p.bracketPos||0)/2);
+    const thisSlot=(p.bracketPos||0)%2===0?'j1Id':'j2Id';
+    const siblingSlot=thisSlot==='j1Id'?'j2Id':'j1Id';
+    const siblingBracketPos=(p.bracketPos||0)%2===0?(p.bracketPos||0)+1:(p.bracketPos||0)-1;
+
+    // Determinar o oponente da próxima rodada: bye seed guardado ou vencedor do irmão
+    const siblingMatch=(D.partidas||[]).find(x=>x.categoriaId===p.categoriaId&&x.fase===p.fase&&x.bracketPos===siblingBracketPos);
+    const otherPlayer=p.byeSeedOpponent||(siblingMatch&&siblingMatch.vencedorId)||null;
+
     let next=(D.partidas||[]).find(x=>x.categoriaId===p.categoriaId&&x.fase===proxFase&&x.bracketPos===nextPos);
-    const slot=(p.bracketPos||0)%2===0?'j1Id':'j2Id';
     if(!next){
+        if(otherPlayer){
+            // Ambos jogadores conhecidos: criar partida agora com os dois!
+            const j1=thisSlot==='j1Id'?p.vencedorId:otherPlayer;
+            const j2=thisSlot==='j2Id'?p.vencedorId:otherPlayer;
+            try{
+                next=await api('/api/cirrose/partidas','POST',{categoriaId:p.categoriaId,chaveId:null,fase:proxFase,bracketPos:nextPos,j1Id:j1,j2Id:j2,status:'agendado'});
+                D.partidas.push(next);
+            }catch(e){console.error(e);}
+        }
+        // Se otherPlayer for null: aguardar a partida irmã terminar (ela criará a partida)
+    } else if(!next[thisSlot]){
+        // Partida já existia pré-criada (bye-bye): preencher o slot que falta
         try{
-            next=await api('/api/cirrose/partidas','POST',{categoriaId:p.categoriaId,chaveId:null,fase:proxFase,bracketPos:nextPos,[slot]:p.vencedorId,status:'agendado'});
-            D.partidas.push(next);
-        }catch(e){console.error(e);}
-    } else {
-        try{
-            await api('/api/cirrose/partidas/'+next.id,'PUT',{[slot]:p.vencedorId});
-            next[slot]=p.vencedorId;
+            await api('/api/cirrose/partidas/'+next.id,'PUT',{[thisSlot]:p.vencedorId});
+            next[thisSlot]=p.vencedorId;
         }catch(e){console.error(e);}
     }
     if(p.fase==='semifinal'){

@@ -164,6 +164,101 @@
         .shot-regra-item:last-child{border-bottom:none}
         .shot-regra-nome{font-size:.8rem;font-weight:700;color:rgba(255,255,255,.7);flex:1 0 100%;margin-bottom:4px}
         .shot-regra-tag{font-size:.7rem;background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.2);border-radius:8px;padding:3px 9px;color:rgba(255,215,0,.8)}
+        /* ===== ODDS / CASA DE APOSTAS ===== */
+        .odds-panel-header{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+        .odds-live-badge{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(90deg,#00c853,#00e676);border-radius:20px;padding:4px 14px;font-size:.72rem;font-weight:800;color:#000;letter-spacing:1px}
+        .odds-live-dot{width:8px;height:8px;border-radius:50%;background:#000;animation:pulseR 1s ease infinite}
+        .bookmaker-badge{font-size:.68rem;color:rgba(255,255,255,.35);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:3px 10px}
+        .odds-card{background:rgba(0,0,0,.35);border:1px solid rgba(0,200,83,.2);border-radius:16px;margin-bottom:14px;overflow:hidden;transition:border-color .3s}
+        .odds-card:hover{border-color:rgba(0,200,83,.4)}
+        .odds-card.live{border-color:rgba(239,68,68,.5);background:rgba(239,68,68,.03)}
+        .odds-card-header{padding:10px 16px;display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.03);border-bottom:1px solid rgba(255,255,255,.06)}
+        .odds-fase{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.4)}
+        .odds-live-mini{font-size:.62rem;font-weight:800;color:#f87171;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);border-radius:8px;padding:2px 8px;animation:pulseR 1.5s ease infinite}
+        .odds-hero-promo{background:linear-gradient(135deg,rgba(184,134,11,.14),rgba(220,20,60,.12));border:1px solid rgba(255,215,0,.22);border-radius:16px;padding:16px 18px;margin-bottom:18px;text-align:center;position:relative;overflow:hidden}
+        .odds-hero-promo::before{content:'🎰';position:absolute;font-size:6rem;opacity:.06;right:-10px;top:-10px;pointer-events:none}
+        .odds-promo-title{font-size:1.1rem;font-weight:900;color:#ffd700;margin-bottom:4px}
+        .odds-promo-sub{font-size:.75rem;color:rgba(255,255,255,.5);line-height:1.4}
+        .odds-promo-ticker{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+        .odds-promo-chip{background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.2);border-radius:20px;padding:4px 12px;font-size:.68rem;font-weight:700;color:#ffd700}
+        .odds-disclaimer{font-size:.63rem;color:rgba(255,255,255,.2);text-align:center;padding:12px 6px;line-height:1.6}
+        .odds-empty-promo{text-align:center;padding:32px 16px;color:rgba(255,255,255,.3);font-size:.9rem}
+        .odds-empty-promo .big{font-size:3rem;display:block;margin-bottom:10px}
+        /* Bet buttons inside match card */
+        .odds-section-label{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.9px;color:rgba(255,255,255,.3);margin-bottom:7px}
+        .odds-bet-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+        .odds-bet-btn{display:flex;align-items:center;justify-content:space-between;padding:10px 13px;border:1.5px solid rgba(255,255,255,.12);border-radius:12px;background:rgba(255,255,255,.05);cursor:pointer;transition:all .2s;width:100%;font-family:'Poppins',sans-serif;gap:8px;text-align:left}
+        .odds-bet-btn:hover{background:rgba(0,200,83,.12);border-color:rgba(0,200,83,.45);transform:translateY(-1px);box-shadow:0 3px 12px rgba(0,200,83,.15)}
+        .odds-bet-btn:active{transform:translateY(0)}
+        .odds-bet-btn.fav{border-color:rgba(255,215,0,.32);background:rgba(255,215,0,.07)}
+        .odds-bet-btn.fav:hover{background:rgba(255,215,0,.16);border-color:rgba(255,215,0,.55)}
+        .odds-bet-label{font-size:.7rem;font-weight:600;color:rgba(255,255,255,.65);line-height:1.3;flex:1}
+        .odds-bet-label.fav-label{color:#ffd700}
+        .odds-bet-odd{font-size:1.15rem;font-weight:900;color:#00e676;flex-shrink:0;line-height:1}
+        .odds-bet-btn.fav .odds-bet-odd{color:#ffd700}
+        /* Bet slip modal */
+        .bet-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(6px);z-index:200;display:flex;align-items:flex-end;justify-content:center}
+        .bet-slip{background:linear-gradient(180deg,#1e1e32,#0f0f1a);border:1px solid rgba(255,255,255,.12);border-radius:24px 24px 0 0;width:100%;max-width:520px;max-height:92vh;overflow-y:auto;animation:slideUp .25s ease}
+        @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+        .bet-slip-handle{width:40px;height:4px;background:rgba(255,255,255,.18);border-radius:4px;margin:14px auto 0}
+        .bet-slip-header{display:flex;align-items:flex-start;justify-content:space-between;padding:16px 20px 14px;border-bottom:1px solid rgba(255,255,255,.08)}
+        .bet-slip-body{padding:18px 20px calc(20px + env(safe-area-inset-bottom))}
+        .bet-field{margin-bottom:16px}
+        .bet-label{display:block;font-size:.68rem;font-weight:700;color:rgba(255,255,255,.45);margin-bottom:6px;text-transform:uppercase;letter-spacing:.7px}
+        .bet-input{width:100%;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15);border-radius:12px;color:#fff;font-family:'Poppins',sans-serif;font-size:.95rem;font-weight:600;padding:12px 14px;outline:none;transition:border-color .2s}
+        .bet-input:focus{border-color:rgba(0,200,83,.55);background:rgba(0,200,83,.05)}
+        .bet-input.error{border-color:rgba(248,113,113,.65);background:rgba(248,113,113,.05)}
+        .bet-amount-row{display:flex;gap:6px;margin-top:8px}
+        .bet-amount-pct{flex:1;padding:8px 4px;border-radius:10px;border:1.5px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:rgba(255,255,255,.55);font-family:'Poppins',sans-serif;font-size:.72rem;font-weight:700;cursor:pointer;transition:all .18s;text-align:center}
+        .bet-amount-pct:hover{background:rgba(0,200,83,.18);border-color:rgba(0,200,83,.45);color:#00e676}
+        /* CPF screen */
+        .cpf-screen{display:flex;align-items:flex-start;justify-content:center;padding:4px 0 40px}
+        .cpf-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:22px 18px 24px;width:100%;max-width:420px;text-align:center}
+        .cpf-card .bet-input{font-size:16px!important;-webkit-text-size-adjust:100%} /* previne zoom iOS */
+        .cpf-title{font-size:1.15rem;font-weight:900;color:#fff;margin-bottom:6px}
+        .cpf-sub{font-size:.78rem;color:rgba(255,255,255,.45);margin-bottom:10px;line-height:1.6}
+        .cpf-prize{background:linear-gradient(135deg,rgba(0,200,83,.15),rgba(0,200,83,.04));border:1px solid rgba(0,200,83,.28);border-radius:12px;padding:10px 14px;font-size:.85rem;font-weight:800;color:#00e676;margin-bottom:4px}
+        /* User balance bar */
+        .user-balance-bar{display:flex;align-items:center;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:12px 14px;margin-bottom:14px;gap:4px}
+        .user-balance-val{font-size:1.05rem;font-weight:900;color:#fff}
+        .user-balance-val.up{color:#34d399}
+        .user-balance-val.zero{color:#f87171}
+        /* aposta pessoa card highlight */
+        .aposta-pessoa-card.me{border-color:rgba(255,215,0,.22);background:rgba(255,215,0,.025)}
+        .bet-preview{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px 14px;margin-bottom:16px}
+        .bet-preview-row{font-size:.8rem;padding:4px 0;font-weight:600;line-height:1.4}
+        .bet-preview-val{font-weight:900;font-size:.88rem}
+        .bet-preview-row.win .bet-preview-val{color:#34d399}
+        .bet-preview-row.lose .bet-preview-val{color:#f87171}
+        .bet-confirm-btn{width:100%;padding:14px;border:none;border-radius:14px;background:linear-gradient(135deg,#00c853,#00e676);color:#000;font-family:'Poppins',sans-serif;font-size:.95rem;font-weight:800;cursor:pointer;margin-bottom:9px;transition:all .2s;box-shadow:0 4px 20px rgba(0,200,83,.3)}
+        .bet-confirm-btn:hover{transform:translateY(-2px);box-shadow:0 7px 28px rgba(0,200,83,.45)}
+        .bet-cancel-btn{width:100%;padding:11px;border:1px solid rgba(255,255,255,.14);border-radius:14px;background:transparent;color:rgba(255,255,255,.45);font-family:'Poppins',sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s}
+        .bet-cancel-btn:hover{border-color:rgba(255,255,255,.3);color:#fff}
+        /* Apostas histórico */
+        .aposta-pessoa-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;margin-bottom:10px;overflow:hidden}
+        .aposta-pessoa-header{display:flex;align-items:center;gap:10px;padding:12px 14px;background:rgba(255,255,255,.03);border-bottom:1px solid rgba(255,255,255,.05)}
+        .aposta-pessoa-avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.1rem;flex-shrink:0}
+        .aposta-pessoa-info{flex:1;min-width:0}
+        .aposta-pessoa-nome{font-size:.9rem;font-weight:700;margin-bottom:2px}
+        .aposta-pessoa-stats{display:flex;gap:8px;font-size:.72rem;font-weight:700}
+        .aposta-saldo{text-align:right;flex-shrink:0}
+        .aposta-saldo-val{display:block;font-size:1.05rem;font-weight:900}
+        .aposta-saldo-label{font-size:.58rem;color:rgba(255,255,255,.38);font-weight:600}
+        .aposta-saldo.pos .aposta-saldo-val{color:#34d399}
+        .aposta-saldo.neg .aposta-saldo-val{color:#f87171}
+        .aposta-lista{padding:4px 0}
+        .aposta-item{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;border-bottom:1px solid rgba(255,255,255,.04);gap:10px;transition:background .2s}
+        .aposta-item:last-child{border-bottom:none}
+        .aposta-item.ganhou{background:rgba(52,211,153,.04)}
+        .aposta-item.perdeu{background:rgba(248,113,113,.04)}
+        .aposta-item-left{flex:1;min-width:0}
+        .aposta-item-match{font-size:.63rem;color:rgba(255,255,255,.33);margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+        .aposta-item-bet{font-size:.8rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+        .aposta-item-right{display:flex;align-items:center;gap:7px;flex-shrink:0}
+        .aposta-item-odd{font-size:.68rem;color:rgba(255,255,255,.38);font-weight:700}
+        .aposta-item-shots{font-size:.75rem;font-weight:700}
+        .aposta-item-status{font-size:1rem}
+
         @media (max-width: 680px) {
             body { padding-bottom: 70px; }
             .wrap { padding: 12px 12px 80px; }
@@ -186,7 +281,7 @@
                 border-top: 1px solid rgba(255,255,255,.1);
                 z-index: 50;
                 display: grid;
-                grid-template-columns: repeat(6, 1fr);
+                grid-template-columns: repeat(7, 1fr);
                 gap: 4px;
             }
             .nav-tab {
@@ -272,6 +367,7 @@
         <button class="nav-tab" onclick="switchTab('bracket')"><span style="font-size:1.1rem">⚔️</span><span>Mata-Mata</span></button>
         <button class="nav-tab" onclick="switchTab('jogadores')"><span style="font-size:1.1rem">👥</span><span>Jogadores</span></button>
         <button class="nav-tab" onclick="switchTab('shots')"><span style="font-size:1.1rem">🍺</span><span>Shots</span></button>
+        <button class="nav-tab" id="tab-odds" onclick="switchTab('odds')"><span style="font-size:1.1rem">🎰</span><span>ODDs</span></button>
         <button class="nav-tab" onclick="switchTab('qrcode')"><span style="font-size:1.1rem">📲</span><span>QR Code</span></button>
     </div>
 
@@ -320,6 +416,44 @@
         </div>
     </div>
 
+    <div class="panel" id="panel-odds">
+        <div id="odds-content"></div>
+    </div>
+    <!-- Modal de aposta (fora do scroll do panel) -->
+    <div id="bet-modal" class="bet-modal-overlay" style="display:none" onclick="if(event.target===this)closeBetModal()">
+        <div class="bet-slip">
+            <div class="bet-slip-handle"></div>
+            <div class="bet-slip-header">
+                <div style="flex:1;min-width:0">
+                    <div id="bet-match-label" style="font-size:.72rem;color:rgba(255,255,255,.38);margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></div>
+                    <div id="bet-type-label" style="font-size:1rem;font-weight:800;color:#ffd700;line-height:1.3"></div>
+                </div>
+                <div style="text-align:right;flex-shrink:0;margin-left:12px">
+                    <div style="font-size:.6rem;color:rgba(255,255,255,.38);margin-bottom:1px">ODD</div>
+                    <div id="bet-odd-display" style="font-size:1.7rem;font-weight:900;color:#00e676;line-height:1"></div>
+                </div>
+            </div>
+            <div class="bet-slip-body">
+                <div id="bet-user-info" style="font-size:.72rem;color:rgba(255,255,255,.45);margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.07)"></div>
+                <div class="bet-field">
+                    <label class="bet-label">💰 Valor da aposta (R$) <span style="color:#f87171">*</span></label>
+                    <input id="bet-amount" class="bet-input" type="number" min="1" step="0.5" placeholder="Ex: 10"
+                        oninput="this.classList.remove('error');document.getElementById('bet-amount-err').style.display='none';updateBetPreview()">
+                    <div id="bet-amount-err" style="display:none;color:#f87171;font-size:.7rem;margin-top:4px"></div>
+                    <div class="bet-amount-row">
+                        <button class="bet-amount-pct" onclick="setBetPct(0.25)">25%</button>
+                        <button class="bet-amount-pct" onclick="setBetPct(0.50)">50%</button>
+                        <button class="bet-amount-pct" onclick="setBetPct(0.75)">75%</button>
+                        <button class="bet-amount-pct" onclick="setBetPct(1)">Tudo in!</button>
+                    </div>
+                </div>
+                <div id="bet-preview" class="bet-preview"></div>
+                <button class="bet-confirm-btn" onclick="submitBet()">🎰 Confirmar Aposta</button>
+                <button class="bet-cancel-btn" onclick="closeBetModal()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
     <div class="panel" id="panel-qrcode">
         <div class="glass" style="text-align:center;padding:36px 24px">
             <h2 style="justify-content:center;margin-bottom:6px">📲 Acesse pelo Celular</h2>
@@ -361,7 +495,7 @@ let activeTab = 'aovivo';
 function switchTab(tab) {
     activeTab = tab;
     document.querySelectorAll('.nav-tab').forEach((t,i) => {
-        const tabs = ['aovivo','grupos','bracket','jogadores','shots','qrcode'];
+        const tabs = ['aovivo','grupos','bracket','jogadores','shots','odds','qrcode'];
         t.classList.toggle('active', tabs[i] === tab);
     });
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
@@ -418,6 +552,8 @@ async function load() {
 function render() {
     renderHero();
     renderAoVivo();
+    loadDados();
+    resolverApostas();
     renderTab(activeTab);
 }
 
@@ -426,6 +562,7 @@ function renderTab(tab) {
     if (tab === 'bracket')  renderBracket();
     if (tab === 'jogadores') renderJogadores();
     if (tab === 'shots')    renderShots();
+    if (tab === 'odds')     renderOdds();
 }
 
 function renderHero() {
@@ -842,6 +979,560 @@ function findJ(id) { return D.jogadores.find(j => j.id === id); }
 function color(id) { const c=['#e21b3c','#1368ce','#26890c','#d89e00','#9b59b6','#e67e22','#1abc9c','#e74c3c','#3498db','#2ecc71']; return c[id%c.length]; }
 function esc(t) { const d=document.createElement('div'); d.textContent=t||''; return d.innerHTML; }
 function formatDate(d) { if (!d) return ''; const [y,m,dd]=d.split('-'); return `${dd}/${m}/${y}`; }
+
+/* ============================================================
+   ODDS v2 — Casa de Apostas (apostas por resultado de partida)
+   ============================================================ */
+
+let apostas = [];
+let usuarios = {};      // { [cpf]: { cpf, nome, saldo, ts } }
+let currentCpf = null;
+let currentOddsMap = {};
+let betState = null;
+
+function fmtCpf(v) {
+    const d = v.replace(/\D/g,'').slice(0,11);
+    if (d.length <= 3)  return d;
+    if (d.length <= 6)  return d.slice(0,3)+'.'+d.slice(3);
+    if (d.length <= 9)  return d.slice(0,3)+'.'+d.slice(3,6)+'.'+d.slice(6);
+    return d.slice(0,3)+'.'+d.slice(3,6)+'.'+d.slice(6,9)+'-'+d.slice(9);
+}
+function cpfDigits(v) { return (v||'').replace(/\D/g,''); }
+
+function loadDados() {
+    try { apostas  = JSON.parse(localStorage.getItem('apostas_cirrose') || '[]'); } catch { apostas = []; }
+    try { usuarios = JSON.parse(localStorage.getItem('usuarios_cirrose') || '{}'); } catch { usuarios = {}; }
+    currentCpf = localStorage.getItem('apostas_cpf') || null;
+}
+
+function salvarDados() {
+    try {
+        localStorage.setItem('apostas_cirrose',  JSON.stringify(apostas));
+        localStorage.setItem('usuarios_cirrose', JSON.stringify(usuarios));
+    } catch {}
+}
+
+function getUsuario(cpf) { return usuarios[cpf] || null; }
+
+function criarUsuario(cpf, nome) {
+    usuarios[cpf] = { cpf, nome, saldo: 200, ts: Date.now() };
+    salvarDados();
+    return usuarios[cpf];
+}
+
+function resolverApostas() {
+    if (!apostas.length) return;
+    let changed = false;
+    apostas.forEach(a => {
+        if (a.status !== 'pendente') return;
+        const p = D.partidas.find(p => p.id === a.matchId && p.status === 'encerrado');
+        if (!p) return;
+        const totalGols = (p.gols1||0) + (p.gols2||0);
+        let ganhou = false;
+        if (a.tipo === 'vitoria_j1')      ganhou = p.vencedorId === p.j1Id;
+        else if (a.tipo === 'vitoria_j2') ganhou = p.vencedorId === p.j2Id;
+        else if (a.tipo === 'over')       ganhou = totalGols > a.linha;
+        else if (a.tipo === 'under')      ganhou = totalGols <= a.linha;
+        a.status = ganhou ? 'ganhou' : 'perdeu';
+        a.resultGols = totalGols;
+        // Creditar retorno se ganhou (valor já foi debitado ao apostar)
+        const u = usuarios[a.cpf];
+        if (u && ganhou) {
+            u.saldo = Math.round((u.saldo + a.retorno) * 100) / 100;
+        }
+        changed = true;
+    });
+    if (changed) salvarDados();
+}
+
+function calcOddsPartidas() {
+    const stats = calcStats();
+    const enc = D.partidas.filter(p => p.status === 'encerrado');
+    const avgGoals = enc.length > 0
+        ? enc.reduce((a,q) => a + (q.gols1||0) + (q.gols2||0), 0) / enc.length
+        : 3.5;
+    currentOddsMap = {};
+    const margin = 0.30; // margem da casa 30% — mais chance de perder
+    const result = D.partidas.filter(p => p.status === 'agendado').map(p => {
+        const s1 = stats[p.j1Id] || { pj:0, pts:0 };
+        const s2 = stats[p.j2Id] || { pj:0, pts:0 };
+        const aprv = (s) => s.pj > 0 ? s.pts / (s.pj * 3) : 0.5;
+        const a1 = aprv(s1) + 0.05, a2 = aprv(s2) + 0.05;
+        const total = a1 + a2;
+        const prob1 = a1 / total, prob2 = a2 / total;
+        const baseV1 = Math.max(1.05, +((1/prob1 * (1+margin)).toFixed(2)));
+        const baseV2 = Math.max(1.05, +((1/prob2 * (1+margin)).toFixed(2)));
+        // Pressão de mercado: blend odds pelo dinheiro apostado em cada lado
+        const betsM = apostas.filter(a => a.matchId === p.id && a.status === 'pendente');
+        const moneyV1    = betsM.filter(a => a.tipo === 'vitoria_j1').reduce((s,a) => s+a.valor, 0);
+        const moneyV2    = betsM.filter(a => a.tipo === 'vitoria_j2').reduce((s,a) => s+a.valor, 0);
+        const moneyOver  = betsM.filter(a => a.tipo === 'over').reduce((s,a) => s+a.valor, 0);
+        const moneyUnder = betsM.filter(a => a.tipo === 'under').reduce((s,a) => s+a.valor, 0);
+        const totalV = moneyV1 + moneyV2;
+        let oddV1 = baseV1, oddV2 = baseV2;
+        if (totalV >= 20) {
+            const mktV1 = moneyV1 > 0 ? Math.max(1.05, (totalV*(1-margin))/moneyV1) : baseV1;
+            const mktV2 = moneyV2 > 0 ? Math.max(1.05, (totalV*(1-margin))/moneyV2) : baseV2;
+            const w = Math.min(0.20, totalV / 500);
+            oddV1 = Math.max(1.05, parseFloat((baseV1*(1-w) + mktV1*w).toFixed(2)));
+            oddV2 = Math.max(1.05, parseFloat((baseV2*(1-w) + mktV2*w).toFixed(2)));
+        }
+        const totalOU = moneyOver + moneyUnder;
+        const linha = Math.max(2, Math.round(avgGoals));
+        const confianca = Math.min(1, enc.length / 4);
+        let overOdd  = parseFloat((1.55 + (1-confianca)*0.10).toFixed(2));
+        let underOdd = parseFloat((1.65 + (1-confianca)*0.10).toFixed(2));
+        if (totalOU >= 20) {
+            const mktO = moneyOver  > 0 ? Math.max(1.05, (totalOU*(1-margin))/moneyOver)  : overOdd;
+            const mktU = moneyUnder > 0 ? Math.max(1.05, (totalOU*(1-margin))/moneyUnder) : underOdd;
+            const w = Math.min(0.20, totalOU / 500);
+            overOdd  = Math.max(1.05, parseFloat((overOdd*(1-w)  + mktO*w).toFixed(2)));
+            underOdd = Math.max(1.05, parseFloat((underOdd*(1-w) + mktU*w).toFixed(2)));
+        }
+        const item = {
+            partida: p,
+            j1: findJ(p.j1Id), j2: findJ(p.j2Id),
+            oddV1, oddV2, prob1, prob2,
+            favorite: prob1 > prob2 ? 'j1' : 'j2',
+            linha, overOdd, underOdd,
+            moneyV1, moneyV2, moneyOver, moneyUnder
+        };
+        currentOddsMap[p.id] = item;
+        return item;
+    });
+    return result;
+}
+
+function openBetSlip(matchId, tipo, linha) {
+    if (!currentCpf || !getUsuario(currentCpf)) { renderOdds(); return; }
+    const o = currentOddsMap[matchId];
+    if (!o) { renderOdds(); return; }
+    const u = getUsuario(currentCpf);
+    const j1Nome = o.j1?.nome || '?', j2Nome = o.j2?.nome || '?';
+    const odd = tipo === 'vitoria_j1' ? o.oddV1
+              : tipo === 'vitoria_j2' ? o.oddV2
+              : tipo === 'over'       ? o.overOdd
+              : o.underOdd;
+    const labels = {
+        vitoria_j1: `🏆 ${j1Nome} vence`,
+        vitoria_j2: `🏆 ${j2Nome} vence`,
+        over:  `📈 Mais de ${o.linha} gols`,
+        under: `📉 Máx ${o.linha} gols`
+    };
+    const label = labels[tipo] || tipo;
+    betState = { matchId, tipo, label, odd, linha: linha||0 };
+    document.getElementById('bet-match-label').textContent = `${j1Nome} × ${j2Nome}`;
+    document.getElementById('bet-type-label').textContent  = label;
+    document.getElementById('bet-odd-display').textContent = odd.toFixed(2);
+    document.getElementById('bet-user-info').textContent   = `${u.nome}  ·  Saldo disponível: R$ ${u.saldo.toFixed(2)}`;
+    const amountEl = document.getElementById('bet-amount');
+    amountEl.value = '';
+    amountEl.max   = u.saldo;
+    amountEl.classList.remove('error');
+    document.getElementById('bet-amount-err').style.display = 'none';
+    document.getElementById('bet-preview').innerHTML = '';
+    document.getElementById('bet-modal').style.display = 'flex';
+    setTimeout(() => amountEl.focus(), 150);
+}
+
+function setBetPct(pct) {
+    const u = currentCpf ? getUsuario(currentCpf) : null;
+    if (!u) return;
+    const val = Math.max(1, Math.floor(u.saldo * pct * 100) / 100);
+    const el = document.getElementById('bet-amount');
+    if (el) { el.value = val; el.classList.remove('error'); }
+    document.getElementById('bet-amount-err').style.display = 'none';
+    updateBetPreview();
+}
+
+function updateBetPreview() {
+    const val = parseFloat(document.getElementById('bet-amount')?.value || 0);
+    const odd = betState?.odd || 1;
+    if (!val || val <= 0) { document.getElementById('bet-preview').innerHTML = ''; return; }
+    const retorno = Math.round(val * odd * 100) / 100;
+    const lucro   = Math.round((retorno - val) * 100) / 100;
+    const el = document.getElementById('bet-preview');
+    if (el) el.innerHTML = `
+        <div class="bet-preview-row win">✅ Se <strong>ganhar</strong>: +<span class="bet-preview-val">R$ ${lucro.toFixed(2)}</span> <span style="font-size:.65rem;color:rgba(255,255,255,.28)">(recebe R$ ${retorno.toFixed(2)})</span></div>
+        <div class="bet-preview-row lose">❌ Se <strong>perder</strong>: -<span class="bet-preview-val">R$ ${val.toFixed(2)}</span></div>`;
+}
+
+function closeBetModal() {
+    document.getElementById('bet-modal').style.display = 'none';
+    betState = null;
+}
+
+function submitBet() {
+    if (!betState || !currentCpf) return;
+    const u = getUsuario(currentCpf);
+    if (!u) return;
+    const val = parseFloat(document.getElementById('bet-amount')?.value || 0);
+    const amountEl = document.getElementById('bet-amount');
+    const errEl    = document.getElementById('bet-amount-err');
+    if (!val || val < 0.5) {
+        amountEl.classList.add('error');
+        errEl.textContent = '⚠️ Valor mínimo: R$ 0,50';
+        errEl.style.display = 'block';
+        amountEl.focus();
+        return;
+    }
+    if (val > u.saldo) {
+        amountEl.classList.add('error');
+        errEl.textContent = `⚠️ Saldo insuficiente — disponível: R$ ${u.saldo.toFixed(2)}`;
+        errEl.style.display = 'block';
+        amountEl.focus();
+        return;
+    }
+    const retorno = Math.round(val * betState.odd * 100) / 100;
+    // Debitar saldo imediatamente
+    u.saldo = Math.round((u.saldo - val) * 100) / 100;
+    apostas.unshift({
+        id:      Math.random().toString(36).slice(2),
+        cpf:     currentCpf,
+        nome:    u.nome,
+        matchId: betState.matchId,
+        tipo:    betState.tipo,
+        label:   betState.label,
+        odd:     betState.odd,
+        valor:   val,
+        retorno,
+        linha:   betState.linha,
+        status:  'pendente',
+        ts:      Date.now()
+    });
+    salvarDados();
+    closeBetModal();
+    renderOdds();
+    showToast(`🎰 R$ ${val.toFixed(2)} apostados! Retorno potencial: R$ ${retorno.toFixed(2)}`);
+}
+
+function showToast(msg) {
+    let t = document.getElementById('bet-toast');
+    if (!t) {
+        t = document.createElement('div');
+        t.id = 'bet-toast';
+        t.style.cssText = 'position:fixed;bottom:85px;left:50%;transform:translateX(-50%) translateZ(0);background:rgba(0,200,83,.93);color:#000;font-weight:700;padding:10px 20px;border-radius:30px;font-size:.82rem;z-index:400;transition:opacity .4s;pointer-events:none;white-space:nowrap;box-shadow:0 4px 20px rgba(0,200,83,.4);max-width:90vw;text-align:center';
+        document.body.appendChild(t);
+    }
+    t.textContent = msg;
+    t.style.opacity = '1';
+    clearTimeout(t._to);
+    t._to = setTimeout(() => { t.style.opacity = '0'; }, 3200);
+}
+
+// -------- CPF screen --------
+function renderCpfScreen() {
+    return `<div class="cpf-screen" id="cpf-screen">
+        <div class="cpf-card">
+            <div style="font-size:2.6rem;margin-bottom:6px">🎰</div>
+            <div class="cpf-title">Casa de Apostas Cirrose™</div>
+            <div class="cpf-sub">Preencha os campos abaixo para receber seu bônus e começar a apostar!</div>
+            <div class="cpf-prize">🎁 R$ 200,00 fictícios de bônus!</div>
+            <div class="bet-field" style="margin-top:18px;text-align:left">
+                <label class="bet-label">📋 Seu CPF <span style="color:#f87171">*</span></label>
+                <input id="cpf-input" class="bet-input" type="tel" inputmode="numeric"
+                    placeholder="000.000.000-00" maxlength="14"
+                    autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+                    oninput="this.value=fmtCpf(this.value);this.classList.remove('error');document.getElementById('cpf-err').style.display='none'"
+                    onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('cpf-nome')?.focus()}">
+                <div id="cpf-err" style="display:none;color:#f87171;font-size:.72rem;margin-top:5px"></div>
+            </div>
+            <div class="bet-field" style="text-align:left">
+                <label class="bet-label">👤 Como te chamam? <span style="color:#f87171">*</span></label>
+                <input id="cpf-nome" class="bet-input" type="text" inputmode="text"
+                    placeholder="Seu apelido ou nome" maxlength="30"
+                    autocomplete="nickname" autocorrect="off" autocapitalize="words" spellcheck="false"
+                    oninput="this.classList.remove('error');document.getElementById('cpf-nome-err').style.display='none'"
+                    onkeydown="if(event.key==='Enter'){event.preventDefault();submitCpf()}">
+                <div id="cpf-nome-err" style="display:none;color:#f87171;font-size:.72rem;margin-top:5px"></div>
+                <div style="font-size:.65rem;color:rgba(255,255,255,.28);margin-top:4px">Se já cadastrado, deixe em branco para entrar apenas com o CPF.</div>
+            </div>
+            <button type="button" class="bet-confirm-btn" style="margin-top:10px"
+                onpointerdown="event.preventDefault()"
+                onclick="submitCpf()">Entrar na Casa de Apostas →</button>
+            <div style="font-size:.6rem;color:rgba(255,255,255,.2);margin-top:14px;line-height:1.6">
+                CPF usado apenas para identificação no torneio.<br>Nenhum dado é transmitido a servidores externos.
+            </div>
+        </div>
+    </div>`;
+}
+
+function submitCpf() {
+    const cpfEl    = document.getElementById('cpf-input');
+    const errEl    = document.getElementById('cpf-err');
+    const nomeEl   = document.getElementById('cpf-nome');
+    const nomeErrEl= document.getElementById('cpf-nome-err');
+    const d    = cpfDigits(cpfEl?.value || '');
+    const nome = nomeEl?.value?.trim() || '';
+    // Valida CPF
+    if (d.length !== 11) {
+        cpfEl.classList.add('error');
+        errEl.textContent = '⚠️ CPF deve ter 11 dígitos';
+        errEl.style.display = 'block';
+        return;
+    }
+    errEl.style.display = 'none';
+    // Usuário já cadastrado: entra diretamente
+    const existente = getUsuario(d);
+    if (existente) {
+        currentCpf = d;
+        try { localStorage.setItem('apostas_cpf', d); } catch {}
+        renderOdds();
+        return;
+    }
+    // Novo usuário: exige nome
+    if (!nome) {
+        nomeEl.classList.add('error');
+        nomeErrEl.textContent = '⚠️ Informe seu nome ou apelido';
+        nomeErrEl.style.display = 'block';
+        return;
+    }
+    criarUsuario(d, nome);
+    currentCpf = d;
+    try { localStorage.setItem('apostas_cpf', d); } catch {}
+    renderOdds();
+    showToast(`🎉 Bem-vindo, ${nome}! Você recebeu R$ 200,00 fictícios!`);
+}
+
+function logoutCpf() {
+    currentCpf = null;
+    try { localStorage.removeItem('apostas_cpf'); } catch {}
+    renderOdds();
+}
+
+function requestShot() {
+    if (!currentCpf || !getUsuario(currentCpf)) { showToast('⚠️ Entre com seu CPF primeiro!'); return; }
+    let shots = [];
+    try { shots = JSON.parse(localStorage.getItem('shots_cirrose') || '[]'); } catch {}
+    const pendente = shots.find(s => s.cpf === currentCpf && s.status === 'pendente');
+    if (pendente) { showToast('⏳ Você já tem um shot aguardando aprovação!'); return; }
+    const u = getUsuario(currentCpf);
+    shots.push({ id: Date.now(), cpf: currentCpf, nome: u.nome, ts: new Date().toISOString(), status: 'pendente' });
+    try { localStorage.setItem('shots_cirrose', JSON.stringify(shots)); } catch {}
+    showToast(`🥃 Pedido registrado, ${u.nome}! Mostre pro admin e aguarde.`);
+    renderOdds();
+}
+
+// -------- Match card --------
+function renderOddsMatchCard(o, fl, live) {
+    const p = o.partida;
+    const faseStr = `${fl[p.fase]||p.fase}${p.rodada?' · Rodada '+p.rodada:''}`;
+    const j1Nome = o.j1?.nome || '?';
+    const j2Nome = o.j2?.nome || '?';
+    const fav = o.favorite;
+    const totalApostado = apostas.filter(a => a.matchId === p.id).reduce((s,a) => s + a.valor, 0);
+    const apostasBadge = totalApostado > 0
+        ? `<span style="font-size:.62rem;color:rgba(255,215,0,.7);background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.2);border-radius:8px;padding:2px 8px">R$ ${totalApostado.toFixed(0)} no pool</span>`
+        : '';
+    // Barra de distribuição de dinheiro V1 vs V2
+    const totalV = o.moneyV1 + o.moneyV2;
+    const barHtml = totalV > 0 ? `
+        <div style="display:flex;height:4px;border-radius:4px;overflow:hidden;margin:8px 16px 0">
+            <div style="flex:${Math.max(0.05,o.moneyV1)};background:rgba(0,200,83,.55)"></div>
+            <div style="flex:${Math.max(0.05,o.moneyV2)};background:rgba(248,113,113,.55)"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:2px 16px 0;font-size:.55rem;color:rgba(255,255,255,.25)">
+            <span>${esc(j1Nome)}: R$${o.moneyV1.toFixed(0)}</span>
+            <span style="color:rgba(255,255,255,.12)">mercado ativo</span>
+            <span>${esc(j2Nome)}: R$${o.moneyV2.toFixed(0)}</span>
+        </div>` : '';
+    return `<div class="odds-card${live?' live':''}">
+        <div class="odds-card-header">
+            <span class="odds-fase">${esc(faseStr)}</span>
+            <div style="display:flex;align-items:center;gap:6px">
+                ${apostasBadge}
+                ${live ? '<span class="odds-live-mini">🔴 AO VIVO</span>' : '<span style="font-size:.63rem;color:rgba(255,255,255,.3)">Aberta</span>'}
+            </div>
+        </div>
+        ${live ? `<div style="display:flex;align-items:center;justify-content:center;gap:16px;padding:10px 16px 6px">
+            <span style="font-size:.85rem;font-weight:700">${esc(j1Nome)}</span>
+            <span style="font-size:2rem;font-weight:900;color:#ffd700;animation:golGlow 3s ease infinite">${p.gols1||0}</span>
+            <span style="color:rgba(255,255,255,.25);font-size:.8rem">×</span>
+            <span style="font-size:2rem;font-weight:900;color:#ffd700;animation:golGlow 3s ease infinite">${p.gols2||0}</span>
+            <span style="font-size:.85rem;font-weight:700">${esc(j2Nome)}</span>
+        </div>` : ''}
+        ${barHtml}
+        <div style="padding:12px 16px 4px">
+            <div class="odds-section-label">⚽ Resultado da Partida</div>
+            <div class="odds-bet-grid">
+                <button class="odds-bet-btn${fav==='j1'?' fav':''}" onclick="openBetSlip(${p.id},'vitoria_j1',0)">
+                    <span class="odds-bet-label${fav==='j1'?' fav-label':''}">${fav==='j1'?'🏆 ':''}${esc(j1Nome)} vence</span>
+                    <span class="odds-bet-odd">${o.oddV1.toFixed(2)}</span>
+                </button>
+                <button class="odds-bet-btn${fav==='j2'?' fav':''}" onclick="openBetSlip(${p.id},'vitoria_j2',0)">
+                    <span class="odds-bet-label${fav==='j2'?' fav-label':''}">${fav==='j2'?'🏆 ':''}${esc(j2Nome)} vence</span>
+                    <span class="odds-bet-odd">${o.oddV2.toFixed(2)}</span>
+                </button>
+            </div>
+            <div class="odds-section-label">🥅 Total de Gols (linha: ${o.linha})</div>
+            <div class="odds-bet-grid" style="margin-bottom:14px">
+                <button class="odds-bet-btn" onclick="openBetSlip(${p.id},'over',${o.linha})">
+                    <span class="odds-bet-label">📈 Mais de ${o.linha} gols</span>
+                    <span class="odds-bet-odd">${o.overOdd.toFixed(2)}</span>
+                </button>
+                <button class="odds-bet-btn" onclick="openBetSlip(${p.id},'under',${o.linha})">
+                    <span class="odds-bet-label">📉 Máx ${o.linha} gols</span>
+                    <span class="odds-bet-odd">${o.underOdd.toFixed(2)}</span>
+                </button>
+            </div>
+        </div>
+    </div>`;
+}
+
+function renderApostasHistorico() {
+    if (!apostas.length) return '';
+    // Agrupa por CPF (ou nome como fallback para apostas antigas)
+    const porCpf = {};
+    apostas.forEach(a => {
+        const key = a.cpf || a.nome;
+        if (!porCpf[key]) porCpf[key] = [];
+        porCpf[key].push(a);
+    });
+    const statusIcon  = { ganhou:'✅', perdeu:'❌', pendente:'⏳' };
+    const statusColor = { ganhou:'rgba(52,211,153,.8)', perdeu:'rgba(248,113,113,.8)', pendente:'rgba(251,191,36,.7)' };
+    // Ordena: usuário atual primeiro, depois por saldo
+    const entries = Object.entries(porCpf).sort(([ka], [kb]) => {
+        if (ka === currentCpf) return -1;
+        if (kb === currentCpf) return 1;
+        const ua = usuarios[ka], ub = usuarios[kb];
+        return (ub?.saldo||0) - (ua?.saldo||0);
+    });
+    const statsHtml = entries.map(([key, aps]) => {
+        const u = usuarios[key] || null;
+        const nome = u?.nome || aps[0]?.nome || key;
+        const isMe = key === currentCpf;
+        const gan  = aps.filter(a => a.status==='ganhou');
+        const per  = aps.filter(a => a.status==='perdeu');
+        const pen  = aps.filter(a => a.status==='pendente');
+        const saldo = u ? u.saldo : 200;
+        const emRisco = pen.reduce((s,a) => s + (a.valor||0), 0);
+        const avatarColor = color(nome.charCodeAt(0));
+        const saldoClass = saldo >= 200 ? 'pos' : saldo > 0 ? '' : 'neg';
+        return `<div class="aposta-pessoa-card${isMe?' me':''}">
+            <div class="aposta-pessoa-header">
+                <div class="aposta-pessoa-avatar" style="background:${avatarColor}">${esc(nome.charAt(0).toUpperCase())}</div>
+                <div class="aposta-pessoa-info">
+                    <div class="aposta-pessoa-nome">${esc(nome)}${isMe?'<span style="font-size:.55rem;color:#ffd700;margin-left:6px;background:rgba(255,215,0,.12);border:1px solid rgba(255,215,0,.25);border-radius:6px;padding:1px 5px;font-weight:700">VOCÊ</span>':''}</div>
+                    <div class="aposta-pessoa-stats">
+                        <span style="color:#34d399">${gan.length}✅</span>
+                        <span style="color:#f87171">${per.length}❌</span>
+                        ${pen.length?`<span style="color:#fbbf24">${pen.length}⏳</span>`:''}
+                        ${emRisco>0?`<span style="color:rgba(255,255,255,.3);font-size:.62rem">R$${emRisco.toFixed(0)} em risco</span>`:''}
+                    </div>
+                </div>
+                <div class="aposta-saldo ${saldoClass}">
+                    <span class="aposta-saldo-val">R$ ${saldo.toFixed(2)}</span>
+                    <span class="aposta-saldo-label">${saldo>=200?'↑ lucro':'saldo atual'}</span>
+                </div>
+            </div>
+            <div class="aposta-lista">
+                ${aps.map(a => {
+                    const pMatch = D.partidas.find(p => p.id === a.matchId);
+                    const j1 = pMatch ? findJ(pMatch.j1Id) : null, j2 = pMatch ? findJ(pMatch.j2Id) : null;
+                    const matchStr = j1&&j2 ? `${j1.nome} × ${j2.nome}` : 'Partida';
+                    const lucro = a.status==='ganhou' ? a.retorno - a.valor : 0;
+                    const resultStr = a.status==='ganhou'
+                        ? `<span style="font-size:.6rem;color:#34d399;font-weight:700;margin-left:2px">+R$${lucro.toFixed(2)}</span>`
+                        : a.status==='perdeu'
+                            ? `<span style="font-size:.6rem;color:#f87171;font-weight:700;margin-left:2px">-R$${(a.valor||0).toFixed(2)}</span>`
+                            : '';
+                    return `<div class="aposta-item ${a.status}">
+                        <div class="aposta-item-left">
+                            <div class="aposta-item-match">${esc(matchStr)}</div>
+                            <div class="aposta-item-bet">${esc(a.label)}</div>
+                        </div>
+                        <div class="aposta-item-right">
+                            <span class="aposta-item-odd">@${a.odd.toFixed(2)}</span>
+                            <span class="aposta-item-shots">R$${(a.valor||0).toFixed(2)}</span>
+                            ${resultStr}
+                            <span class="aposta-item-status" style="color:${statusColor[a.status]}">${statusIcon[a.status]}</span>
+                        </div>
+                    </div>`;
+                }).join('')}
+            </div>
+        </div>`;
+    }).join('');
+    return `<div class="glass" style="margin-bottom:14px">
+        <h2>🏆 Ranking de Apostadores</h2>
+        <p style="font-size:.75rem;color:rgba(255,255,255,.4);margin-bottom:14px">Dinheiro fictício — saldo por dispositivo</p>
+        ${statsHtml}
+    </div>`;
+}
+
+function renderOdds() {
+    loadDados();
+    resolverApostas();
+    const content = document.getElementById('odds-content');
+    if (!content) return;
+    // Sem usuário: mostrar tela de CPF
+    if (!currentCpf || !getUsuario(currentCpf)) {
+        // Não re-renderizar se o usuário está digitando nos campos de CPF (evita fechar teclado)
+        const active = document.activeElement;
+        if (content.contains(active) && active.tagName === 'INPUT') return;
+        content.innerHTML = renderCpfScreen();
+        return;
+    }
+    const u = getUsuario(currentCpf);
+    const oddsData = calcOddsPartidas();
+    const fl = { grupos:'Grupos', oitavas:'Oitavas', quartas:'Quartas', semifinal:'Semifinal', final:'Final', terceiro:'3º Lugar' };
+    const totalA      = apostas.length;
+    const pendCount   = apostas.filter(a => a.status==='pendente').length;
+    const poolTotal   = apostas.filter(a => a.status==='pendente').reduce((s,a) => s+(a.valor||0), 0);
+    const minhasPend  = apostas.filter(a => a.cpf===currentCpf && a.status==='pendente').length;
+    let html = `<div class="user-balance-bar">
+        <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0">
+            <div style="width:36px;height:36px;border-radius:50%;background:${color(u.nome.charCodeAt(0))};display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.1rem;flex-shrink:0">${esc(u.nome.charAt(0).toUpperCase())}</div>
+            <div style="min-width:0">
+                <div style="font-size:.82rem;font-weight:700;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(u.nome)}</div>
+                <div style="font-size:.6rem;color:rgba(255,255,255,.3)">${fmtCpf(currentCpf)}</div>
+            </div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+            <div class="user-balance-val${u.saldo>200?' up':u.saldo<=0?' zero':''}"">R$ ${u.saldo.toFixed(2)}</div>
+            <div style="font-size:.56rem;color:rgba(255,255,255,.28)">${minhasPend>0?`${minhasPend} em aberto`:'disponível'}</div>
+        </div>
+        <button onclick="logoutCpf()" style="margin-left:10px;padding:7px 11px;border:1px solid rgba(255,255,255,.13);border-radius:10px;background:transparent;color:rgba(255,255,255,.35);font-size:.62rem;font-weight:700;cursor:pointer;font-family:'Poppins',sans-serif;flex-shrink:0;transition:all .2s" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.35)'">Trocar</button>
+    </div>`;
+    html += `<div class="odds-hero-promo">
+        <div class="odds-promo-title">🎰 Casa de Apostas Cirrose™</div>
+        <div class="odds-promo-sub">Odds dinâmicas — quanto mais dinheiro num lado, menores as odds. Mercado em tempo real!</div>
+        <div class="odds-promo-ticker">
+            <span class="odds-promo-chip">🎫 ${totalA} aposta${totalA!==1?'s':''}</span>
+            <span class="odds-promo-chip" style="color:#fbbf24;border-color:rgba(251,191,36,.3)">⏳ ${pendCount} aberta${pendCount!==1?'s':''}</span>
+            <span class="odds-promo-chip" style="color:#34d399;border-color:rgba(52,211,153,.3)">💰 Pool: R$ ${poolTotal.toFixed(0)}</span>
+        </div>
+    </div>`;
+    // Shot request banner
+    const shots_pendentes = (() => { try { const s = JSON.parse(localStorage.getItem('shots_cirrose')||'[]'); return s.filter(x=>x.cpf===currentCpf&&x.status==='pendente').length; } catch { return 0; } })();
+    html += `<div style="background:rgba(255,215,0,.07);border:1px solid rgba(255,215,0,.22);border-radius:16px;padding:14px 18px;margin-bottom:14px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+        <div style="font-size:2rem">🥃</div>
+        <div style="flex:1;min-width:0">
+            <div style="font-size:.92rem;font-weight:800;color:#ffd700">Topa um shot de verdade?</div>
+            <div style="font-size:.72rem;color:rgba(255,255,255,.45);margin-top:2px">Solicite ao admin — se aprovado, você ganha R$25 na sua conta!</div>
+        </div>
+        ${ shots_pendentes > 0
+            ? `<span style="padding:8px 16px;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3);border-radius:10px;font-size:.78rem;font-weight:700;color:#fbbf24">⏳ Aguardando aprovação...</span>`
+            : `<button onclick="requestShot()" style="padding:9px 18px;background:linear-gradient(135deg,#b8860b,#ffd700);border:none;border-radius:12px;color:#000;font-size:.82rem;font-weight:800;cursor:pointer;font-family:Poppins,sans-serif;flex-shrink:0">🥃 Pedir Shot (+R$25)</button>`
+        }
+    </div>`;
+    const preJogo = oddsData.filter(o => o.partida.status === 'agendado');
+    if (preJogo.length) {
+        html += `<div class="glass" style="margin-bottom:14px">
+            <div class="odds-panel-header">
+                <div class="odds-live-badge" style="background:rgba(59,130,246,.15);border-color:rgba(59,130,246,.3);color:#60a5fa"><span class="odds-live-dot" style="background:#60a5fa"></span>PRÉ-JOGO</div>
+                <span class="bookmaker-badge">Apostas abertas antes do jogo</span>
+            </div>`;
+        preJogo.forEach(o => { html += renderOddsMatchCard(o, fl, false); });
+        html += `</div>`;
+    } else {
+        html += `<div class="glass" style="margin-bottom:14px"><div class="odds-empty-promo"><span class="big">⏳</span>Nenhuma partida agendada no momento<br><span style="font-size:.75rem">As apostas fecham quando o jogo começa!</span></div></div>`;
+    }
+    html += renderApostasHistorico();
+    html += `<div class="odds-disclaimer">⚠️ Casa de Apostas Cirrose™ — Dinheiro 100% fictício.<br>Odds se ajustam automaticamente ao volume apostado em cada lado. 🎰</div>`;
+    content.innerHTML = html;
+}
+
+
 
 load();
 
