@@ -246,8 +246,8 @@
         .roleta-scene{position:relative;display:inline-flex;align-items:center;justify-content:center}
         .roleta-outer-ring{width:240px;height:240px;border-radius:50%;background:conic-gradient(#d4a017 0deg,#8b6914 90deg,#c8a84b 180deg,#6b4f10 270deg,#d4a017 360deg);display:flex;align-items:center;justify-content:center;box-shadow:0 0 35px rgba(200,168,75,.35),0 0 70px rgba(0,0,0,.8),inset 0 2px 4px rgba(255,255,255,.15)}
         .roleta-wheel-wrap{position:relative;width:218px;height:218px;border-radius:50%}
-        .roleta-wheel-wrap canvas{position:absolute;top:0;left:0;border-radius:50%}
-        .roleta-ball{position:absolute;width:13px;height:13px;border-radius:50%;background:radial-gradient(circle at 33% 30%,#fff 0%,#e8e8e8 45%,#aaa 100%);box-shadow:0 2px 6px rgba(0,0,0,.9),inset 0 -1px 2px rgba(0,0,0,.4);z-index:20;pointer-events:none;top:7px;left:102px}
+        .roleta-wheel-wrap canvas{position:absolute;top:0;left:0;border-radius:50%;will-change:transform}
+        .roleta-ball{position:absolute;width:13px;height:13px;border-radius:50%;background:radial-gradient(circle at 33% 30%,#fff 0%,#e8e8e8 45%,#aaa 100%);box-shadow:0 2px 6px rgba(0,0,0,.9),inset 0 -1px 2px rgba(0,0,0,.4);z-index:20;pointer-events:none;top:0;left:0;transform:translate(102px,7px);will-change:transform}
         .roleta-marker{position:absolute;top:-4px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-top:22px solid #ffd700;z-index:30;filter:drop-shadow(0 3px 6px rgba(255,200,0,.7))}
         .roleta-bet-row{display:flex;align-items:center;justify-content:center;gap:8px;min-height:32px;margin:12px 0 4px;width:100%;box-sizing:border-box}
         .rbd-label{font-size:.6rem;color:rgba(200,168,75,.65);font-weight:700;letter-spacing:1.5px;text-transform:uppercase}
@@ -465,6 +465,9 @@
             .roleta-controls { gap: 8px; padding: 10px 10px 8px; }
             .roleta-footer { padding: 8px 10px 14px; }
             .roleta-felt { padding: 14px 10px 10px; }
+        }
+        @media (max-width:380px){
+            .roleta-scene{transform:scale(.85);transform-origin:top center;margin-bottom:-28px}
         }
 
         /* ===== FOOTBALL BROADCAST ===== */
@@ -2181,10 +2184,10 @@ function jogarRoleta(escolha) {
     // Phase constants: phase 2 (spiral inward) starts at SPLIT
     const SPLIT = 0.70;        // fraction of total time where spiral begins
     const spinDuration = 5500;
-    const start = Date.now();
-    const iv = setInterval(() => {
-        const elapsed = Date.now() - start;
-        const t = Math.min(elapsed / spinDuration, 1);
+    const start = performance.now();
+    let roletaRafId = null;
+    function roletaTick(now) {
+        const t = Math.min((now - start) / spinDuration, 1);
         // Wheel: smooth gradual deceleration
         const wheelEased = 1 - Math.pow(1 - t, 1.85);
         const wheelDeg = totalWheelDeg * wheelEased;
@@ -2202,46 +2205,47 @@ function jogarRoleta(escolha) {
         }
         if (canvas) canvas.style.transform = `rotate(${wheelDeg}deg)`;
         if (ball) {
-            ball.style.left = `${109 + ballR * Math.cos(ballAngleNow) - 6.5}px`;
-            ball.style.top  = `${109 + ballR * Math.sin(ballAngleNow) - 6.5}px`;
+            ball.style.transform = `translate(${109 + ballR * Math.cos(ballAngleNow) - 6.5}px,${109 + ballR * Math.sin(ballAngleNow) - 6.5}px)`;
         }
-        if (t >= 1) {
-            clearInterval(iv);
-            roletaSpinning = false;
-            initRoletaCanvas(-1); // keep normal colors
-            if (canvas) canvas.style.transform = `rotate(${totalWheelDeg}deg)`;
-            const uf = getUsuario(currentCpf);
-            if (win) {
-                const premio = 5;
-                uf.saldo = +(uf.saldo + premio).toFixed(2);
-                usuarios[uf.cpf] = uf; salvarDados();
-                if (resEl) { resEl.className = 'roleta-result win'; resEl.textContent = `🎉 ${corResultado === 'vermelho' ? '🔴' : '⚫'} ${corResultado.toUpperCase()}! Ganhou R$ ${premio.toFixed(2)}!`; }
-                showToast(`🎡 +R$ ${premio.toFixed(2)} na Roleta!`);
-            } else {
-                if (resEl) { resEl.className = 'roleta-result lose'; resEl.textContent = `${corResultado === 'vermelho' ? '🔴' : '⚫'} ${corResultado.toUpperCase()} — Não foi dessa vez!`; }
-                showToast('🎡 Tente de novo na Roleta!');
-            }
-            const bv = document.querySelector('#odds-content .user-balance-val');
-            const uf2 = getUsuario(currentCpf);
-            if (bv && uf2) { bv.textContent = `R$ ${uf2.saldo.toFixed(2)}`; bv.className = `user-balance-val${uf2.saldo > 200 ? ' up' : uf2.saldo <= 0 ? ' zero' : ''}`; }
-            const chip = document.getElementById('roleta-spins-chip');
-            if (chip) chip.textContent = `${newRemaining}/${ROLETA_MAX_SPINS} jogadas`;
-            if (newRemaining > 0) {
-                if (btnR) btnR.disabled = false;
-                if (btnB) btnB.disabled = false;
-            } else {
-                const tl = Math.max(0, CASSINO_WINDOW_MS - (Date.now() - newSpins.windowStart));
-                const felt = document.querySelector('.roleta-felt');
-                if (felt && !document.getElementById('roleta-countdown-wrap')) {
-                    const wrap = document.createElement('div');
-                    wrap.className = 'game-countdown-wrap'; wrap.id = 'roleta-countdown-wrap';
-                    wrap.innerHTML = `⏳ Novas jogadas em <span class="game-countdown" id="roleta-countdown">${fmtCountdown(tl)}</span>`;
-                    felt.appendChild(wrap);
-                }
-                startGameTimer(newSpins.windowStart, 'roleta-countdown', 'roleta-play-btn', renderOdds);
-            }
+        if (t < 1) {
+            roletaRafId = requestAnimationFrame(roletaTick);
+            return;
         }
-    }, 16);
+        roletaSpinning = false;
+        initRoletaCanvas(-1); // keep normal colors
+        if (canvas) canvas.style.transform = `rotate(${totalWheelDeg}deg)`;
+        const uf = getUsuario(currentCpf);
+        if (win) {
+            const premio = 5;
+            uf.saldo = +(uf.saldo + premio).toFixed(2);
+            usuarios[uf.cpf] = uf; salvarDados();
+            if (resEl) { resEl.className = 'roleta-result win'; resEl.textContent = `🎉 ${corResultado === 'vermelho' ? '🔴' : '⚫'} ${corResultado.toUpperCase()}! Ganhou R$ ${premio.toFixed(2)}!`; }
+            showToast(`🎡 +R$ ${premio.toFixed(2)} na Roleta!`);
+        } else {
+            if (resEl) { resEl.className = 'roleta-result lose'; resEl.textContent = `${corResultado === 'vermelho' ? '🔴' : '⚫'} ${corResultado.toUpperCase()} — Não foi dessa vez!`; }
+            showToast('🎡 Tente de novo na Roleta!');
+        }
+        const bv = document.querySelector('#odds-content .user-balance-val');
+        const uf2 = getUsuario(currentCpf);
+        if (bv && uf2) { bv.textContent = `R$ ${uf2.saldo.toFixed(2)}`; bv.className = `user-balance-val${uf2.saldo > 200 ? ' up' : uf2.saldo <= 0 ? ' zero' : ''}`; }
+        const chip = document.getElementById('roleta-spins-chip');
+        if (chip) chip.textContent = `${newRemaining}/${ROLETA_MAX_SPINS} jogadas`;
+        if (newRemaining > 0) {
+            if (btnR) btnR.disabled = false;
+            if (btnB) btnB.disabled = false;
+        } else {
+            const tl = Math.max(0, CASSINO_WINDOW_MS - (Date.now() - newSpins.windowStart));
+            const felt = document.querySelector('.roleta-felt');
+            if (felt && !document.getElementById('roleta-countdown-wrap')) {
+                const wrap = document.createElement('div');
+                wrap.className = 'game-countdown-wrap'; wrap.id = 'roleta-countdown-wrap';
+                wrap.innerHTML = `⏳ Novas jogadas em <span class="game-countdown" id="roleta-countdown">${fmtCountdown(tl)}</span>`;
+                felt.appendChild(wrap);
+            }
+            startGameTimer(newSpins.windowStart, 'roleta-countdown', 'roleta-play-btn', renderOdds);
+        }
+    }
+    roletaRafId = requestAnimationFrame(roletaTick);
 }
 
 load();
