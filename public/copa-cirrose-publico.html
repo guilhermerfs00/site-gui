@@ -198,6 +198,86 @@
         .odds-bet-label.fav-label{color:#ffd700}
         .odds-bet-odd{font-size:1.15rem;font-weight:900;color:#00e676;flex-shrink:0;line-height:1}
         .odds-bet-btn.fav .odds-bet-odd{color:#ffd700}
+        /* Sub-tabs odds */
+        .odds-subtabs{display:flex;gap:5px;margin-bottom:14px;background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:4px}
+        .odds-subtab{flex:1;padding:9px 6px;border:none;border-radius:11px;background:transparent;color:rgba(255,255,255,.4);font-family:'Poppins',sans-serif;font-size:.8rem;font-weight:700;cursor:pointer;transition:all .2s;line-height:1.2}
+        .odds-subtab.active{background:rgba(255,255,255,.12);color:#fff;box-shadow:0 1px 8px rgba(0,0,0,.4)}
+        .odds-subtab.cassino-tab.active{background:linear-gradient(135deg,rgba(184,134,11,.55),rgba(180,20,40,.4));color:#ffd700}
+        /* Casino machine */
+        .cassino-screen{background:linear-gradient(180deg,#08081a,#10102a);border:2px solid rgba(255,215,0,.3);border-radius:20px;padding:20px 16px 16px;margin-bottom:14px;text-align:center;position:relative;overflow:hidden}
+        .cassino-screen::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(255,215,0,.09),transparent 60%);pointer-events:none}
+        .cassino-marquee{font-size:.65rem;font-weight:800;letter-spacing:2.5px;color:rgba(255,215,0,.55);text-transform:uppercase;margin-bottom:16px}
+        .cassino-reels{display:flex;justify-content:center;gap:10px;margin-bottom:14px}
+        .cassino-reel{width:82px;height:92px;background:rgba(0,0,0,.65);border:2px solid rgba(255,215,0,.2);border-radius:14px;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:inset 0 2px 16px rgba(0,0,0,.7)}
+        .cassino-reel.spinning{border-color:rgba(255,215,0,.7);box-shadow:inset 0 2px 16px rgba(0,0,0,.7),0 0 14px rgba(255,215,0,.25)}
+        .cassino-reel-sym{font-size:3rem;line-height:1;user-select:none;display:block}
+        .cassino-reel.spinning .cassino-reel-sym{animation:reelBlur .12s linear infinite}
+        .cassino-reel.win-reel{border-color:#ffd700;animation:reelWin .5s ease;box-shadow:0 0 22px rgba(255,215,0,.55),inset 0 0 10px rgba(255,215,0,.08)}
+        @keyframes reelBlur{0%{transform:translateY(-10px) scaleY(.8);opacity:.3}50%{transform:translateY(0) scaleY(1.05);opacity:1}100%{transform:translateY(10px) scaleY(.8);opacity:.3}}
+        @keyframes reelWin{0%,100%{transform:scale(1)}30%{transform:scale(1.07)}70%{transform:scale(.97)}}
+        .cassino-result{min-height:38px;display:flex;align-items:center;justify-content:center;font-size:.9rem;font-weight:800;border-radius:12px;padding:7px 14px;transition:all .3s}
+        .cassino-result.idle{color:rgba(255,255,255,.3);font-size:.78rem;font-weight:600}
+        .cassino-result.spinning-msg{color:rgba(255,215,0,.7);font-size:.82rem;font-weight:700;letter-spacing:1px}
+        .cassino-result.win{background:rgba(52,211,153,.12);color:#34d399;border:1px solid rgba(52,211,153,.3)}
+        .cassino-result.jackpot{background:linear-gradient(135deg,rgba(255,215,0,.18),rgba(255,60,0,.12));color:#ffd700;border:1px solid rgba(255,215,0,.45);animation:jackpotPulse .6s ease infinite}
+        .cassino-result.lose{background:rgba(248,113,113,.07);color:rgba(248,113,113,.7);border:1px solid rgba(248,113,113,.2)}
+        @keyframes jackpotPulse{0%,100%{box-shadow:0 0 8px rgba(255,215,0,.2)}50%{box-shadow:0 0 24px rgba(255,215,0,.55)}}
+        .cassino-paytable{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;margin-top:10px}
+        .cassino-pay-chip{font-size:.62rem;font-weight:700;border-radius:8px;padding:3px 9px;background:rgba(255,255,255,.05);color:rgba(255,255,255,.4)}
+        .cassino-pay-chip.gold{background:rgba(255,215,0,.09);border:1px solid rgba(255,215,0,.18);color:rgba(255,215,0,.75)}
+        .cassino-controls{display:flex;flex-direction:column;gap:10px}
+        .cassino-bet-lbl{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:rgba(255,255,255,.35);margin-bottom:5px}
+        .cassino-amts{display:flex;gap:5px}
+        .cassino-amt{flex:1;padding:9px 2px;border:1.5px solid rgba(255,255,255,.14);border-radius:10px;background:rgba(255,255,255,.06);color:rgba(255,255,255,.5);font-family:'Poppins',sans-serif;font-size:.75rem;font-weight:700;cursor:pointer;transition:all .18s;text-align:center}
+        .cassino-amt:hover,.cassino-amt.active{background:rgba(255,215,0,.14);border-color:rgba(255,215,0,.45);color:#ffd700}
+        .cassino-custom{width:100%;background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.14);border-radius:12px;color:#fff;font-family:'Poppins',sans-serif;font-size:.92rem;font-weight:600;padding:10px 14px;outline:none;transition:border-color .2s;margin-top:6px;-webkit-text-size-adjust:100%}
+        .cassino-custom:focus{border-color:rgba(255,215,0,.5);background:rgba(255,215,0,.04)}
+        .cassino-spin-btn{width:100%;padding:14px;border:none;border-radius:14px;background:linear-gradient(135deg,#92400e,#b8860b,#ffd700);color:#000;font-family:'Poppins',sans-serif;font-size:1rem;font-weight:900;cursor:pointer;transition:all .2s;box-shadow:0 4px 20px rgba(184,134,11,.45)}
+        .cassino-spin-btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 28px rgba(184,134,11,.6)}
+        .cassino-spin-btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+        /* Countdown timer */
+        .game-countdown-wrap{margin-top:10px;font-size:.72rem;font-weight:700;color:rgba(255,215,0,.6);letter-spacing:.5px;text-align:center}
+        .game-countdown{font-size:.95rem;font-weight:900;color:#ffd700;font-variant-numeric:tabular-nums;margin-left:4px}
+        /* Roleta — Casino v2 */
+        .roleta-casino-wrap{background:linear-gradient(180deg,#0d0d1a,#0f0f22);border:2px solid rgba(200,168,75,.3);border-radius:22px;overflow:hidden}
+        .roleta-felt{background:radial-gradient(ellipse 140% 100% at 50% 0%,#0f3d2a 0%,#0a2618 55%,#071a10 100%);padding:20px 16px 14px;position:relative;text-align:center;display:flex;flex-direction:column;align-items:center}
+        .roleta-felt::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 4px,rgba(255,255,255,.013) 4px,rgba(255,255,255,.013) 5px);pointer-events:none}
+        .roleta-title-bar{font-size:.72rem;font-weight:900;letter-spacing:3.5px;text-transform:uppercase;color:#c8a84b;margin-bottom:14px}
+        .roleta-scene{position:relative;display:inline-flex;align-items:center;justify-content:center}
+        .roleta-outer-ring{width:240px;height:240px;border-radius:50%;background:conic-gradient(#d4a017 0deg,#8b6914 90deg,#c8a84b 180deg,#6b4f10 270deg,#d4a017 360deg);display:flex;align-items:center;justify-content:center;box-shadow:0 0 35px rgba(200,168,75,.35),0 0 70px rgba(0,0,0,.8),inset 0 2px 4px rgba(255,255,255,.15)}
+        .roleta-wheel-wrap{position:relative;width:218px;height:218px;border-radius:50%}
+        .roleta-wheel-wrap canvas{position:absolute;top:0;left:0;border-radius:50%}
+        .roleta-ball{position:absolute;width:13px;height:13px;border-radius:50%;background:radial-gradient(circle at 33% 30%,#fff 0%,#e8e8e8 45%,#aaa 100%);box-shadow:0 2px 6px rgba(0,0,0,.9),inset 0 -1px 2px rgba(0,0,0,.4);z-index:20;pointer-events:none;top:7px;left:102px}
+        .roleta-marker{position:absolute;top:-4px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-top:22px solid #ffd700;z-index:30;filter:drop-shadow(0 3px 6px rgba(255,200,0,.7))}
+        .roleta-bet-row{display:flex;align-items:center;justify-content:center;gap:8px;min-height:32px;margin:12px 0 4px;width:100%;box-sizing:border-box}
+        .rbd-label{font-size:.6rem;color:rgba(200,168,75,.65);font-weight:700;letter-spacing:1.5px;text-transform:uppercase}
+        .rbd-choice{font-size:.82rem;font-weight:900;padding:4px 16px;border-radius:20px;border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.4);background:rgba(255,255,255,.05);transition:all .3s}
+        .rbd-choice.red{background:rgba(192,57,43,.22);border-color:rgba(220,80,60,.5);color:#f07060}
+        .rbd-choice.black{background:rgba(20,20,20,.5);border-color:rgba(200,200,200,.3);color:#c8c8c8}
+        .roleta-result{min-height:46px;display:flex;align-items:center;justify-content:center;font-size:.9rem;font-weight:800;border-radius:14px;padding:10px 16px;transition:all .35s;margin:8px 0 6px;border:1px solid transparent;width:100%;box-sizing:border-box}
+        .roleta-result.idle{color:rgba(255,255,255,.22);font-size:.75rem;font-weight:600;border-color:rgba(255,255,255,.06);background:rgba(255,255,255,.025)}
+        .roleta-result.spinning-msg{color:rgba(180,150,255,.9);font-size:.82rem;letter-spacing:1px;background:rgba(100,70,200,.1);border-color:rgba(139,92,246,.3);animation:roletaPulse .75s ease infinite}
+        .roleta-result.win{background:rgba(52,211,153,.12);color:#34d399;border-color:rgba(52,211,153,.35);animation:roletaWinPulse .6s ease 3}
+        .roleta-result.lose{background:rgba(248,113,113,.07);color:rgba(248,113,113,.8);border-color:rgba(248,113,113,.25)}
+        .roleta-controls{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:14px 16px 10px;background:rgba(0,0,0,.2)}
+        .roleta-btn{width:100%;padding:17px 10px;border:none;border-radius:16px;font-family:'Poppins',sans-serif;font-size:1rem;font-weight:900;cursor:pointer;transition:transform .15s,box-shadow .15s;display:flex;align-items:center;justify-content:center;gap:9px;position:relative;overflow:hidden}
+        .roleta-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.14),transparent 50%);pointer-events:none}
+        .roleta-btn-red{background:linear-gradient(160deg,#c0392b 0%,#7b1c11 100%);color:#fff;box-shadow:0 4px 22px rgba(192,57,43,.55)}
+        .roleta-btn-red:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 7px 30px rgba(220,60,40,.7)}
+        .roleta-btn-black{background:linear-gradient(160deg,#2e2e2e 0%,#0d0d0d 100%);color:#fff;border:1px solid rgba(255,255,255,.18);box-shadow:0 4px 22px rgba(0,0,0,.7)}
+        .roleta-btn-black:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 7px 30px rgba(0,0,0,.9)}
+        .roleta-btn:disabled{opacity:.35;cursor:not-allowed;transform:none!important}
+        .roleta-btn:active:not(:disabled){transform:translateY(1px)!important}
+        .rbtn-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0;border:2px solid rgba(255,255,255,.35)}
+        .rbtn-dot.rd{background:#e74c3c}
+        .rbtn-dot.bk{background:#111;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.3)}
+        .roleta-footer{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;padding:10px 16px 16px}
+        .roleta-chip{font-size:.62rem;font-weight:700;border-radius:8px;padding:3px 9px;background:rgba(255,255,255,.05);color:rgba(255,255,255,.35)}
+        .roleta-chip.green{background:rgba(0,200,83,.09);border:1px solid rgba(0,200,83,.22);color:rgba(0,200,83,.85)}
+        .roleta-chip.gold{background:rgba(200,168,75,.1);border:1px solid rgba(200,168,75,.25);color:rgba(200,168,75,.9)}
+        @keyframes roletaPulse{0%,100%{opacity:1}50%{opacity:.45}}
+        @keyframes roletaWinPulse{0%,100%{box-shadow:0 0 10px rgba(52,211,153,.2)}50%{box-shadow:0 0 35px rgba(52,211,153,.7)}}
+        .odds-subtab.roleta-tab.active{background:linear-gradient(135deg,rgba(139,92,246,.55),rgba(109,40,217,.4));color:#c4b5fd}
         /* Claridade — tela de odds mais visível ao ar livre */
         #odds-content .glass{background:rgba(255,255,255,.10);border-color:rgba(255,255,255,.18)}
         #odds-content .odds-card{background:rgba(255,255,255,.08);border-color:rgba(0,200,83,.32)}
@@ -374,6 +454,17 @@
             .aposta-item-bet { font-size: .76rem; }
             .aposta-item-odd { font-size: .62rem; }
             .aposta-saldo-val { font-size: .95rem; }
+            /* Casino mobile */
+            .cassino-reel { width: 70px; height: 78px; }
+            .cassino-reel-sym { font-size: 2.5rem; }
+            .cassino-spin-btn { font-size: .9rem; padding: 12px; }
+            .odds-subtab { font-size: .68rem; padding: 8px 3px; }
+            /* Roleta mobile */
+            .roleta-btn { font-size: .9rem; padding: 14px 8px; gap: 7px; }
+            .roleta-title-bar { letter-spacing: 2px; }
+            .roleta-controls { gap: 8px; padding: 10px 10px 8px; }
+            .roleta-footer { padding: 8px 10px 14px; }
+            .roleta-felt { padding: 14px 10px 10px; }
         }
 
         /* ===== FOOTBALL BROADCAST ===== */
@@ -1045,6 +1136,64 @@ let usuarios = {};      // { [cpf]: { cpf, nome, saldo, ts } }
 let currentCpf = null;
 let currentOddsMap = {};
 let betState = null;
+let oddsSubTab = 'apostas';
+let cassinoSpinning = false;
+const CASSINO_MAX_SPINS = 10;
+const ROLETA_MAX_SPINS  = 5;
+const CASSINO_WINDOW_MS = 5 * 60 * 1000; // 5 minutos
+let roletaSpinning = false;
+let roletaEscolha = null;
+const ROLETA_NUMS = [0,32,15,19,4,21,2,25,17,34,6,27,13,36,11,30,8,23,10,5,24,16,33,1,20,14,31,9,22,18,29,7,28,12,35,3,26];
+const ROLETA_RED  = new Set([1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36]);
+let cassinoTimerIv = null;
+
+function getCassinoSpins(cpf) {
+    try {
+        const data = JSON.parse(localStorage.getItem('cassino_spins_' + cpf) || 'null');
+        if (!data) return { count: 0, windowStart: Date.now() };
+        if (Date.now() - data.windowStart >= CASSINO_WINDOW_MS) return { count: 0, windowStart: Date.now() };
+        return data;
+    } catch { return { count: 0, windowStart: Date.now() }; }
+}
+function saveCassinoSpins(cpf, data) {
+    localStorage.setItem('cassino_spins_' + cpf, JSON.stringify(data));
+}
+
+function getRoletaSpins(cpf) {
+    try {
+        const data = JSON.parse(localStorage.getItem('roleta_spins_' + cpf) || 'null');
+        if (!data) return { count: 0, windowStart: Date.now() };
+        if (Date.now() - data.windowStart >= CASSINO_WINDOW_MS) return { count: 0, windowStart: Date.now() };
+        return data;
+    } catch { return { count: 0, windowStart: Date.now() }; }
+}
+function saveRoletaSpins(cpf, data) {
+    localStorage.setItem('roleta_spins_' + cpf, JSON.stringify(data));
+}
+function fmtCountdown(ms) {
+    const s = Math.max(0, Math.ceil(ms / 1000));
+    return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+}
+function startGameTimer(windowStart, countdownId, btnId, onExpire) {
+    if (cassinoTimerIv) clearInterval(cassinoTimerIv);
+    function tick() {
+        const left = Math.max(0, CASSINO_WINDOW_MS - (Date.now() - windowStart));
+        const cdEl = document.getElementById(countdownId);
+        const btnEl = document.getElementById(btnId);
+        if (cdEl) cdEl.textContent = fmtCountdown(left);
+        if (btnEl && btnEl.disabled) btnEl.textContent = `⏳ Aguarde ${fmtCountdown(left)}`;
+        if (left <= 0) {
+            clearInterval(cassinoTimerIv);
+            cassinoTimerIv = null;
+            onExpire();
+        }
+    }
+    tick();
+    cassinoTimerIv = setInterval(tick, 1000);
+}
+function stopGameTimer() {
+    if (cassinoTimerIv) { clearInterval(cassinoTimerIv); cassinoTimerIv = null; }
+}
 
 function fmtCpf(v) {
     const d = v.replace(/\D/g,'').slice(0,11);
@@ -1624,6 +1773,7 @@ function renderApostasHistorico() {
 }
 
 function renderOdds() {
+    if (cassinoSpinning) return;
     loadDados();
     resolverApostas();
     const content = document.getElementById('odds-content');
@@ -1643,6 +1793,9 @@ function renderOdds() {
     const pendCount   = apostas.filter(a => a.status==='pendente').length;
     const poolTotal   = apostas.filter(a => a.status==='pendente').reduce((s,a) => s+(a.valor||0), 0);
     const minhasPend  = apostas.filter(a => a.cpf===currentCpf && a.status==='pendente').length;
+    const _delta = +(u.saldo - 200).toFixed(0);
+    const _deltaColor = _delta >= 0 ? 'rgba(52,211,153,.65)' : 'rgba(248,113,113,.65)';
+    const _deltaStr = minhasPend > 0 ? `${minhasPend} em aberto` : (_delta >= 0 ? `▲ R$ ${_delta} ganho` : `▼ R$ ${Math.abs(_delta)} perdido`);
     let html = `<div class="user-balance-bar">
         <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0">
             <div style="width:36px;height:36px;border-radius:50%;background:${color(u.nome.charCodeAt(0))};display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.1rem;flex-shrink:0">${esc(u.nome.charAt(0).toUpperCase())}</div>
@@ -1653,10 +1806,15 @@ function renderOdds() {
         </div>
         <div style="text-align:right;flex-shrink:0">
             <div class="user-balance-val${u.saldo>200?' up':u.saldo<=0?' zero':''}"">R$ ${u.saldo.toFixed(2)}</div>
-            <div style="font-size:.56rem;color:rgba(255,255,255,.28)">${minhasPend>0?`${minhasPend} em aberto`:'disponível'}</div>
+            <div style="font-size:.56rem;color:${_deltaColor}">${_deltaStr}</div>
         </div>
     </div>`;
-
+    html += `<div class="odds-subtabs">
+        <button class="odds-subtab${oddsSubTab==='apostas'?' active':''}" onclick="switchOddsTab('apostas')">🎲 Apostas</button>
+        <button class="odds-subtab cassino-tab${oddsSubTab==='cassino'?' active':''}" onclick="switchOddsTab('cassino')">🎰 Caça-Níquel</button>
+        <button class="odds-subtab roleta-tab${oddsSubTab==='roleta'?' active':''}" onclick="switchOddsTab('roleta')">🎡 Roleta</button>
+    </div>`;
+    if (oddsSubTab === 'apostas') {
     // Shot request banner
     const shots_pendentes = (() => { try { const s = JSON.parse(localStorage.getItem('shots_cirrose')||'[]'); return s.filter(x=>x.cpf===currentCpf&&x.status==='pendente').length; } catch { return 0; } })();
     html += `<div class="shot-req-banner" style="background:rgba(255,215,0,.07);border:1px solid rgba(255,215,0,.22);border-radius:16px;padding:14px 18px;margin-bottom:14px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
@@ -1729,10 +1887,362 @@ function renderOdds() {
         html += `<div class="glass" style="margin-bottom:14px"><div class="odds-empty-promo"><span class="big">⏳</span>Nenhuma partida agendada no momento<br><span style="font-size:.75rem">As apostas fecham quando o jogo começa!</span></div></div>`;
     }
     html += renderApostasHistorico();
+    } else if (oddsSubTab === 'cassino') {
+        html += renderCassino();
+    } else {
+        html += renderRoleta();
+    }
     content.innerHTML = html;
+    if (oddsSubTab === 'roleta') initRoletaCanvas(-1);
+    if (currentCpf) {
+        if (oddsSubTab === 'cassino') {
+            const _sp = getCassinoSpins(currentCpf);
+            if (CASSINO_MAX_SPINS - _sp.count <= 0) startGameTimer(_sp.windowStart, 'cassino-countdown', 'cassino-spin-btn', renderOdds);
+        } else if (oddsSubTab === 'roleta') {
+            const _sp = getRoletaSpins(currentCpf);
+            if (ROLETA_MAX_SPINS - _sp.count <= 0 && !roletaSpinning) startGameTimer(_sp.windowStart, 'roleta-countdown', 'roleta-play-btn', renderOdds);
+        }
+    }
 }
 
 
+
+function switchOddsTab(tab) {
+    stopGameTimer();
+    oddsSubTab = tab;
+    renderOdds();
+}
+
+function renderCassino() {
+    const spins = getCassinoSpins(currentCpf);
+    const remaining = CASSINO_MAX_SPINS - spins.count;
+    const timeLeft = Math.max(0, CASSINO_WINDOW_MS - (Date.now() - spins.windowStart));
+    const canSpin = remaining > 0;
+    const cdStr = fmtCountdown(timeLeft);
+    return `<div class="glass" style="margin-bottom:14px">
+        <div class="cassino-screen">
+            <div class="cassino-marquee">🎰 Caça-Níquel Cirrose™</div>
+            <div class="cassino-reels">
+                <div class="cassino-reel" id="reel-0"><span class="cassino-reel-sym" id="rsym-0">🍒</span></div>
+                <div class="cassino-reel" id="reel-1"><span class="cassino-reel-sym" id="rsym-1">🍋</span></div>
+                <div class="cassino-reel" id="reel-2"><span class="cassino-reel-sym" id="rsym-2">🍇</span></div>
+            </div>
+            <div class="cassino-result idle" id="cassino-result">${canSpin ? 'Gire e concorra a R$ 10!' : '⏳ Sem jogadas restantes'}</div>
+            <div class="cassino-paytable">
+                <span class="cassino-pay-chip gold">🎉 Prêmio: R$ 10,00</span>
+                <span class="cassino-pay-chip" id="cassino-spins-chip">${remaining}/${CASSINO_MAX_SPINS} jogadas restantes</span>
+                <span class="cassino-pay-chip">Renova a cada 5 min</span>
+            </div>
+            ${!canSpin ? `<div class="game-countdown-wrap" id="cassino-countdown-wrap">⏳ Novas jogadas em <span class="game-countdown" id="cassino-countdown">${cdStr}</span></div>` : ''}
+        </div>
+        <div class="cassino-controls">
+            <button class="cassino-spin-btn" id="cassino-spin-btn" onclick="spinCassino()" ${canSpin ? '' : 'disabled'}>
+                🎰 ${canSpin ? `GIRAR — ${remaining} jogada${remaining !== 1 ? 's' : ''} restante${remaining !== 1 ? 's' : ''}` : `⏳ Aguarde ${cdStr}`}
+            </button>
+        </div>
+    </div>`;
+}
+
+function spinCassino() {
+    if (cassinoSpinning) return;
+    const spins = getCassinoSpins(currentCpf);
+    const remaining = CASSINO_MAX_SPINS - spins.count;
+    if (remaining <= 0) {
+        const timeLeft = Math.max(0, CASSINO_WINDOW_MS - (Date.now() - spins.windowStart));
+        const minutesLeft = Math.ceil(timeLeft / 60000);
+        showToast(`⏳ Sem jogadas restantes. Volte em ${minutesLeft} min`); return;
+    }
+    const newSpins = { count: spins.count + 1, windowStart: spins.windowStart };
+    saveCassinoSpins(currentCpf, newSpins);
+    const newRemaining = CASSINO_MAX_SPINS - newSpins.count;
+    const WIN_SYMS = ['🍒','🍋','🍇','⭐','🔔','🎯'];
+    const ALL_SYMS = ['🍒','🍋','🍇','⭐','🔔','🎯','💎'];
+    const win = Math.random() < 0.30;
+    const jackpot = win && Math.random() < 0.12;
+    let finals;
+    if (win) {
+        const sym = jackpot ? '💎' : WIN_SYMS[Math.floor(Math.random() * WIN_SYMS.length)];
+        finals = [sym, sym, sym];
+    } else {
+        do { finals = WIN_SYMS.map(() => WIN_SYMS[Math.floor(Math.random() * WIN_SYMS.length)]); }
+        while (finals[0] === finals[1] && finals[1] === finals[2]);
+    }
+    cassinoSpinning = true;
+    const spinBtn = document.getElementById('cassino-spin-btn');
+    if (spinBtn) spinBtn.disabled = true;
+    const resEl = document.getElementById('cassino-result');
+    if (resEl) { resEl.className = 'cassino-result spinning-msg'; resEl.textContent = '🎰 Girando...'; }
+    [0,1,2].forEach(i => document.getElementById('reel-' + i)?.classList.add('spinning'));
+    let elapsed = 0;
+    const TICK = 80, SPIN_MS = 1400;
+    const iv = setInterval(() => {
+        [0,1,2].forEach(i => {
+            const s = document.getElementById('rsym-' + i);
+            if (s) s.textContent = ALL_SYMS[Math.floor(Math.random() * ALL_SYMS.length)];
+        });
+        elapsed += TICK;
+        if (elapsed >= SPIN_MS) {
+            clearInterval(iv);
+            [0,1,2].forEach(i => {
+                const reel = document.getElementById('reel-' + i);
+                const sym = document.getElementById('rsym-' + i);
+                reel?.classList.remove('spinning'); reel?.classList.add('landed');
+                if (sym) sym.textContent = finals[i];
+            });
+            const uf = getUsuario(currentCpf);
+            if (win) {
+                const premio = 10;
+                uf.saldo = +(uf.saldo + premio).toFixed(2);
+                usuarios[uf.cpf] = uf; salvarDados();
+                [0,1,2].forEach(i => document.getElementById('reel-' + i)?.classList.add('win-reel'));
+                if (resEl) { resEl.className = 'cassino-result ' + (jackpot ? 'jackpot' : 'win'); resEl.textContent = jackpot ? `💎 JACKPOT! +R$ ${premio.toFixed(2)}` : `🎉 Ganhou R$ ${premio.toFixed(2)}!`; }
+                showToast(jackpot ? `💎 JACKPOT! Você ganhou R$ ${premio.toFixed(2)}!` : `🎉 +R$ ${premio.toFixed(2)} no caça-níquel!`);
+            } else {
+                if (resEl) { resEl.className = 'cassino-result lose'; resEl.textContent = `😔 Sem sorte desta vez... Tente de novo!`; }
+                showToast(`😔 Quase lá! Sem sorte desta vez.`);
+            }
+            const bv = document.querySelector('#odds-content .user-balance-val');
+            const uf2 = getUsuario(currentCpf);
+            if (bv && uf2) { bv.textContent = `R$ ${uf2.saldo.toFixed(2)}`; bv.className = `user-balance-val${uf2.saldo > 200 ? ' up' : uf2.saldo <= 0 ? ' zero' : ''}`; }
+            cassinoSpinning = false;
+            const spinsChip = document.getElementById('cassino-spins-chip');
+            if (spinsChip) spinsChip.textContent = `${newRemaining}/${CASSINO_MAX_SPINS} jogadas restantes`;
+            if (spinBtn) {
+                const tl2 = Math.max(0, CASSINO_WINDOW_MS - (Date.now() - newSpins.windowStart));
+                spinBtn.disabled = newRemaining <= 0;
+                spinBtn.textContent = newRemaining > 0
+                    ? `🎰 GIRAR — ${newRemaining} jogada${newRemaining !== 1 ? 's' : ''} restante${newRemaining !== 1 ? 's' : ''}`
+                    : `⏳ Aguarde ${fmtCountdown(tl2)}`;
+            }
+            if (newRemaining <= 0) {
+                const screen = document.querySelector('.cassino-screen');
+                if (screen && !document.getElementById('cassino-countdown-wrap')) {
+                    const tl3 = Math.max(0, CASSINO_WINDOW_MS - (Date.now() - newSpins.windowStart));
+                    const wrap = document.createElement('div');
+                    wrap.className = 'game-countdown-wrap'; wrap.id = 'cassino-countdown-wrap';
+                    wrap.innerHTML = `⏳ Novas jogadas em <span class="game-countdown" id="cassino-countdown">${fmtCountdown(tl3)}</span>`;
+                    screen.appendChild(wrap);
+                }
+                startGameTimer(newSpins.windowStart, 'cassino-countdown', 'cassino-spin-btn', renderOdds);
+            }
+        }
+    }, TICK);
+}
+
+function initRoletaCanvas(highlightIdx) {
+    const canvas = document.getElementById('roleta-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const cx = 109, cy = 109;
+    const segR = 93, trackR = 106, hubR = 20;
+    const n = ROLETA_NUMS.length;
+    const segAngle = (2 * Math.PI) / n;
+    ctx.clearRect(0, 0, 218, 218);
+    // Background
+    ctx.beginPath(); ctx.arc(cx, cy, trackR, 0, Math.PI*2);
+    ctx.fillStyle = '#110800'; ctx.fill();
+    // Track ring (dark wood)
+    ctx.beginPath(); ctx.arc(cx, cy, (segR + trackR) / 2, 0, Math.PI*2);
+    ctx.strokeStyle = '#2c1200'; ctx.lineWidth = trackR - segR; ctx.stroke();
+    // Fret dots
+    for (let i = 0; i < n; i++) {
+        const a = i * segAngle - Math.PI/2, r = (segR + trackR) / 2;
+        ctx.beginPath(); ctx.arc(cx + r*Math.cos(a), cy + r*Math.sin(a), 2, 0, Math.PI*2);
+        ctx.fillStyle = 'rgba(200,168,75,.5)'; ctx.fill();
+    }
+    // Segments
+    for (let i = 0; i < n; i++) {
+        const startA = i * segAngle - Math.PI/2, endA = startA + segAngle;
+        const num = ROLETA_NUMS[i], hl = (highlightIdx === i);
+        const base = num === 0 ? '#1a6b30' : ROLETA_RED.has(num) ? '#a82b1a' : '#181818';
+        ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, segR-1, startA, endA);
+        ctx.fillStyle = hl ? '#b89030' : base; ctx.fill();
+        if (hl) {
+            ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, segR-1, startA, endA);
+            ctx.fillStyle = 'rgba(255,215,0,.35)'; ctx.fill();
+        }
+        // Divider
+        ctx.beginPath();
+        ctx.moveTo(cx + hubR*Math.cos(startA), cy + hubR*Math.sin(startA));
+        ctx.lineTo(cx + (segR-1)*Math.cos(startA), cy + (segR-1)*Math.sin(startA));
+        ctx.strokeStyle = 'rgba(180,140,50,.55)'; ctx.lineWidth = .7; ctx.stroke();
+        // Number
+        const midA = startA + segAngle/2, tr = segR * .72;
+        ctx.save();
+        ctx.translate(cx + tr*Math.cos(midA), cy + tr*Math.sin(midA));
+        ctx.rotate(midA + Math.PI/2);
+        ctx.fillStyle = hl ? '#000' : (num === 0 ? '#7ff07f' : '#fff');
+        ctx.shadowColor = 'rgba(0,0,0,.9)'; ctx.shadowBlur = 2;
+        ctx.font = 'bold 8.5px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(String(num), 0, 0); ctx.restore();
+    }
+    // Borders
+    ctx.beginPath(); ctx.arc(cx, cy, segR, 0, Math.PI*2);
+    ctx.strokeStyle = 'rgba(180,140,50,.6)'; ctx.lineWidth = 1.5; ctx.stroke();
+    ctx.beginPath(); ctx.arc(cx, cy, trackR, 0, Math.PI*2);
+    ctx.strokeStyle = 'rgba(200,168,75,.4)'; ctx.lineWidth = 2; ctx.stroke();
+    // Hub
+    const hg = ctx.createRadialGradient(cx-4, cy-4, 2, cx, cy, hubR);
+    hg.addColorStop(0, '#fffbe0'); hg.addColorStop(.35, '#ffd700');
+    hg.addColorStop(.7, '#b8860b'); hg.addColorStop(1, '#7a5a00');
+    ctx.beginPath(); ctx.arc(cx, cy, hubR, 0, Math.PI*2);
+    ctx.fillStyle = hg; ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,.5)'; ctx.lineWidth = 1.5; ctx.stroke();
+    ctx.beginPath(); ctx.arc(cx-5, cy-5, hubR*.35, 0, Math.PI*2);
+    ctx.fillStyle = 'rgba(255,255,255,.3)'; ctx.fill();
+}
+
+function renderRoleta() {
+    const spins = getRoletaSpins(currentCpf);
+    const remaining = ROLETA_MAX_SPINS - spins.count;
+    const timeLeft = Math.max(0, CASSINO_WINDOW_MS - (Date.now() - spins.windowStart));
+    const canPlay = remaining > 0 && !roletaSpinning;
+    const cdStr = fmtCountdown(timeLeft);
+    const cClass = roletaEscolha ? (roletaEscolha === 'vermelho' ? 'red' : 'black') : '';
+    const cText  = roletaEscolha ? (roletaEscolha === 'vermelho' ? '🔴 VERMELHO' : '⚫ PRETO') : '—';
+    return `<div class="glass" style="margin-bottom:14px;padding:0;overflow:hidden">
+        <div class="roleta-casino-wrap">
+            <div class="roleta-felt">
+                <div class="roleta-title-bar">🎡 ROLETA CIRROSE™</div>
+                <div class="roleta-scene">
+                    <div class="roleta-outer-ring">
+                        <div class="roleta-wheel-wrap">
+                            <canvas id="roleta-canvas" width="218" height="218"></canvas>
+                            <div id="roleta-ball" class="roleta-ball"></div>
+                        </div>
+                    </div>
+                    <div class="roleta-marker"></div>
+                </div>
+                <div class="roleta-bet-row">
+                    <span class="rbd-label">SUA APOSTA</span>
+                    <span class="rbd-choice ${cClass}" id="rbd-choice">${cText}</span>
+                </div>
+                <div class="roleta-result idle" id="roleta-result">${roletaSpinning ? '🎡 Rodando...' : canPlay ? 'Escolha uma cor e gire a roleta!' : '⏳ Sem jogadas restantes'}</div>
+                ${!canPlay && !roletaSpinning ? `<div class="game-countdown-wrap" id="roleta-countdown-wrap">⏳ Novas jogadas em <span class="game-countdown" id="roleta-countdown">${cdStr}</span></div>` : ''}
+            </div>
+            <div class="roleta-controls">
+                <button class="roleta-btn roleta-btn-red" id="roleta-btn-red" onclick="jogarRoleta('vermelho')" ${canPlay ? '' : 'disabled'}><span class="rbtn-dot rd"></span> VERMELHO</button>
+                <button class="roleta-btn roleta-btn-black" id="roleta-btn-black" onclick="jogarRoleta('preto')" ${canPlay ? '' : 'disabled'}><span class="rbtn-dot bk"></span> PRETO</button>
+            </div>
+            <div class="roleta-footer">
+                <span class="roleta-chip green">🎉 Prêmio: R$ 5,00</span>
+                <span class="roleta-chip gold" id="roleta-spins-chip">${remaining}/${ROLETA_MAX_SPINS} jogadas</span>
+                <span class="roleta-chip">Acerte a cor = ganhou!</span>
+                <span class="roleta-chip">Renova cada 5 min</span>
+            </div>
+        </div>
+    </div>`;
+}
+
+function jogarRoleta(escolha) {
+    if (roletaSpinning) return;
+    const spins = getRoletaSpins(currentCpf);
+    const remaining = ROLETA_MAX_SPINS - spins.count;
+    if (remaining <= 0) { showToast('⏳ Sem jogadas! Aguarde o timer.'); return; }
+    const newSpins = { count: spins.count + 1, windowStart: spins.windowStart };
+    saveRoletaSpins(currentCpf, newSpins);
+    const newRemaining = ROLETA_MAX_SPINS - newSpins.count;
+    const win = Math.random() < 0.50;
+    const corResultado = win ? escolha : (escolha === 'vermelho' ? 'preto' : 'vermelho');
+    roletaSpinning = true;
+    roletaEscolha = escolha;
+    const rdChoice = document.getElementById('rbd-choice');
+    if (rdChoice) { rdChoice.textContent = escolha === 'vermelho' ? '🔴 VERMELHO' : '⚫ PRETO'; rdChoice.className = 'rbd-choice ' + (escolha === 'vermelho' ? 'red' : 'black'); }
+    const btnR = document.getElementById('roleta-btn-red');
+    const btnB = document.getElementById('roleta-btn-black');
+    if (btnR) btnR.disabled = true;
+    if (btnB) btnB.disabled = true;
+    const resEl = document.getElementById('roleta-result');
+    if (resEl) { resEl.className = 'roleta-result spinning-msg'; resEl.textContent = '🎡 Rodando...'; }
+    const canvas = document.getElementById('roleta-canvas');
+    const ball = document.getElementById('roleta-ball');
+    // Pre-determine winning segment
+    const n = ROLETA_NUMS.length;
+    const sAngle = (2 * Math.PI) / n;
+    const matchSegs = [];
+    for (let i = 0; i < n; i++) {
+        const num = ROLETA_NUMS[i];
+        if (corResultado === 'vermelho' && ROLETA_RED.has(num)) matchSegs.push(i);
+        else if (corResultado === 'preto' && !ROLETA_RED.has(num) && num !== 0) matchSegs.push(i);
+    }
+    const targetSeg = matchSegs[Math.floor(Math.random() * matchSegs.length)];
+    // Segment center in canvas coords (before wheel rotation)
+    const segCenterCanvas = targetSeg * sAngle - Math.PI/2 + sAngle/2;
+    // Wheel: random total rotation (8–10 full turns)
+    const totalWheelDeg = 360 * 8 + Math.floor(Math.random() * 720);
+    const totalWheelRad = totalWheelDeg * Math.PI / 180;
+    // Ball target = wherever the winning segment ends up on screen, with slight scatter inside segment
+    const segOffset = (Math.random() - 0.5) * sAngle * 0.5;
+    const ballTargetAngle = segCenterCanvas + totalWheelRad + segOffset;
+    // Ball: 7+ CCW rotations from a random start angle
+    const ballStartAngle = Math.random() * Math.PI * 2;
+    const adjustAngle = ((ballStartAngle - ballTargetAngle) % (2*Math.PI) + 2*Math.PI) % (2*Math.PI);
+    const totalBallTravel = -(7 * 2 * Math.PI + adjustAngle);
+    // Phase constants: phase 2 (spiral inward) starts at SPLIT
+    const SPLIT = 0.70;        // fraction of total time where spiral begins
+    const spinDuration = 5500;
+    const start = Date.now();
+    const iv = setInterval(() => {
+        const elapsed = Date.now() - start;
+        const t = Math.min(elapsed / spinDuration, 1);
+        // Wheel: smooth gradual deceleration
+        const wheelEased = 1 - Math.pow(1 - t, 1.85);
+        const wheelDeg = totalWheelDeg * wheelEased;
+        // Ball angle: single continuous ease-out (no velocity jump between phases)
+        const ballEased = 1 - Math.pow(1 - t, 2.8);
+        const ballAngleNow = ballStartAngle + totalBallTravel * ballEased;
+        // Ball radius: stays on outer track, then spirals in smoothly after SPLIT
+        let ballR;
+        if (t < SPLIT) {
+            ballR = 100;
+        } else {
+            const t2 = (t - SPLIT) / (1 - SPLIT);
+            const e2 = Math.pow(t2, 1.4);  // ease-in: starts at 0 velocity (no jump)
+            ballR = 100 - 27 * e2;          // 100 → 73
+        }
+        if (canvas) canvas.style.transform = `rotate(${wheelDeg}deg)`;
+        if (ball) {
+            ball.style.left = `${109 + ballR * Math.cos(ballAngleNow) - 6.5}px`;
+            ball.style.top  = `${109 + ballR * Math.sin(ballAngleNow) - 6.5}px`;
+        }
+        if (t >= 1) {
+            clearInterval(iv);
+            roletaSpinning = false;
+            initRoletaCanvas(-1); // keep normal colors
+            if (canvas) canvas.style.transform = `rotate(${totalWheelDeg}deg)`;
+            const uf = getUsuario(currentCpf);
+            if (win) {
+                const premio = 5;
+                uf.saldo = +(uf.saldo + premio).toFixed(2);
+                usuarios[uf.cpf] = uf; salvarDados();
+                if (resEl) { resEl.className = 'roleta-result win'; resEl.textContent = `🎉 ${corResultado === 'vermelho' ? '🔴' : '⚫'} ${corResultado.toUpperCase()}! Ganhou R$ ${premio.toFixed(2)}!`; }
+                showToast(`🎡 +R$ ${premio.toFixed(2)} na Roleta!`);
+            } else {
+                if (resEl) { resEl.className = 'roleta-result lose'; resEl.textContent = `${corResultado === 'vermelho' ? '🔴' : '⚫'} ${corResultado.toUpperCase()} — Não foi dessa vez!`; }
+                showToast('🎡 Tente de novo na Roleta!');
+            }
+            const bv = document.querySelector('#odds-content .user-balance-val');
+            const uf2 = getUsuario(currentCpf);
+            if (bv && uf2) { bv.textContent = `R$ ${uf2.saldo.toFixed(2)}`; bv.className = `user-balance-val${uf2.saldo > 200 ? ' up' : uf2.saldo <= 0 ? ' zero' : ''}`; }
+            const chip = document.getElementById('roleta-spins-chip');
+            if (chip) chip.textContent = `${newRemaining}/${ROLETA_MAX_SPINS} jogadas`;
+            if (newRemaining > 0) {
+                if (btnR) btnR.disabled = false;
+                if (btnB) btnB.disabled = false;
+            } else {
+                const tl = Math.max(0, CASSINO_WINDOW_MS - (Date.now() - newSpins.windowStart));
+                const felt = document.querySelector('.roleta-felt');
+                if (felt && !document.getElementById('roleta-countdown-wrap')) {
+                    const wrap = document.createElement('div');
+                    wrap.className = 'game-countdown-wrap'; wrap.id = 'roleta-countdown-wrap';
+                    wrap.innerHTML = `⏳ Novas jogadas em <span class="game-countdown" id="roleta-countdown">${fmtCountdown(tl)}</span>`;
+                    felt.appendChild(wrap);
+                }
+                startGameTimer(newSpins.windowStart, 'roleta-countdown', 'roleta-play-btn', renderOdds);
+            }
+        }
+    }, 16);
+}
 
 load();
 
