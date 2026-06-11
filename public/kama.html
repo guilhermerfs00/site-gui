@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo Íntimo 🔥</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Dancing+Script:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            min-height: 100vh;
+            font-family: 'Caveat', cursive;
+            overflow-x: hidden;
+            background:
+                radial-gradient(ellipse at 15% 15%, rgba(110,0,35,0.55) 0%, transparent 52%),
+                radial-gradient(ellipse at 85% 85%, rgba(80,0,40,0.5) 0%, transparent 52%),
+                linear-gradient(160deg, #0d0006 0%, #120008 50%, #080004 100%);
+            background-attachment: fixed;
+        }
+
+        /* ===== PARTÍCULAS ===== */
+        #particles {
+            position: fixed;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(200,60,60,0.3);
+            animation: particleDrift var(--dur,9s) ease-in-out infinite;
+            animation-delay: var(--delay,0s);
+            left: var(--x,50%);
+            top: 108%;
+            width: var(--sz,4px);
+            height: var(--sz,4px);
+        }
+        @keyframes particleDrift {
+            0%   { transform: translateY(0) translateX(0); opacity: 0; }
+            10%  { opacity: 0.75; }
+            90%  { opacity: 0.25; }
+            100% { transform: translateY(-115vh) translateX(var(--dx,20px)); opacity: 0; }
+        }
+
+        /* ===== LAYOUT ===== */
+        #page {
+            position: relative;
+            z-index: 1;
+            max-width: 560px;
+            margin: 0 auto;
+            padding: 0 24px 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* ===== HEADER ===== */
+        .page-header {
+            text-align: center;
+            padding: 60px 0 30px;
+            width: 100%;
+        }
+        .eyebrow {
+            font-family: 'Caveat', cursive;
+            font-size: 0.78rem;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            color: rgba(200,100,80,0.5);
+            margin-bottom: 10px;
+        }
+        .page-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3rem;
+            font-weight: 700;
+            color: rgba(255,215,205,0.9);
+            line-height: 1.1;
+            margin-bottom: 10px;
+            text-shadow: 0 0 50px rgba(180,40,70,0.45);
+        }
+        .page-subtitle {
+            color: rgba(190,140,130,0.6);
+            font-family: 'Caveat', cursive;
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+
+        /* ===== REGRAS ===== */
+        .drink-rules {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 30px;
+            width: 100%;
+        }
+        .drink-rule {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(200,80,60,0.15);
+            border-radius: 10px;
+            padding: 6px 12px;
+            font-family: 'Caveat', cursive;
+            font-size: 0.98rem;
+            color: rgba(210,170,160,0.75);
+        }
+        .drink-rule strong { color: rgba(240,130,110,0.9); }
+
+        /* ===== BOTÃO SORTEAR ===== */
+        .spin-btn {
+            background: linear-gradient(135deg, #4a0012 0%, #7a0020 50%, #4a0012 100%);
+            color: rgba(255,215,205,0.92);
+            border: 1px solid rgba(200,70,70,0.3);
+            border-radius: 50px;
+            padding: 15px 46px;
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.65rem;
+            cursor: pointer;
+            box-shadow: 0 4px 28px rgba(120,0,35,0.55), inset 0 1px 0 rgba(255,255,255,0.07);
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-bottom: 38px;
+            display: inline-block;
+            letter-spacing: 0.5px;
+        }
+        .spin-btn:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 36px rgba(160,0,45,0.7), inset 0 1px 0 rgba(255,255,255,0.1);
+        }
+        .spin-btn:active { transform: scale(0.97); }
+        .spin-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        @keyframes spinAnim { 0%,100% { transform: rotate(0); } 25% { transform: rotate(-10deg); } 75% { transform: rotate(10deg); } }
+        .spin-btn.spinning { animation: spinAnim 0.35s ease infinite; }
+
+        /* ===== RESULTADO ===== */
+        .kama-result { display: none; width: 100%; text-align: center; }
+        .kama-result.show {
+            display: block;
+            animation: resultIn 0.5s cubic-bezier(.22,1,.36,1) both;
+        }
+        @keyframes resultIn {
+            from { opacity: 0; transform: translateY(22px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .kama-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(200,80,60,0.2);
+            color: rgba(200,140,120,0.7);
+            border-radius: 50px;
+            padding: 4px 16px;
+            font-family: 'Caveat', cursive;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            margin-bottom: 18px;
+        }
+        .kama-img-wrap {
+            margin: 0 auto 22px;
+            max-width: 340px;
+            width: 100%;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(200,80,60,0.1);
+            border-radius: 16px;
+            padding: 10px;
+            box-shadow: 0 12px 50px rgba(0,0,0,0.65);
+            transition: transform 0.3s;
+        }
+        .kama-img-wrap:hover { transform: scale(1.015); }
+        .kama-img-wrap img {
+            width: 100%;
+            display: block;
+            border-radius: 10px;
+            mix-blend-mode: luminosity;
+            opacity: 0.82;
+            transition: opacity 0.3s;
+        }
+        .kama-img-wrap:hover img { opacity: 1; mix-blend-mode: normal; }
+
+        .kama-pos-name {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.95rem;
+            font-weight: 700;
+            color: rgba(255,215,205,0.88);
+            margin-bottom: 14px;
+            text-shadow: 0 0 28px rgba(180,40,60,0.35);
+        }
+        .kama-description {
+            font-family: 'Caveat', cursive;
+            font-size: 1.12rem;
+            color: rgba(195,160,150,0.8);
+            line-height: 1.8;
+            text-align: left;
+            background: rgba(255,255,255,0.03);
+            border-left: 3px solid rgba(170,40,70,0.4);
+            padding: 14px 18px;
+            border-radius: 0 10px 10px 0;
+            margin-bottom: 26px;
+        }
+        .drink-card {
+            background: linear-gradient(135deg, rgba(90,5,18,0.9), rgba(120,8,30,0.9));
+            border: 1px solid rgba(220,80,60,0.2);
+            color: rgba(255,205,195,0.95);
+            border-radius: 14px;
+            padding: 15px 26px;
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.75rem;
+            font-weight: 700;
+            box-shadow: 0 8px 30px rgba(100,0,30,0.55);
+            margin: 0 auto 26px;
+            max-width: 320px;
+            animation: drinkIn 0.5s cubic-bezier(.22,1,.36,1) 0.2s both;
+        }
+        @keyframes drinkIn {
+            from { opacity: 0; transform: scale(0.8) translateY(10px); }
+            to   { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .kama-again-btn {
+            background: transparent;
+            color: rgba(210,120,100,0.75);
+            border: 1px solid rgba(170,50,50,0.3);
+            border-radius: 30px;
+            padding: 9px 26px;
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 40px;
+        }
+        .kama-again-btn:hover {
+            background: rgba(130,15,35,0.35);
+            color: rgba(255,200,185,0.95);
+            border-color: rgba(200,70,60,0.5);
+        }
+
+        /* ===== DIVIDER ===== */
+        .divider {
+            width: 100%;
+            border: none;
+            border-top: 1px solid rgba(200,80,60,0.12);
+            margin: 32px 0;
+        }
+
+        /* ===== BACK LINK ===== */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            color: rgba(180,110,95,0.55);
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.1rem;
+            text-decoration: none;
+            border: 1px solid rgba(200,80,60,0.12);
+            border-radius: 20px;
+            padding: 7px 18px;
+            transition: all 0.2s;
+            margin-bottom: 40px;
+            align-self: flex-start;
+        }
+        .back-link:hover {
+            color: rgba(240,180,165,0.85);
+            border-color: rgba(200,80,60,0.3);
+            background: rgba(255,255,255,0.03);
+        }
+
+        @media (max-width: 500px) {
+            .page-title { font-size: 2.3rem; }
+            #page { padding: 0 16px 60px; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="particles"></div>
+
+<div id="page">
+    <a href="/namorados.html" class="back-link">← Nossa História</a>
+
+    <div class="page-header">
+        <div class="eyebrow">para dois ✦ privado</div>
+        <div class="page-title">Kama Sutra &amp; Beber</div>
+        <div class="page-subtitle">
+            Sorteie uma posição. Conseguiram — próxima rodada.<br>
+            Não conseguiram — bebam a penalidade. 🍷
+        </div>
+    </div>
+
+    <div class="drink-rules">
+        <div class="drink-rule">✅ <strong>Conseguiu:</strong> continua</div>
+        <div class="drink-rule">❌ <strong>Não conseguiu:</strong> beba os goles</div>
+        <div class="drink-rule">😅 <strong>Nem tentou:</strong> beba o dobro</div>
+    </div>
+
+    <button class="spin-btn" id="spin-btn" onclick="spinKama()">
+        🎲 Sortear Posição
+    </button>
+
+    <div class="kama-result" id="kama-result">
+        <div class="kama-badge" id="kama-badge">Posição #1 de 42</div>
+        <div class="kama-img-wrap">
+            <img id="kama-img" src="" alt="Posição Kama Sutra">
+        </div>
+        <div class="kama-pos-name" id="kama-pos-name"></div>
+        <div class="kama-description" id="kama-desc"></div>
+        <div class="drink-card" id="drink-card">🍷 Beba 3 goles!</div>
+        <button class="kama-again-btn" onclick="spinKama()">🔄 Sortear de novo</button>
+        <hr class="divider">
+    </div>
+</div>
+
+<script>
+// Partículas
+(function spawnParticles() {
+    const container = document.getElementById('particles');
+    for (let i = 0; i < 22; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        const sz = (2 + Math.random() * 4).toFixed(1) + 'px';
+        p.style.cssText = `
+            --x: ${Math.random() * 100}%;
+            --dx: ${(Math.random() - 0.5) * 60}px;
+            --dur: ${6 + Math.random() * 9}s;
+            --delay: -${Math.random() * 12}s;
+            --sz: ${sz};
+            width: ${sz}; height: ${sz};
+        `;
+        container.appendChild(p);
+    }
+})();
+
+let kamaPositions = [];
+let lastKamaIdx   = -1;
+
+async function loadKamaPositions() {
+    try {
+        const res  = await fetch('/api/positions');
+        const data = await res.json();
+        kamaPositions = data.positions || [];
+    } catch(e) {
+        console.warn('Falha ao carregar posições:', e);
+    }
+}
+
+const DRINK_MSGS = [
+    '🍺 Beba %n gole%s!',
+    '🍹 %n gole%s para cada um!',
+    '🥂 Brinde com %n gole%s!',
+    '🍷 %n gole%s, vai lá!',
+    '🍻 %n gole%s, sem desculpas!'
+];
+
+function spinKama() {
+    if (!kamaPositions.length) {
+        loadKamaPositions().then(() => { if (kamaPositions.length) spinKama(); });
+        return;
+    }
+
+    const btn = document.getElementById('spin-btn');
+    btn.disabled = true;
+    btn.classList.add('spinning');
+    btn.textContent = '🎲 Sorteando...';
+
+    setTimeout(() => {
+        let idx;
+        do { idx = Math.floor(Math.random() * kamaPositions.length); }
+        while (idx === lastKamaIdx && kamaPositions.length > 1);
+        lastKamaIdx = idx;
+
+        const pos    = kamaPositions[idx];
+        const drinks = Math.floor(Math.random() * 5) + 1;
+        const plural  = drinks === 1 ? '' : 's';
+        const msgTpl  = DRINK_MSGS[Math.floor(Math.random() * DRINK_MSGS.length)];
+        const drinkMsg = msgTpl.replace('%n', drinks).replace('%s', plural);
+
+        document.getElementById('kama-badge').textContent    = `Posição #${pos.image} de 42`;
+        document.getElementById('kama-img').src              = `/kama/${pos.image}.jpg`;
+        document.getElementById('kama-img').alt              = pos.title;
+        document.getElementById('kama-pos-name').textContent = pos.title;
+        document.getElementById('kama-desc').textContent     = pos.description;
+        document.getElementById('drink-card').textContent    = drinkMsg;
+
+        const result = document.getElementById('kama-result');
+        result.classList.remove('show');
+        void result.offsetWidth;
+        result.classList.add('show');
+
+        btn.disabled    = false;
+        btn.classList.remove('spinning');
+        btn.textContent = '🎲 Sortear Posição';
+
+        result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 550);
+}
+
+loadKamaPositions();
+</script>
+</body>
+</html>

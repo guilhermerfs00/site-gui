@@ -1138,7 +1138,7 @@ function resetGame() {
 // ==================== HTTP SERVER ====================
 const server = http.createServer((req, res) => {
     let url = req.url.split('?')[0];
-    if (url === '/') url = '/index.html';
+    if (url === '/') url = '/namorados.html';
 
     // API to list fotos
     if (url === '/api/fotos') {
@@ -2127,6 +2127,68 @@ const server = http.createServer((req, res) => {
         writeCirrose(vazio); sendJSON(res, vazio); return;
     }
     // ==================== FIM API COPA CIRROSE ====================
+
+    // ==================== API POSITIONS ====================
+    if (url === '/api/positions' && req.method === 'GET') {
+        try {
+            const data = JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'position.json'), 'utf8'));
+            res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+            res.end(JSON.stringify(data));
+        } catch(e) {
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ erro: 'Erro ao ler positions' }));
+        }
+        return;
+    }
+    // ==================== FIM API POSITIONS ====================
+
+    // ==================== SERVIR IMAGENS KAMA ====================
+    if (url.startsWith('/kama/')) {
+        const kamaFile = path.join(__dirname, 'kama', decodeURIComponent(url.slice(6)));
+        const kamaExt  = path.extname(kamaFile).toLowerCase();
+        const kamaType = MIME_TYPES[kamaExt] || 'image/jpeg';
+        fs.readFile(kamaFile, (err, data) => {
+            if (err) { res.writeHead(404); res.end('Not found'); return; }
+            res.writeHead(200, { 'Content-Type': kamaType, 'Access-Control-Allow-Origin': '*' });
+            res.end(data);
+        });
+        return;
+    }
+    // ==================== FIM KAMA ====================
+
+    // ==================== API NAMORADOS ====================
+    const NAMORADOS_FILE = path.join(__dirname, 'data', 'namorados.json');
+    function readNamorados() {
+        try { return JSON.parse(fs.readFileSync(NAMORADOS_FILE, 'utf8')); }
+        catch(e) { return { couple: { name1: '', name2: '', startDate: '', headerMessage: '' }, music: { src: '', title: '', artist: '', autoplay: false }, opening: '', timeline: [], gallery: [], finalMessage: '' }; }
+    }
+    function writeNamorados(data) {
+        fs.writeFileSync(NAMORADOS_FILE, JSON.stringify(data, null, 2), 'utf8');
+    }
+    if (url === '/api/namorados' && req.method === 'OPTIONS') {
+        res.writeHead(204, { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET,POST', 'Access-Control-Allow-Headers': 'Content-Type' });
+        res.end(); return;
+    }
+    if (url === '/api/namorados' && req.method === 'GET') {
+        res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+        res.end(JSON.stringify(readNamorados())); return;
+    }
+    if (url === '/api/namorados' && req.method === 'POST') {
+        let body = '';
+        req.on('data', d => body += d);
+        req.on('end', () => {
+            try {
+                const data = JSON.parse(body);
+                writeNamorados(data);
+                res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+                res.end(JSON.stringify({ ok: true }));
+            } catch(e) {
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ erro: 'JSON inválido' }));
+            }
+        }); return;
+    }
+    // ==================== FIM API NAMORADOS ====================
 
     const filePath = path.join(__dirname, 'public', decodeURIComponent(url));
     const ext = path.extname(filePath).toLowerCase();

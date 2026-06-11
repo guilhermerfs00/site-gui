@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nossa História ❤️</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Dancing+Script:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --paper: #fdf3e3;
+            --paper-aged: #f5e6c8;
+            --ink: #1a237e;
+            --ink-brown: #3e2723;
+            --red: #c62828;
+            --pink: #e91e63;
+            --pink-soft: #fce4ec;
+            --gold: #f9a825;
+            --line-color: #b0bec5;
+            --margin-color: #ef9a9a;
+            --shadow: rgba(0,0,0,0.12);
+            --line-height: 36px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Caveat', cursive;
+            font-size: 1.3rem;
+            color: var(--ink-brown);
+            overflow-x: hidden;
+            background-color: var(--paper);
+            background-image:
+                repeating-linear-gradient(
+                    to bottom,
+                    transparent,
+                    transparent calc(var(--line-height) - 1px),
+                    var(--line-color) calc(var(--line-height) - 1px),
+                    var(--line-color) var(--line-height)
+                );
+            background-attachment: fixed;
+        }
+
+        /* ===== FOLHA CENTRALIZADA ===== */
+        #sheet {
+            max-width: 860px;
+            margin: 0 auto;
+            position: relative;
+            background-color: #ffffff;
+            background-image:
+                repeating-linear-gradient(
+                    to bottom,
+                    transparent,
+                    transparent calc(var(--line-height) - 1px),
+                    var(--line-color) calc(var(--line-height) - 1px),
+                    var(--line-color) var(--line-height)
+                );
+            background-attachment: local;
+            box-shadow:
+                -10px 0 30px rgba(0,0,0,0.18),
+                10px 0 30px rgba(0,0,0,0.18),
+                0 50px 80px rgba(0,0,0,0.22);
+            padding-bottom: 40px;
+        }
+
+        @keyframes confettiFall {
+            0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* ===== MUSIC PLAYER ===== */
+        #music-player {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 1000;
+            background: rgba(255,255,255,0.95);
+            border-radius: 18px;
+            padding: 12px 16px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 220px;
+            max-width: 280px;
+            backdrop-filter: blur(10px);
+            border: 2px solid #fce4ec;
+            transition: transform 0.3s ease;
+        }
+        #music-player:hover { transform: translateY(-3px); }
+        #music-player.hidden { display: none; }
+
+        .vinyl {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: radial-gradient(circle at center, #333 18%, #555 30%, #222 38%, #444 50%, #111 60%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1rem;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+        }
+        .vinyl.spinning { animation: spinVinyl 3s linear infinite; }
+        @keyframes spinVinyl { to { transform: rotate(360deg); } }
+
+        .music-info { flex: 1; overflow: hidden; min-width: 0; }
+        .music-title { font-family: 'Caveat', cursive; font-size: 0.95rem; font-weight: 700; color: #c62828; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .music-artist { font-size: 0.75rem; color: #888; }
+
+        .player-btn {
+            width: 34px; height: 34px;
+            border: none;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #e91e63, #c62828);
+            color: #fff;
+            font-size: 0.9rem;
+            cursor: pointer;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+        }
+        .player-btn:hover { transform: scale(1.15); }
+
+        .progress-wrap { position: absolute; bottom: 0; left: 18px; right: 18px; height: 3px; background: #eee; border-radius: 3px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(to right, #e91e63, #c62828); width: 0%; transition: width 0.5s linear; border-radius: 3px; }
+
+        /* ===== HERO SECTION ===== */
+        #hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: radial-gradient(ellipse at top, #4a0e1a 0%, #2d0a0a 40%, #1a0505 100%);
+            overflow: hidden;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .hero-stars {
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(1.5px 1.5px at var(--x) var(--y), rgba(255,255,255,0.8), transparent);
+        }
+
+        .hero-glow {
+            position: absolute;
+            width: 500px; height: 500px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(233,30,99,0.2) 0%, transparent 70%);
+            animation: glowPulse 4s ease-in-out infinite;
+            pointer-events: none;
+        }
+        @keyframes glowPulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.2); opacity: 0.9; }
+        }
+
+        .hero-content { position: relative; z-index: 2; }
+
+        .hero-label {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.4rem;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 12px;
+            letter-spacing: 3px;
+        }
+
+        .hero-names {
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 0 0 30px rgba(233,30,99,0.8), 0 2px 6px rgba(0,0,0,0.5);
+            line-height: 1.1;
+            margin-bottom: 16px;
+        }
+
+        .hero-heart {
+            color: #e91e63;
+            animation: heartbeat 1.2s ease-in-out infinite;
+            display: inline-block;
+        }
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            14% { transform: scale(1.3); }
+            28% { transform: scale(1); }
+            42% { transform: scale(1.2); }
+        }
+
+        .hero-date {
+            font-family: 'Caveat', cursive;
+            font-size: 1.3rem;
+            color: rgba(255,255,255,0.75);
+            margin-bottom: 30px;
+        }
+
+        .day-counter-wrap {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+
+        .day-box {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 14px;
+            padding: 16px 22px;
+            backdrop-filter: blur(10px);
+            min-width: 90px;
+            text-align: center;
+        }
+        .day-num {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.6rem;
+            font-weight: 700;
+            color: #ff8a80;
+            line-height: 1;
+        }
+        .day-lbl {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.7);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .scroll-hint {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            color: rgba(255,255,255,0.5);
+            font-size: 0.85rem;
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce { 0%,100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(8px); } }
+        .scroll-hint svg { width: 24px; height: 24px; stroke: currentColor; fill: none; }
+
+        /* ===== PAPER / LINED NOTEBOOK BACKGROUND ===== */
+        .paper-bg {
+            background: transparent;
+        }
+
+        /* ===== SECTION WRAPPER ===== */
+        .section {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 60px 40px 60px 110px;
+            position: relative;
+        }
+
+        .section-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--red);
+            margin-bottom: 30px;
+            position: relative;
+            display: inline-block;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--red);
+            border-radius: 2px;
+            opacity: 0.4;
+            transform: skewX(-5deg);
+        }
+
+        /* ===== FADE-IN ANIMATIONS ===== */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ===== OPENING LETTER ===== */
+        #opening {
+            padding: 60px 0;
+        }
+
+        .letter-card {
+            background: transparent;
+            padding: 20px 0;
+            position: relative;
+        }
+
+        .letter-card::before { display: none; }
+
+        .letter-greeting {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.2rem;
+            color: var(--ink);
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .letter-body {
+            font-family: 'Caveat', cursive;
+            font-size: 1.35rem;
+            line-height: var(--line-height);
+            color: var(--ink-brown);
+            white-space: pre-line;
+            position: relative;
+        }
+
+        .letter-signature {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2rem;
+            color: var(--red);
+            margin-top: 30px;
+            text-align: right;
+            padding-right: 30px;
+            position: relative;
+        }
+
+        .stamp {
+            position: absolute;
+            top: 20px;
+            right: 24px;
+            width: 60px; height: 60px;
+            border: 3px solid var(--red);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            transform: rotate(12deg);
+            opacity: 0.7;
+            background: var(--pink-soft);
+        }
+
+        /* ===== TIMELINE ===== */
+        #timeline { background: transparent; padding: 0; }
+        #timeline .section { padding-left: 110px; }
+
+        .timeline-list { position: relative; padding: 20px 0; }
+        .timeline-list::before {
+            content: '';
+            position: absolute;
+            left: 28px;
+            top: 0; bottom: 0;
+            width: 3px;
+            background: repeating-linear-gradient(to bottom, var(--red) 0, var(--red) 10px, transparent 10px, transparent 18px);
+            opacity: 0.5;
+        }
+
+        .tl-item {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 50px;
+            padding-left: 16px;
+            position: relative;
+        }
+
+        .tl-dot {
+            flex-shrink: 0;
+            width: 44px; height: 44px;
+            background: #fff;
+            border: 3px solid var(--red);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            box-shadow: 0 3px 12px rgba(198,40,40,0.25);
+            position: relative;
+            z-index: 1;
+        }
+
+        .tl-content { flex: 1; }
+
+        .tl-date {
+            font-family: 'Caveat', cursive;
+            font-size: 1rem;
+            color: #888;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .tl-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 8px;
+        }
+
+        .tl-text {
+            font-family: 'Caveat', cursive;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            color: var(--ink-brown);
+        }
+
+        .tl-photo {
+            width: 100%;
+            max-width: 300px;
+            margin-top: 14px;
+            border-radius: 3px;
+            box-shadow: 4px 4px 0 #ddd, 5px 5px 10px rgba(0,0,0,0.15);
+            background: #fff;
+            padding: 8px 8px 30px;
+            transform: rotate(-2deg);
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .tl-photo:hover { transform: rotate(0deg) scale(1.04); box-shadow: 6px 6px 20px rgba(0,0,0,0.2); }
+        .tl-photo img { width: 100%; display: block; }
+        .tl-photo-caption { font-family: 'Caveat', cursive; font-size: 0.95rem; color: #777; text-align: center; margin-top: 6px; }
+
+        /* ===== GALLERY ===== */
+        #gallery { padding: 0; background: transparent; }
+
+        .gallery-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            margin-top: 20px;
+        }
+
+        .gallery-item {
+            display: flex;
+            flex-direction: column;
+            padding: 24px 0 0;
+            border-bottom: 1px solid var(--line-color);
+        }
+        .gallery-item:last-child { border-bottom: none; }
+
+        .gallery-item img {
+            width: 100%;
+            max-height: 480px;
+            object-fit: contain;
+            display: block;
+            border-radius: 2px;
+            box-shadow: 2px 4px 14px rgba(0,0,0,0.13);
+            cursor: pointer;
+        }
+
+        .gallery-caption {
+            font-family: 'Caveat', cursive;
+            font-size: 1.25rem;
+            color: var(--ink-brown);
+            margin-top: 14px;
+            margin-bottom: 24px;
+            min-height: 36px;
+            line-height: var(--line-height);
+            padding-left: 4px;
+        }
+        .gallery-caption:empty::before {
+            content: '...';
+            color: #ccc;
+        }
+
+        .gallery-num {
+            font-family: 'Dancing Script', cursive;
+            font-size: 0.85rem;
+            color: #aaa;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .no-gallery {
+            text-align: center;
+            color: #aaa;
+            font-size: 1.1rem;
+            padding: 40px;
+        }
+
+        /* ===== FINAL MESSAGE ===== */
+        #final-msg { background: transparent; padding: 0; }
+
+        .final-card {
+            background: transparent;
+            padding: 20px 0;
+            position: relative;
+        }
+
+        .final-card::before { display: none; }
+
+        .final-body {
+            font-family: 'Caveat', cursive;
+            font-size: 1.35rem;
+            line-height: var(--line-height);
+            color: var(--ink-brown);
+            white-space: pre-line;
+            position: relative;
+        }
+
+        .confetti-btn {
+            margin-top: 30px;
+            background: linear-gradient(135deg, #e91e63, #c62828);
+            color: #fff;
+            border: none;
+            border-radius: 30px;
+            padding: 12px 28px;
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.4rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(233,30,99,0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+        }
+        .confetti-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(233,30,99,0.5); }
+        .confetti-btn:active { transform: translateY(0); }
+
+        /* ===== LIGHTBOX ===== */
+        #lightbox {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.92);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        #lightbox.open { display: flex; }
+
+        .lightbox-img-wrap {
+            position: relative;
+            max-width: 90vw;
+            max-height: 85vh;
+            background: #fff;
+            padding: 10px 10px 36px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+        }
+        .lightbox-img-wrap img { max-width: 100%; max-height: 80vh; display: block; object-fit: contain; }
+        .lightbox-cap { font-family: 'Caveat', cursive; font-size: 1.2rem; text-align: center; color: #555; margin-top: 8px; }
+
+        .lb-close {
+            position: absolute;
+            top: -40px; right: 0;
+            background: none; border: none;
+            color: #fff; font-size: 2rem;
+            cursor: pointer;
+        }
+
+        .lb-nav {
+            position: absolute;
+            top: 50%; transform: translateY(-50%);
+            background: rgba(255,255,255,0.15);
+            border: none; color: #fff;
+            font-size: 2rem;
+            width: 50px; height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s;
+        }
+        .lb-nav:hover { background: rgba(255,255,255,0.3); }
+        #lb-prev { left: -70px; }
+        #lb-next { right: -70px; }
+
+        /* ===== FOOTER ===== */
+        #site-footer {
+            background: transparent;
+            color: #aaa;
+            text-align: center;
+            padding: 30px 20px 50px;
+            font-size: 1rem;
+            border-top: 1px dashed var(--line-color);
+            margin: 0 110px;
+        }
+        #site-footer strong { color: var(--red); }
+
+        /* ===== BOTÃO JOGO ===== */
+        .game-cta-wrap {
+            text-align: center;
+            padding: 40px 20px 20px;
+        }
+        .game-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #2d0008, #5a0018);
+            color: rgba(255,210,200,0.9);
+            border: 1px solid rgba(200,70,60,0.3);
+            border-radius: 50px;
+            padding: 13px 32px;
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.4rem;
+            text-decoration: none;
+            box-shadow: 0 4px 22px rgba(120,0,35,0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .game-cta:hover {
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 8px 32px rgba(160,0,45,0.6);
+            color: rgba(255,220,210,1);
+        }
+
+        /* ===== DIVIDER ORNAMENT ===== */
+        .ornament {
+            text-align: center;
+            font-size: 1.8rem;
+            padding: 20px 0;
+            color: var(--red);
+            opacity: 0.6;
+            letter-spacing: 12px;
+        }
+
+        /* ===== DOODLE DECORATIONS ===== */
+        .doodle {
+            position: absolute;
+            font-size: 1.8rem;
+            opacity: 0.25;
+            pointer-events: none;
+            transform: rotate(var(--rot, 0deg));
+        }
+
+        /* ===== HEADER BAR ===== */
+        .header-msg {
+            background: linear-gradient(135deg, #c62828, #e91e63);
+            color: #fff;
+            text-align: center;
+            padding: 10px 20px;
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+        }
+
+        @media (max-width: 640px) {
+            .section { padding: 40px 16px 40px 20px; }
+            #timeline .section { padding-left: 20px; }
+            #site-footer { margin: 0 16px; }
+            #lb-prev { left: -50px; }
+            #lb-next { right: -50px; }
+        }
+
+
+
+
+    </style>
+</head>
+<body>
+
+<!-- Music Player -->
+<div id="music-player" class="hidden">
+    <div class="vinyl" id="vinyl-disc">🎵</div>
+    <div class="music-info">
+        <div class="music-title" id="music-title">Nossa Música</div>
+        <div class="music-artist" id="music-artist"></div>
+    </div>
+    <button class="player-btn" id="play-btn" onclick="togglePlay()">▶</button>
+    <div class="progress-wrap">
+        <div class="progress-fill" id="progress-fill"></div>
+    </div>
+    <audio id="audio-el"></audio>
+</div>
+
+<!-- Lightbox -->
+<div id="lightbox" onclick="closeLightbox(event)">
+    <div class="lightbox-img-wrap" id="lb-wrap">
+        <button class="lb-close" onclick="closeLightboxBtn()">✕</button>
+        <button class="lb-nav" id="lb-prev" onclick="lbNav(-1)">‹</button>
+        <button class="lb-nav" id="lb-next" onclick="lbNav(1)">›</button>
+        <img id="lb-img" src="" alt="">
+        <div class="lightbox-cap" id="lb-cap"></div>
+    </div>
+</div>
+
+<!-- ===== HERO ===== -->
+<section id="hero">
+    <div class="hero-glow"></div>
+    <div class="hero-content fade-in">
+        <div class="hero-label">— Dia dos Namorados ❤️ —</div>
+        <div class="hero-names" id="hero-names">
+            <span id="hero-name1">Meu Amor</span>
+            <span class="hero-heart"></span>
+            <span id="hero-name2">Você</span>
+        </div>
+        <div class="hero-date" id="hero-date"></div>
+
+        <div class="day-counter-wrap" id="day-counter">
+            <div class="day-box"><div class="day-num" id="count-anos">0</div><div class="day-lbl">Anos</div></div>
+            <div class="day-box"><div class="day-num" id="count-meses">0</div><div class="day-lbl">Meses</div></div>
+            <div class="day-box"><div class="day-num" id="count-dias">0</div><div class="day-lbl">Dias</div></div>
+        </div>
+
+        <div id="hero-header-msg" style="font-family:'Dancing Script',cursive;font-size:1.4rem;color:rgba(255,255,255,0.75);max-width:500px;margin:0 auto;"></div>
+    </div>
+    <div class="scroll-hint">
+        <span>rolar para baixo</span>
+        <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </div>
+</section>
+
+<!-- ===== SHEET (Nossa História - padrão) ===== -->
+<div id="sheet">
+
+<div class="paper-bg">
+<section id="opening">
+    <div class="section">
+        <div class="ornament">❦ ❤ ❦</div>
+        <div class="letter-card fade-in">
+            <div class="stamp">❤️</div>
+            <div class="letter-greeting" id="letter-greeting">Meu amor,</div>
+            <div class="letter-body" id="letter-body">Carregando...</div>
+            <div class="letter-signature" id="letter-signature">Com todo o meu amor ❤️</div>
+            <!-- doodles -->
+            <span class="doodle" style="bottom:40px;left:16px;--rot:-15deg">🌸</span>
+            <span class="doodle" style="top:30px;left:24px;--rot:20deg">✨</span>
+        </div>
+    </div>
+</section>
+</div>
+
+<!-- ===== GALLERY ===== -->
+<div class="paper-bg">
+<section id="gallery">
+    <div class="section">
+        <div class="gallery-grid" id="gallery-grid">
+            <!-- populated by JS -->
+        </div>
+    </div>
+</section>
+</div>
+
+<!-- ===== FINAL MESSAGE ===== -->
+<section id="final-msg">
+    <div class="section">
+        <div class="ornament" style="opacity:0.8">★ ♥ ★</div>
+        <div class="final-card fade-in">
+            <div class="final-body" id="final-body">Carregando...</div>
+            <div class="letter-signature" id="final-signature">Com amor ❤️</div>
+            <span class="doodle" style="bottom:20px;right:20px;--rot:10deg;font-size:3rem">❤️</span>
+        </div>
+    </div>
+</section>
+
+<!-- ===== BOTÃO JOGO ===== -->
+<div class="game-cta-wrap">
+    <a href="/kama.html" class="game-cta">Plagui</a>
+</div>
+
+</div><!-- /#sheet -->
+
+<script>
+// ============================================================
+// UTILITÁRIOS
+// ============================================================
+let siteData = {};
+let galleryImages = [];
+let lbIndex = 0;
+
+async function loadData() {
+    try {
+        const res = await fetch('/api/namorados');
+        siteData = await res.json();
+    } catch(e) {
+        const saved = localStorage.getItem('namorados_data');
+        if (saved) siteData = JSON.parse(saved);
+    }
+    render();
+}
+
+function render() {
+    renderHero();
+    renderLetter();
+    renderGallery();
+    renderFinal();
+    renderMusic();
+    setupScrollAnimations();
+}
+
+// ============================================================
+// HERO
+// ============================================================
+function renderHero() {
+    const c = siteData.couple || {};
+    if (c.name1) document.getElementById('hero-name1').textContent = c.name1;
+    if (c.name2) document.getElementById('hero-name2').textContent = c.name2;
+    if (c.headerMessage) document.getElementById('hero-header-msg').textContent = c.headerMessage;
+
+    if (c.startDate) {
+        const d = new Date(c.startDate);
+        const opts = { day:'numeric', month:'long', year:'numeric' };
+        document.getElementById('hero-date').textContent =
+            'Desde ' + d.toLocaleDateString('pt-BR', opts);
+        updateCounter(d);
+        setInterval(() => updateCounter(d), 60000);
+    } else {
+        document.getElementById('day-counter').style.display = 'none';
+    }
+}
+
+function updateCounter(start) {
+    const now = new Date();
+    let years  = now.getFullYear() - start.getFullYear();
+    let months = now.getMonth() - start.getMonth();
+    let days   = now.getDate() - start.getDate();
+    if (days < 0)   { months--; days += new Date(now.getFullYear(), now.getMonth(), 0).getDate(); }
+    if (months < 0) { years--;  months += 12; }
+    document.getElementById('count-anos').textContent  = years;
+    document.getElementById('count-meses').textContent = months;
+    document.getElementById('count-dias').textContent  = days;
+}
+
+// ============================================================
+// LETTER
+// ============================================================
+function renderLetter() {
+    const c = siteData.couple || {};
+    const name = c.name2 || 'Amor';
+    document.getElementById('letter-greeting').textContent = `${name},`;
+    document.getElementById('letter-body').textContent = siteData.opening || '';
+    if (c.name1) document.getElementById('letter-signature').textContent = `Com todo o meu amor, ${c.name1} ❤️`;
+}
+
+// ============================================================
+// TIMELINE
+// ============================================================
+function renderTimeline() {
+    const list = document.getElementById('timeline-list');
+    const items = siteData.timeline || [];
+
+    if (!items.length) {
+        list.innerHTML = '<p style="color:#aaa;text-align:center;padding:20px">Nenhum evento ainda — adicione no painel de admin ❤️</p>';
+        return;
+    }
+
+    list.innerHTML = items.map((ev, i) => {
+        const photoHtml = ev.image
+            ? `<div class="tl-photo" onclick="openLbFromTimeline('${escHtml(ev.image)}','${escHtml(ev.title||'')}')">
+                <img src="${escHtml(ev.image)}" alt="${escHtml(ev.title||'')}">
+                <div class="tl-photo-caption">${escHtml(ev.title||'')}</div>
+               </div>`
+            : '';
+
+        return `
+        <div class="tl-item fade-in" style="transition-delay:${i*0.12}s">
+            <div class="tl-dot">${escHtml(ev.emoji||'❤️')}</div>
+            <div class="tl-content">
+                <div class="tl-date">${escHtml(ev.date||'')}</div>
+                <div class="tl-title">${escHtml(ev.title||'')}</div>
+                <div class="tl-text">${escHtml(ev.text||'')}</div>
+                ${photoHtml}
+            </div>
+        </div>`;
+    }).join('');
+}
+
+// ============================================================
+// GALLERY
+// ============================================================
+function renderGallery() {
+    const grid = document.getElementById('gallery-grid');
+    const items = siteData.gallery || [];
+    galleryImages = items.filter(g => g.src);
+
+    if (!galleryImages.length) {
+        grid.innerHTML = '<p class="no-gallery">Adicione fotos pelo painel de admin para preenchê-la aqui! 📷</p>';
+        return;
+    }
+
+    const total = galleryImages.length;
+    grid.innerHTML = galleryImages.map((g, i) => {
+        const isVideo = g.type === 'video' || /\.mp4$/i.test(g.src);
+        const media = isVideo
+            ? `<video src="${escHtml(g.src)}" controls playsinline preload="metadata"
+                style="width:100%;max-height:480px;display:block;border-radius:2px;box-shadow:2px 4px 14px rgba(0,0,0,0.13);"></video>`
+            : `<img src="${escHtml(g.src)}" alt="${escHtml(g.caption||'foto')}" onclick="openLightbox(${i})">`;
+        const label = isVideo ? `— vídeo ${i+1} de ${total} —` : `— foto ${i+1} de ${total} —`;
+        return `
+        <div class="gallery-item fade-in" style="transition-delay:${Math.min(i*0.04,1)}s">
+            <div class="gallery-num">${label}</div>
+            ${media}
+            <div class="gallery-caption">${escHtml(g.caption||'')}</div>
+        </div>`;
+    }).join('');
+}
+
+// ============================================================
+// FINAL
+// ============================================================
+function renderFinal() {
+    const c = siteData.couple || {};
+    document.getElementById('final-body').textContent = siteData.finalMessage || '';
+    if (c.name1) document.getElementById('final-signature').textContent = `Com amor infinito, seu marido e eterno namorado`;
+}
+
+// ============================================================
+// MUSIC
+// ============================================================
+function renderMusic() {
+    const m = siteData.music || {};
+    if (!m.src) return;
+
+    const player = document.getElementById('music-player');
+    const audio  = document.getElementById('audio-el');
+    const title  = document.getElementById('music-title');
+    const artist = document.getElementById('music-artist');
+
+    title.textContent  = m.title  || 'Nossa Música';
+    artist.textContent = m.artist || '';
+    audio.src = m.src;
+    player.classList.remove('hidden');
+
+    if (m.autoplay) {
+        const tryPlay = () => { audio.play().catch(() => {}); };
+        document.addEventListener('click', tryPlay, { once: true });
+    }
+
+    audio.addEventListener('timeupdate', () => {
+        if (audio.duration) {
+            document.getElementById('progress-fill').style.width =
+                (audio.currentTime / audio.duration * 100) + '%';
+        }
+    });
+}
+
+function togglePlay() {
+    const audio = document.getElementById('audio-el');
+    const vinyl = document.getElementById('vinyl-disc');
+    const btn   = document.getElementById('play-btn');
+    if (audio.paused) {
+        audio.play();
+        vinyl.classList.add('spinning');
+        btn.textContent = '⏸';
+    } else {
+        audio.pause();
+        vinyl.classList.remove('spinning');
+        btn.textContent = '▶';
+    }
+}
+
+// ============================================================
+// LIGHTBOX
+// ============================================================
+function openLightbox(idx) {
+    lbIndex = idx;
+    showLb();
+}
+
+function openLbFromTimeline(src, cap) {
+    const idx = galleryImages.findIndex(g => g.src === src);
+    if (idx >= 0) { openLightbox(idx); return; }
+    // show single image
+    document.getElementById('lb-img').src = src;
+    document.getElementById('lb-cap').textContent = cap;
+    document.getElementById('lb-prev').style.display = 'none';
+    document.getElementById('lb-next').style.display = 'none';
+    document.getElementById('lightbox').classList.add('open');
+}
+
+function showLb() {
+    const g = galleryImages[lbIndex];
+    if (!g) return;
+    document.getElementById('lb-img').src = g.src;
+    document.getElementById('lb-cap').textContent = g.caption || '';
+    document.getElementById('lb-prev').style.display = galleryImages.length > 1 ? '' : 'none';
+    document.getElementById('lb-next').style.display = galleryImages.length > 1 ? '' : 'none';
+    document.getElementById('lightbox').classList.add('open');
+}
+
+function lbNav(dir) {
+    lbIndex = (lbIndex + dir + galleryImages.length) % galleryImages.length;
+    showLb();
+}
+
+function closeLightbox(e) {
+    if (e.target === document.getElementById('lightbox')) closeLightboxBtn();
+}
+function closeLightboxBtn() {
+    document.getElementById('lightbox').classList.remove('open');
+}
+
+// ============================================================
+// SCROLL ANIMATIONS
+// ============================================================
+function setupScrollAnimations() {
+    const obs = new IntersectionObserver((entries) => {
+        entries.forEach(en => {
+            if (en.isIntersecting) {
+                en.target.classList.add('visible');
+                obs.unobserve(en.target);
+            }
+        });
+    }, { threshold: 0.08 });
+
+    document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+}
+
+// ============================================================
+// CONFETTI
+// ============================================================
+const CONFETTI_EMOJIS = ['❤️','💕','🌹','🌸','✨','💖','🌺','🦋'];
+
+function launchConfetti() {
+    for (let i = 0; i < 60; i++) {
+        setTimeout(() => {
+            const c = document.createElement('div');
+            c.textContent = CONFETTI_EMOJIS[Math.floor(Math.random() * CONFETTI_EMOJIS.length)];
+            const dur = 2 + Math.random() * 4;
+            c.style.cssText = `
+                position: fixed;
+                top: -40px;
+                left: ${Math.random() * 100}vw;
+                font-size: ${14 + Math.random() * 22}px;
+                pointer-events: none;
+                z-index: 9999;
+                animation: confettiFall ${dur}s linear forwards;
+            `;
+            document.body.appendChild(c);
+            setTimeout(() => c.remove(), dur * 1000);
+        }, i * 40);
+    }
+}
+
+// ============================================================
+// ESCAPE HTML
+// ============================================================
+function escHtml(str) {
+    return String(str)
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;');
+}
+
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeLightboxBtn();
+    if (e.key === 'ArrowLeft')  lbNav(-1);
+    if (e.key === 'ArrowRight') lbNav(1);
+});
+
+// ============================================================
+// INIT
+// ============================================================
+loadData();
+</script>
+</body>
+</html>

@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin — Dia dos Namorados ❤️</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #c62828;
+            --primary-soft: #e91e63;
+            --bg: #f8f0f2;
+            --sidebar: #1f0a10;
+            --card: #fff;
+            --border: #e0cdd0;
+            --text: #2d1b1e;
+            --muted: #9e8080;
+            --success: #2e7d32;
+            --danger: #b71c1c;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* ===== LAYOUT ===== */
+        .layout { display: flex; min-height: 100vh; }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            width: 240px;
+            flex-shrink: 0;
+            background: var(--sidebar);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-brand {
+            padding: 28px 20px 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .sidebar-brand h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.7rem;
+            color: #ff8a80;
+            line-height: 1.2;
+        }
+        .sidebar-brand p { font-size: 0.72rem; color: rgba(255,255,255,0.5); margin-top: 4px; }
+
+        .sidebar-nav { padding: 16px 0; flex: 1; }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: rgba(255,255,255,0.65);
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+            border-left: 3px solid transparent;
+        }
+        .nav-item:hover { background: rgba(255,255,255,0.07); color: #fff; }
+        .nav-item.active { background: rgba(233,30,99,0.15); color: #ff8a80; border-left-color: #e91e63; }
+        .nav-item .nav-icon { font-size: 1.1rem; width: 22px; text-align: center; }
+
+        .sidebar-footer {
+            padding: 16px 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .btn-preview {
+            display: block;
+            width: 100%;
+            text-align: center;
+            background: linear-gradient(135deg, #e91e63, #c62828);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+        .btn-preview:hover { opacity: 0.85; }
+
+        /* ===== MAIN ===== */
+        .main {
+            flex: 1;
+            min-width: 0;
+            padding: 32px 32px 60px;
+        }
+
+        /* ===== SECTION PANELS ===== */
+        .panel {
+            display: none;
+        }
+        .panel.active { display: block; }
+
+        .panel-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* ===== CARDS ===== */
+        .card {
+            background: var(--card);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .card-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 16px;
+            font-size: 0.75rem;
+        }
+
+        /* ===== FORM ELEMENTS ===== */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        .form-row.full { grid-template-columns: 1fr; }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        input[type="url"],
+        select,
+        textarea {
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: 0.92rem;
+            font-family: 'Poppins', sans-serif;
+            color: var(--text);
+            background: #fff;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            outline: none;
+            width: 100%;
+        }
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--primary-soft);
+            box-shadow: 0 0 0 3px rgba(233,30,99,0.1);
+        }
+        textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
+
+        .char-hint { font-size: 0.72rem; color: var(--muted); text-align: right; }
+
+        /* ===== TOGGLE ===== */
+        .toggle-wrap {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .toggle {
+            position: relative;
+            width: 46px; height: 24px;
+        }
+        .toggle input { opacity: 0; width: 0; height: 0; }
+        .toggle-slider {
+            position: absolute;
+            inset: 0;
+            background: #ccc;
+            border-radius: 24px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .toggle-slider::before {
+            content: '';
+            position: absolute;
+            width: 18px; height: 18px;
+            border-radius: 50%;
+            background: #fff;
+            top: 3px; left: 3px;
+            transition: transform 0.2s;
+        }
+        .toggle input:checked ~ .toggle-slider { background: var(--primary-soft); }
+        .toggle input:checked ~ .toggle-slider::before { transform: translateX(22px); }
+
+        /* ===== AUDIO PREVIEW ===== */
+        .audio-preview {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            background: #fce4ec;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        .audio-preview audio { flex: 1; height: 32px; }
+        .audio-info { font-size: 0.8rem; color: var(--primary); }
+
+        /* ===== IMAGE PREVIEW ===== */
+        .img-preview-wrap {
+            position: relative;
+            width: 120px;
+            height: 90px;
+            background: #f5f5f5;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 2px dashed var(--border);
+            flex-shrink: 0;
+        }
+        .img-preview-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .img-preview-wrap .no-img {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: #ccc;
+        }
+
+        /* ===== TIMELINE ITEMS ===== */
+        .tl-form-item {
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            padding: 18px;
+            margin-bottom: 16px;
+            background: #fffbfb;
+            position: relative;
+        }
+        .tl-form-item .item-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+        .item-number {
+            background: var(--primary);
+            color: #fff;
+            border-radius: 50%;
+            width: 28px; height: 28px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        .item-header-title { font-weight: 600; font-size: 0.9rem; flex: 1; }
+
+        .btn-remove {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: none;
+            border: none;
+            color: #ccc;
+            font-size: 1.2rem;
+            cursor: pointer;
+            line-height: 1;
+            transition: color 0.2s;
+            padding: 4px;
+        }
+        .btn-remove:hover { color: var(--danger); }
+
+        .btn-add {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            border: 2px dashed var(--primary-soft);
+            border-radius: 8px;
+            background: none;
+            color: var(--primary-soft);
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+            width: 100%;
+            justify-content: center;
+        }
+        .btn-add:hover { background: #fce4ec; }
+
+        /* ===== GALLERY ITEM ===== */
+        .gallery-form-item {
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 12px;
+            background: #fffbfb;
+            position: relative;
+        }
+        .gallery-form-item .form-group { flex: 1; }
+
+        /* ===== MUSIC LIST ===== */
+        .music-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 10px;
+            max-height: 220px;
+            overflow-y: auto;
+            padding: 4px;
+        }
+        .music-option {
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: border-color 0.2s, background 0.2s;
+            font-size: 0.83rem;
+        }
+        .music-option:hover { border-color: var(--primary-soft); background: #fce4ec; }
+        .music-option.selected { border-color: var(--primary); background: #fce4ec; }
+        .music-option .icon { font-size: 1.2rem; flex-shrink: 0; }
+        .music-option .name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        /* ===== BUTTONS ===== */
+        .btn {
+            padding: 11px 24px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: opacity 0.2s, transform 0.15s;
+        }
+        .btn:hover { opacity: 0.88; transform: translateY(-1px); }
+        .btn:active { transform: translateY(0); }
+        .btn-primary { background: linear-gradient(135deg, #e91e63, #c62828); color: #fff; }
+        .btn-secondary { background: #f5f5f5; color: var(--text); border: 1.5px solid var(--border); }
+
+        .save-bar {
+            position: sticky;
+            bottom: 0;
+            background: rgba(255,255,255,0.95);
+            border-top: 1px solid var(--border);
+            padding: 14px 32px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            backdrop-filter: blur(8px);
+            z-index: 100;
+            margin: 0 -32px -60px;
+        }
+        .save-bar .save-info { flex: 1; font-size: 0.8rem; color: var(--muted); }
+
+        /* ===== TOAST ===== */
+        #toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: #1e1e1e;
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 0.88rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s, transform 0.3s;
+            z-index: 9999;
+            white-space: nowrap;
+        }
+        #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        #toast.success::before { content: '✅ '; }
+        #toast.error::before   { content: '❌ '; }
+
+        /* ===== EMOJI PICKER (inline) ===== */
+        .emoji-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 6px;
+        }
+        .emoji-opt {
+            width: 36px; height: 36px;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            background: #fff;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex; align-items: center; justify-content: center;
+            transition: border-color 0.2s;
+        }
+        .emoji-opt:hover { border-color: var(--primary-soft); }
+        .emoji-opt.selected { border-color: var(--primary); background: #fce4ec; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 760px) {
+            .sidebar { display: none; }
+            .main { padding: 20px 16px 80px; }
+            .form-row { grid-template-columns: 1fr; }
+            .save-bar { margin: 0 -16px -60px; padding: 12px 16px; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="toast"></div>
+
+<div class="layout">
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <h1>❤️ Namorados</h1>
+            <p>Painel de Administração</p>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="nav-item active" data-panel="couple">
+                <span class="nav-icon">💑</span> Casal
+            </div>
+            <div class="nav-item" data-panel="music">
+                <span class="nav-icon">🎵</span> Música
+            </div>
+            <div class="nav-item" data-panel="opening">
+                <span class="nav-icon">✉️</span> Carta de Abertura
+            </div>
+            <div class="nav-item" data-panel="gallery">
+                <span class="nav-icon">🖼️</span> Galeria de Fotos
+            </div>
+            <div class="nav-item" data-panel="final">
+                <span class="nav-icon">💌</span> Mensagem Final
+            </div>
+        </nav>
+        <div class="sidebar-footer">
+            <a class="btn-preview" href="/namorados.html" target="_blank">👁️ Ver página</a>
+        </div>
+    </aside>
+
+    <!-- ===== MAIN ===== -->
+    <main class="main">
+
+        <!-- COUPLE -->
+        <div class="panel active" id="panel-couple">
+            <div class="panel-title">💑 Informações do Casal</div>
+            <div class="card">
+                <div class="card-title">Nomes</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Seu Nome (quem escreve)</label>
+                        <input type="text" id="couple-name1" placeholder="Ex: João">
+                    </div>
+                    <div class="form-group">
+                        <label>Nome do(a) Namorado(a)</label>
+                        <input type="text" id="couple-name2" placeholder="Ex: Maria">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Data do início do relacionamento</label>
+                        <input type="date" id="couple-startDate">
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-title">Mensagem do cabeçalho (aparece sob os nomes)</div>
+                <div class="form-group">
+                    <textarea id="couple-headerMsg" rows="3" placeholder="Ex: Para o amor da minha vida, neste Dia dos Namorados especial..."></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- MUSIC -->
+        <div class="panel" id="panel-music">
+            <div class="panel-title">🎵 Música de Fundo</div>
+            <div class="card">
+                <div class="card-title">Selecione uma música da pasta /musicas/</div>
+                <div class="music-list" id="music-list">
+                    <p style="color:#aaa;font-size:0.85rem;padding:10px">Carregando músicas...</p>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-title">Ou informe uma URL de áudio</div>
+                <div class="form-group">
+                    <label>URL do arquivo de música (.mp3, etc.)</label>
+                    <input type="url" id="music-src" placeholder="https://... ou /musicas/nome-da-musica.mp3">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Título da música</label>
+                        <input type="text" id="music-title-inp" placeholder="Ex: Perfect - Ed Sheeran">
+                    </div>
+                    <div class="form-group">
+                        <label>Artista</label>
+                        <input type="text" id="music-artist" placeholder="Ex: Ed Sheeran">
+                    </div>
+                </div>
+                <div class="toggle-wrap" style="margin-top:12px">
+                    <label class="toggle">
+                        <input type="checkbox" id="music-autoplay">
+                        <span class="toggle-slider"></span>
+                    </label>
+                    <span style="font-size:0.88rem">Iniciar automaticamente</span>
+                </div>
+                <div class="audio-preview" id="audio-preview-wrap" style="display:none">
+                    <span class="audio-info">🎧 Prévia:</span>
+                    <audio id="audio-preview" controls></audio>
+                </div>
+            </div>
+        </div>
+
+        <!-- OPENING -->
+        <div class="panel" id="panel-opening">
+            <div class="panel-title">✉️ Carta de Abertura</div>
+            <div class="card">
+                <div class="card-title">Texto da carta — será exibido como texto manuscrito no papel</div>
+                <div class="form-group">
+                    <textarea id="opening-text" rows="12"
+                        placeholder="Escreva aqui a carta de abertura. Use Enter para parágrafos."></textarea>
+                </div>
+                <div class="char-hint" id="opening-chars">0 caracteres</div>
+            </div>
+        </div>
+
+        <!-- GALLERY -->
+        <div class="panel" id="panel-gallery">
+            <div class="panel-title">🖼️ Galeria de Fotos</div>
+            <p style="font-size:0.85rem;color:var(--muted);margin-bottom:20px">
+                Coloque as imagens na pasta <code>/public/fotos/</code> e use o caminho <code>/fotos/nome.jpg</code>, ou cole URLs externas.
+            </p>
+            <div id="gallery-items-wrap">
+                <!-- populated by JS -->
+            </div>
+            <button class="btn-add" onclick="addGalleryItem()">
+                ＋ Adicionar foto
+            </button>
+        </div>
+
+        <!-- FINAL -->
+        <div class="panel" id="panel-final">
+            <div class="panel-title">💌 Mensagem Final</div>
+            <div class="card">
+                <div class="card-title">Mensagem de encerramento — aparece no final da página</div>
+                <div class="form-group">
+                    <textarea id="final-text" rows="12"
+                        placeholder="Escreva sua mensagem final aqui..."></textarea>
+                </div>
+                <div class="char-hint" id="final-chars">0 caracteres</div>
+            </div>
+        </div>
+
+        <!-- SAVE BAR -->
+        <div class="save-bar">
+            <div class="save-info" id="save-info">Edite e clique em Salvar para publicar as alterações.</div>
+            <button class="btn btn-secondary" onclick="loadFromServer()">↺ Recarregar</button>
+            <button class="btn btn-primary" onclick="saveData()">💾 Salvar alterações</button>
+        </div>
+
+    </main>
+</div>
+
+<script>
+// ============================================================
+// STATE
+// ============================================================
+let data = {
+    couple: { name1: '', name2: '', startDate: '', headerMessage: '' },
+    music: { src: '', title: '', artist: '', autoplay: false },
+    opening: '',
+    timeline: [],
+    gallery: [],
+    finalMessage: ''
+};
+
+let timelineIdCounter = 1;
+let galleryIdCounter = 1;
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', () => {
+        const panel = item.dataset.panel;
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        item.classList.add('active');
+        document.getElementById('panel-' + panel).classList.add('active');
+    });
+});
+
+// ============================================================
+// LOAD DATA FROM SERVER
+// ============================================================
+async function loadFromServer() {
+    try {
+        const res = await fetch('/api/namorados');
+        data = await res.json();
+        toast('Dados carregados!', 'success');
+    } catch(e) {
+        const saved = localStorage.getItem('namorados_data');
+        if (saved) { data = JSON.parse(saved); toast('Dados carregados do cache local', 'success'); }
+        else toast('Nenhum dado encontrado', 'error');
+    }
+    populateFields();
+}
+
+function populateFields() {
+    const c = data.couple || {};
+    setVal('couple-name1', c.name1 || '');
+    setVal('couple-name2', c.name2 || '');
+    setVal('couple-startDate', c.startDate || '');
+    setVal('couple-headerMsg', c.headerMessage || '');
+
+    const m = data.music || {};
+    setVal('music-src', m.src || '');
+    setVal('music-title-inp', m.title || '');
+    setVal('music-artist', m.artist || '');
+    document.getElementById('music-autoplay').checked = !!m.autoplay;
+    updateAudioPreview(m.src);
+    if (m.src) highlightSelectedMusic(m.src);
+
+    setVal('opening-text', data.opening || '');
+    updateCharCount('opening-text', 'opening-chars');
+
+    setVal('final-text', data.finalMessage || '');
+    updateCharCount('final-text', 'final-chars');
+
+    renderGalleryItems();
+}
+
+function setVal(id, val) {
+    const el = document.getElementById(id);
+    if (el) el.value = val;
+}
+
+// ============================================================
+// SAVE DATA TO SERVER
+// ============================================================
+async function saveData() {
+    collectFormData();
+
+    document.getElementById('save-info').textContent = 'Salvando...';
+
+    try {
+        const res = await fetch('/api/namorados', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        const json = await res.json();
+        if (json.ok) {
+            localStorage.setItem('namorados_data', JSON.stringify(data));
+            document.getElementById('save-info').textContent = '✅ Salvo com sucesso!';
+            toast('Salvo com sucesso! ❤️', 'success');
+        } else {
+            throw new Error('Erro ao salvar');
+        }
+    } catch(e) {
+        document.getElementById('save-info').textContent = '❌ Erro ao salvar.';
+        toast('Erro ao salvar: ' + e.message, 'error');
+    }
+}
+
+function collectFormData() {
+    data.couple = {
+        name1: document.getElementById('couple-name1').value.trim(),
+        name2: document.getElementById('couple-name2').value.trim(),
+        startDate: document.getElementById('couple-startDate').value,
+        headerMessage: document.getElementById('couple-headerMsg').value.trim()
+    };
+    data.music = {
+        src: document.getElementById('music-src').value.trim(),
+        title: document.getElementById('music-title-inp').value.trim(),
+        artist: document.getElementById('music-artist').value.trim(),
+        autoplay: document.getElementById('music-autoplay').checked
+    };
+    data.opening = document.getElementById('opening-text').value;
+    data.finalMessage = document.getElementById('final-text').value;
+    // gallery already maintained in data object
+}
+
+// ============================================================
+// MUSIC LIST
+// ============================================================
+async function loadMusicList() {
+    try {
+        const res = await fetch('/api/musicas');
+        const files = await res.json();
+        const list = document.getElementById('music-list');
+
+        if (!files.length) {
+            list.innerHTML = '<p style="color:#aaa;font-size:0.85rem;padding:10px">Nenhuma música encontrada em /musicas/</p>';
+            return;
+        }
+
+        list.innerHTML = files.map(f => {
+            const path = '/musicas/' + encodeURIComponent(f);
+            const name = f.replace(/\.mp3$/i, '').substring(0, 50);
+            return `<div class="music-option" data-src="${escHtml(path)}" onclick="selectMusicFile('${escHtml(path)}','${escHtml(name)}')">
+                <span class="icon">🎵</span>
+                <span class="name" title="${escHtml(f)}">${escHtml(name)}</span>
+            </div>`;
+        }).join('');
+
+    } catch(e) {
+        document.getElementById('music-list').innerHTML = '<p style="color:#aaa;font-size:0.85rem;padding:10px">Erro ao carregar músicas.</p>';
+    }
+}
+
+function selectMusicFile(src, name) {
+    document.getElementById('music-src').value = src;
+    if (!document.getElementById('music-title-inp').value) {
+        document.getElementById('music-title-inp').value = name;
+    }
+    updateAudioPreview(src);
+    highlightSelectedMusic(src);
+}
+
+function highlightSelectedMusic(src) {
+    document.querySelectorAll('.music-option').forEach(o => {
+        o.classList.toggle('selected', o.dataset.src === src);
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('music-src').addEventListener('input', function() {
+        updateAudioPreview(this.value);
+    });
+});
+
+function updateAudioPreview(src) {
+    const wrap  = document.getElementById('audio-preview-wrap');
+    const audio = document.getElementById('audio-preview');
+    if (src) {
+        audio.src = src;
+        wrap.style.display = 'flex';
+    } else {
+        wrap.style.display = 'none';
+    }
+}
+
+// ============================================================
+// GALLERY
+// ============================================================
+function renderGalleryItems() {
+    const wrap = document.getElementById('gallery-items-wrap');
+    wrap.innerHTML = '';
+    (data.gallery || []).forEach((item, i) => {
+        wrap.appendChild(buildGalleryFormItem(item, i));
+    });
+    if (!data.gallery.length) {
+        wrap.innerHTML = '<p style="color:#aaa;text-align:center;padding:20px;font-size:0.88rem">Nenhuma foto adicionada ainda.</p>';
+    }
+}
+
+function buildGalleryFormItem(item, i) {
+    const div = document.createElement('div');
+    div.className = 'gallery-form-item';
+    div.dataset.gid = item.id;
+
+    div.innerHTML = `
+        <div class="img-preview-wrap" id="gal-img-prev-${item.id}" style="width:100px;height:75px">
+            ${item.src ? `<img src="${escHtml(item.src)}" alt="">` : `<span class="no-img">🖼️</span>`}
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;gap:10px">
+            <div class="form-group">
+                <label>URL da foto</label>
+                <input type="url" class="gal-src" data-gid="${item.id}" value="${escHtml(item.src||'')}" placeholder="/fotos/foto.jpg ou URL externa">
+            </div>
+            <div class="form-group">
+                <label>Legenda</label>
+                <input type="text" class="gal-cap" data-gid="${item.id}" value="${escHtml(item.caption||'')}" placeholder="Ex: Uma tarde especial juntos ❤️">
+            </div>
+        </div>
+        <button class="btn-remove" style="position:static;margin-left:4px" onclick="removeGalleryItem('${item.id}')">✕</button>`;
+
+    div.querySelectorAll('[data-gid]').forEach(el => {
+        el.addEventListener('input', () => syncGalleryItem(item.id));
+    });
+
+    return div;
+}
+
+function syncGalleryItem(id) {
+    const item = data.gallery.find(g => g.id === id);
+    if (!item) return;
+    const src = document.querySelector(`.gal-src[data-gid="${id}"]`)?.value || '';
+    const cap = document.querySelector(`.gal-cap[data-gid="${id}"]`)?.value || '';
+    item.src = src;
+    item.caption = cap;
+    const prevWrap = document.getElementById('gal-img-prev-' + id);
+    if (prevWrap) {
+        prevWrap.innerHTML = src
+            ? `<img src="${escHtml(src)}" alt="">`
+            : `<span class="no-img">🖼️</span>`;
+    }
+}
+
+function addGalleryItem() {
+    const id = 'g-' + Date.now();
+    const item = { id, src: '', caption: '' };
+    data.gallery.push(item);
+    renderGalleryItems();
+    setTimeout(() => {
+        const wrap = document.getElementById('gallery-items-wrap');
+        if (wrap.lastElementChild) wrap.lastElementChild.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 100);
+}
+
+function removeGalleryItem(id) {
+    if (!confirm('Remover esta foto?')) return;
+    data.gallery = data.gallery.filter(g => g.id !== id);
+    renderGalleryItems();
+}
+
+// ============================================================
+// CHAR COUNTER
+// ============================================================
+function updateCharCount(inputId, countId) {
+    const el = document.getElementById(inputId);
+    const cnt = document.getElementById(countId);
+    if (el && cnt) cnt.textContent = el.value.length + ' caracteres';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('opening-text').addEventListener('input', () =>
+        updateCharCount('opening-text', 'opening-chars'));
+    document.getElementById('final-text').addEventListener('input', () =>
+        updateCharCount('final-text', 'final-chars'));
+});
+
+// ============================================================
+// TOAST
+// ============================================================
+let toastTimer = null;
+function toast(msg, type = 'success') {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.className = 'show ' + type;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.className = '', 3000);
+}
+
+// ============================================================
+// UTILS
+// ============================================================
+function escHtml(str) {
+    return String(str)
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ============================================================
+// INIT
+// ============================================================
+loadMusicList();
+loadFromServer();
+</script>
+</body>
+</html>
