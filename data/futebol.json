@@ -1,0 +1,413 @@
+{
+  "evento": {
+    "nome": "Grande Campeonato de Futebol - 1ª Edição",
+    "data": "",
+    "horaInicio": "09:00",
+    "local": "",
+    "descricao": "",
+    "status": "agendado"
+  },
+  "quadras": [],
+  "categorias": [
+    {
+      "id": 1,
+      "nome": "Padrão",
+      "numChaves": 1,
+      "classificadosPorChave": 4
+    }
+  ],
+  "times": [
+    {
+      "id": 1,
+      "nome": "time da ana",
+      "qtdJogadores": 3,
+      "jogadores": [
+        {
+          "id": 1,
+          "nome": "ana",
+          "gols": 3
+        },
+        {
+          "id": 2,
+          "nome": "isabella.millena",
+          "gols": 0
+        },
+        {
+          "id": 3,
+          "nome": "laura",
+          "gols": 0
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "nome": "amigos do tulio",
+      "qtdJogadores": 3,
+      "jogadores": [
+        {
+          "id": 1,
+          "nome": "gui",
+          "gols": 4
+        },
+        {
+          "id": 2,
+          "nome": "pedro",
+          "gols": 2
+        },
+        {
+          "id": 3,
+          "nome": "felix",
+          "gols": 0
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "nome": "time heteros tops",
+      "qtdJogadores": 3,
+      "jogadores": [
+        {
+          "id": 1,
+          "nome": "vitor",
+          "gols": 3
+        },
+        {
+          "id": 2,
+          "nome": "tanaka",
+          "gols": 0
+        },
+        {
+          "id": 3,
+          "nome": "arthur",
+          "gols": 0
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "nome": "time das chatas",
+      "qtdJogadores": 4,
+      "jogadores": [
+        {
+          "id": 1,
+          "nome": "ju",
+          "gols": 3
+        },
+        {
+          "id": 2,
+          "nome": "raissa",
+          "gols": 1
+        },
+        {
+          "id": 3,
+          "nome": "valentina",
+          "gols": 0
+        },
+        {
+          "id": 4,
+          "nome": "yaya",
+          "gols": 0
+        }
+      ]
+    }
+  ],
+  "inscricoes": [],
+  "partidas": [
+    {
+      "id": 1,
+      "categoriaId": 1,
+      "chaveId": "A",
+      "j1Id": 1,
+      "j2Id": 4,
+      "fase": "grupos",
+      "rodada": 1,
+      "bracketPos": null,
+      "gols1": 2,
+      "gols2": 2,
+      "golsDetalhe1": [
+        {
+          "jogadorId": 1,
+          "nome": "ana",
+          "at": "2026-10-27T23:57:33.619Z"
+        },
+        {
+          "jogadorId": 1,
+          "nome": "ana",
+          "at": "2026-10-27T23:57:36.766Z"
+        }
+      ],
+      "golsDetalhe2": [
+        {
+          "jogadorId": 1,
+          "nome": "ju",
+          "at": "2026-10-27T23:57:38.851Z"
+        },
+        {
+          "jogadorId": 2,
+          "nome": "raissa",
+          "at": "2026-10-27T23:57:40.165Z"
+        }
+      ],
+      "penaltis1": null,
+      "penaltis2": null,
+      "status": "encerrado",
+      "vencedorId": null
+    },
+    {
+      "id": 2,
+      "categoriaId": 1,
+      "chaveId": "A",
+      "j1Id": 2,
+      "j2Id": 3,
+      "fase": "grupos",
+      "rodada": 1,
+      "bracketPos": null,
+      "gols1": 2,
+      "gols2": 0,
+      "golsDetalhe1": [
+        {
+          "jogadorId": 1,
+          "nome": "gui",
+          "at": "2026-10-27T23:57:56.258Z"
+        },
+        {
+          "jogadorId": 2,
+          "nome": "pedro",
+          "at": "2026-10-27T23:58:01.065Z"
+        }
+      ],
+      "golsDetalhe2": [],
+      "penaltis1": null,
+      "penaltis2": null,
+      "status": "encerrado",
+      "vencedorId": 2
+    },
+    {
+      "id": 3,
+      "categoriaId": 1,
+      "chaveId": "A",
+      "j1Id": 1,
+      "j2Id": 3,
+      "fase": "grupos",
+      "rodada": 2,
+      "bracketPos": null,
+      "gols1": 1,
+      "gols2": 0,
+      "golsDetalhe1": [
+        {
+          "jogadorId": 1,
+          "nome": "ana",
+          "at": "2026-10-28T00:00:58.263Z"
+        }
+      ],
+      "golsDetalhe2": [],
+      "penaltis1": null,
+      "penaltis2": null,
+      "status": "encerrado",
+      "vencedorId": 1
+    },
+    {
+      "id": 4,
+      "categoriaId": 1,
+      "chaveId": "A",
+      "j1Id": 4,
+      "j2Id": 2,
+      "fase": "grupos",
+      "rodada": 2,
+      "bracketPos": null,
+      "gols1": 1,
+      "gols2": 2,
+      "golsDetalhe1": [
+        {
+          "jogadorId": 1,
+          "nome": "ju",
+          "at": "2026-10-28T00:01:37.240Z"
+        }
+      ],
+      "golsDetalhe2": [
+        {
+          "jogadorId": 1,
+          "nome": "gui",
+          "at": "2026-10-28T00:01:38.776Z"
+        },
+        {
+          "jogadorId": 1,
+          "nome": "gui",
+          "at": "2026-10-28T00:01:40.005Z"
+        }
+      ],
+      "penaltis1": null,
+      "penaltis2": null,
+      "status": "encerrado",
+      "vencedorId": 2
+    },
+    {
+      "id": 5,
+      "categoriaId": 1,
+      "chaveId": "A",
+      "j1Id": 1,
+      "j2Id": 2,
+      "fase": "grupos",
+      "rodada": 3,
+      "bracketPos": null,
+      "gols1": 0,
+      "gols2": 1,
+      "golsDetalhe1": [],
+      "golsDetalhe2": [
+        {
+          "jogadorId": 1,
+          "nome": "gui",
+          "at": "2026-10-28T00:01:50.612Z"
+        }
+      ],
+      "penaltis1": null,
+      "penaltis2": null,
+      "status": "encerrado",
+      "vencedorId": 2
+    },
+    {
+      "id": 6,
+      "categoriaId": 1,
+      "chaveId": "A",
+      "j1Id": 3,
+      "j2Id": 4,
+      "fase": "grupos",
+      "rodada": 3,
+      "bracketPos": null,
+      "gols1": 1,
+      "gols2": 0,
+      "golsDetalhe1": [
+        {
+          "jogadorId": 1,
+          "nome": "vitor",
+          "at": "2026-10-28T00:03:32.977Z"
+        }
+      ],
+      "golsDetalhe2": [],
+      "penaltis1": null,
+      "penaltis2": null,
+      "status": "encerrado",
+      "vencedorId": 3
+    },
+    {
+      "id": 7,
+      "categoriaId": 1,
+      "chaveId": null,
+      "j1Id": 2,
+      "j2Id": 1,
+      "fase": "final",
+      "bracketPos": 0,
+      "gols1": 1,
+      "gols2": 0,
+      "golsDetalhe1": [
+        {
+          "jogadorId": 2,
+          "nome": "pedro",
+          "at": "2026-10-28T00:03:58.905Z"
+        }
+      ],
+      "golsDetalhe2": [],
+      "penaltis1": null,
+      "penaltis2": null,
+      "status": "encerrado",
+      "vencedorId": 2,
+      "rodada": null
+    },
+    {
+      "id": 8,
+      "categoriaId": 1,
+      "chaveId": null,
+      "j1Id": 3,
+      "j2Id": 4,
+      "fase": "terceiro",
+      "bracketPos": 0,
+      "gols1": 2,
+      "gols2": 1,
+      "golsDetalhe1": [
+        {
+          "jogadorId": 1,
+          "nome": "vitor",
+          "at": "2026-10-28T00:03:49.002Z"
+        },
+        {
+          "jogadorId": 1,
+          "nome": "vitor",
+          "at": "2026-10-28T00:03:51.845Z"
+        }
+      ],
+      "golsDetalhe2": [
+        {
+          "jogadorId": 1,
+          "nome": "ju",
+          "at": "2026-10-28T00:03:50.607Z"
+        }
+      ],
+      "penaltis1": null,
+      "penaltis2": null,
+      "status": "encerrado",
+      "vencedorId": 3,
+      "rodada": null
+    }
+  ],
+  "fase": "mata-mata",
+  "odds": {
+    "usuarios": {
+      "09752828671": {
+        "cpf": "09752828671",
+        "nome": "Ana",
+        "saldo": 286.65,
+        "ts": 1793145608812
+      }
+    },
+    "apostas": [
+      {
+        "id": "1793145807781bf6701",
+        "cpf": "09752828671",
+        "nome": "Ana",
+        "matchId": 6,
+        "tipo": "vitoria_j1",
+        "label": "🏆 time heteros tops vence",
+        "odd": 4.41,
+        "valor": 65,
+        "retorno": 286.65,
+        "linha": 0,
+        "status": "ganhou",
+        "ts": 1793145807781,
+        "resultGols": 1,
+        "resolvidaEm": 1793145813688
+      },
+      {
+        "id": "1793145707884fjiass",
+        "cpf": "09752828671",
+        "nome": "Ana",
+        "matchId": 5,
+        "tipo": "vitoria_j1",
+        "label": "🏆 time da ana vence",
+        "odd": 3.38,
+        "valor": 357.5,
+        "retorno": 1208.35,
+        "linha": 0,
+        "status": "perdeu",
+        "ts": 1793145707884,
+        "resultGols": 1,
+        "resolvidaEm": 1793145711415
+      },
+      {
+        "id": "1793145638020upe1m3",
+        "cpf": "09752828671",
+        "nome": "Ana",
+        "matchId": 3,
+        "tipo": "vitoria_j1",
+        "label": "🏆 time da ana vence",
+        "odd": 2.05,
+        "valor": 150,
+        "retorno": 307.5,
+        "linha": 0,
+        "status": "ganhou",
+        "ts": 1793145638020,
+        "resultGols": 1,
+        "resolvidaEm": 1793145660834
+      }
+    ]
+  }
+}

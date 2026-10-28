@@ -1924,7 +1924,7 @@ const server = http.createServer((req, res) => {
                     for (let m = 0; m < matchesPerRound; m++) {
                         const j1 = arr[m], j2 = arr[arr.length - 1 - m];
                         if (j1 !== null && j2 !== null) {
-                            novasPartidas.push({ id: pid++, categoriaId, chaveId, j1Id: j1, j2Id: j2, fase: 'grupos', rodada: r + 1, bracketPos: null, gols1: 0, gols2: 0, status: 'agendado', vencedorId: null });
+                            novasPartidas.push({ id: pid++, categoriaId, chaveId, j1Id: j1, j2Id: j2, fase: 'grupos', rodada: r + 1, bracketPos: null, gols1: 0, gols2: 0, golsDetalhe1: [], golsDetalhe2: [], status: 'agendado', vencedorId: null });
                         }
                     }
                     const last = arr.splice(arr.length - 1, 1)[0];
@@ -2065,7 +2065,7 @@ const server = http.createServer((req, res) => {
                         id: pid++, categoriaId, chaveId: null,
                         j1Id: j1, j2Id: j2,
                         fase: primFase, bracketPos: i,
-                        gols1: 0, gols2: 0, status: 'agendado', vencedorId: null, rodada: null,
+                        gols1: 0, gols2: 0, golsDetalhe1: [], golsDetalhe2: [], status: 'agendado', vencedorId: null, rodada: null,
                         byeSeedOpponent
                     });
                 }
@@ -2080,7 +2080,7 @@ const server = http.createServer((req, res) => {
                             id: pid++, categoriaId, chaveId: null,
                             j1Id: byeSeeds[i], j2Id: byeSeeds[i + 1],
                             fase: nextFase, bracketPos: i / 2,
-                            gols1: 0, gols2: 0, status: 'agendado', vencedorId: null, rodada: null,
+                            gols1: 0, gols2: 0, golsDetalhe1: [], golsDetalhe2: [], status: 'agendado', vencedorId: null, rodada: null,
                             byeSeedOpponent: null
                         });
                     }
@@ -2127,6 +2127,633 @@ const server = http.createServer((req, res) => {
         writeCirrose(vazio); sendJSON(res, vazio); return;
     }
     // ==================== FIM API COPA CIRROSE ====================
+
+// ==================== API CAMPEONATO FUTEBOL ====================
+    const FUTEBOL_FILE = path.join(__dirname, 'data', 'futebol.json');
+    const FUTEBOL_CAT_PADRAO = { id: 1, nome: 'Padrão', numChaves: 2, classificadosPorChave: 2 };
+    function readFutebol() {
+        try {
+            const d = JSON.parse(fs.readFileSync(FUTEBOL_FILE, 'utf8'));
+            d.evento = d.evento || { nome: 'Grande Campeonato de Futebol - 1ª Edição', data: '', horaInicio: '09:00', local: '', descricao: '', status: 'agendado' };
+            if (!d.quadras) d.quadras = [];
+            if (!d.categorias) d.categorias = [];
+            if (!d.times) d.times = [];
+            if (!d.inscricoes) d.inscricoes = [];
+            if (!d.partidas) d.partidas = [];
+            if (!d.odds) d.odds = {};
+            if (!d.odds.usuarios || typeof d.odds.usuarios !== 'object') d.odds.usuarios = {};
+            if (!Array.isArray(d.odds.apostas)) d.odds.apostas = [];
+            if (!d.fase) d.fase = 'cadastro';
+            if (d.categorias.length === 0) d.categorias = [{ ...FUTEBOL_CAT_PADRAO }];
+
+            d.times = d.times.map(t => {
+                const base = Array.isArray(t.jogadores)
+                    ? t.jogadores.map(j => ({
+                        id: Number(j.id),
+                        nome: (j.nome || '').trim(),
+                        gols: Math.max(0, parseInt(j.gols, 10) || 0)
+                    })).filter(j => j.id && j.nome)
+                    : [];
+                const qtd = Math.max(0, parseInt(t.qtdJogadores, 10) || 0);
+                const jogadores = base.length > 0
+                    ? base
+                    : (qtd > 0 ? Array.from({ length: qtd }, (_, i) => ({ id: i + 1, nome: `Jogador ${i + 1}`, gols: 0 })) : []);
+                return { ...t, jogadores };
+            });
+
+            d.partidas = d.partidas.map(p => ({
+                ...p,
+                golsDetalhe1: Array.isArray(p.golsDetalhe1) ? p.golsDetalhe1 : [],
+                golsDetalhe2: Array.isArray(p.golsDetalhe2) ? p.golsDetalhe2 : [],
+                penaltis1: p.penaltis1 !== undefined && p.penaltis1 !== null ? Math.max(0, parseInt(p.penaltis1, 10) || 0) : null,
+                penaltis2: p.penaltis2 !== undefined && p.penaltis2 !== null ? Math.max(0, parseInt(p.penaltis2, 10) || 0) : null
+            }));
+            return d;
+        } catch(e) {
+            return { evento: { nome: 'Grande Campeonato de Futebol - 1ª Edição', data: '', horaInicio: '09:00', local: '', descricao: '', status: 'agendado' }, quadras: [], categorias: [{ ...FUTEBOL_CAT_PADRAO }], times: [], inscricoes: [], partidas: [], odds: { usuarios: {}, apostas: [] }, fase: 'cadastro' };
+        }
+    }
+    function writeFutebol(d) { fs.writeFileSync(FUTEBOL_FILE, JSON.stringify(d, null, 2), 'utf8'); }
+
+    function resolverApostasFutebol(d, partidaId = null) {
+        const odds = d.odds || (d.odds = { usuarios: {}, apostas: [] });
+        odds.usuarios = odds.usuarios || {};
+        odds.apostas = Array.isArray(odds.apostas) ? odds.apostas : [];
+
+        const alvo = (p) => partidaId == null || p.id === partidaId;
+        odds.apostas.forEach(a => {
+            if (!a || a.status !== 'pendente') return;
+            const p = (d.partidas || []).find(pp => pp.id === a.matchId && pp.status === 'encerrado' && alvo(pp));
+            if (!p) return;
+            const totalGols = (p.gols1 || 0) + (p.gols2 || 0);
+            let ganhou = false;
+            if (a.tipo === 'vitoria_j1') ganhou = p.vencedorId === p.j1Id;
+            else if (a.tipo === 'vitoria_j2') ganhou = p.vencedorId === p.j2Id;
+            else if (a.tipo === 'empate') ganhou = (p.gols1 || 0) === (p.gols2 || 0);
+            else if (a.tipo === 'over') ganhou = totalGols > (a.linha || 0);
+            else if (a.tipo === 'under') ganhou = totalGols <= (a.linha || 0);
+
+            a.status = ganhou ? 'ganhou' : 'perdeu';
+            a.resultGols = totalGols;
+            a.resolvidaEm = Date.now();
+            if (ganhou) {
+                const u = odds.usuarios[a.cpf];
+                if (u) u.saldo = Math.round(((u.saldo || 0) + (a.retorno || 0)) * 100) / 100;
+            }
+        });
+    }
+
+    function reabrirApostasPartidaFutebol(d, partidaId) {
+        const odds = d.odds || (d.odds = { usuarios: {}, apostas: [] });
+        odds.usuarios = odds.usuarios || {};
+        odds.apostas = Array.isArray(odds.apostas) ? odds.apostas : [];
+        odds.apostas.forEach(a => {
+            if (!a || a.matchId !== partidaId || a.status === 'pendente') return;
+            if (a.status === 'ganhou') {
+                const u = odds.usuarios[a.cpf];
+                if (u) u.saldo = Math.round(((u.saldo || 0) - (a.retorno || 0)) * 100) / 100;
+            }
+            a.status = 'pendente';
+            delete a.resultGols;
+            delete a.resolvidaEm;
+        });
+    }
+
+    // GET /api/futebol
+    if (url === '/api/futebol' && req.method === 'GET') {
+        const d = readFutebol();
+        resolverApostasFutebol(d);
+        writeFutebol(d);
+        sendJSON(res, d); return;
+    }
+
+    // GET /api/futebol/odds
+    if (url === '/api/futebol/odds' && req.method === 'GET') {
+        const d = readFutebol();
+        resolverApostasFutebol(d);
+        writeFutebol(d);
+        sendJSON(res, { usuarios: d.odds?.usuarios || {}, apostas: d.odds?.apostas || [] });
+        return;
+    }
+
+    // POST /api/futebol/odds/login
+    if (url === '/api/futebol/odds/login' && req.method === 'POST') {
+        readBody(req, body => {
+            const d = readFutebol();
+            const cpf = String(body.cpf || '').replace(/\D/g, '');
+            const nome = String(body.nome || '').trim();
+            if (!cpf || cpf.length !== 11) { res.writeHead(400); res.end(JSON.stringify({ erro: 'CPF inválido' })); return; }
+            d.odds = d.odds || { usuarios: {}, apostas: [] };
+            d.odds.usuarios = d.odds.usuarios || {};
+            const created = !d.odds.usuarios[cpf];
+            let autoNamed = false;
+            if (!d.odds.usuarios[cpf]) {
+                const nomeFinal = nome || `Apostador ${cpf.slice(-4)}`;
+                autoNamed = !nome;
+                d.odds.usuarios[cpf] = { cpf, nome: nomeFinal, saldo: 200, ts: Date.now() };
+            }
+            writeFutebol(d);
+            sendJSON(res, { usuario: d.odds.usuarios[cpf], created, autoNamed });
+            try { wss.clients.forEach(cl => { if (cl.readyState === 1) cl.send(JSON.stringify({ type: 'futebol-update', data: d })); }); } catch(_) {}
+        });
+        return;
+    }
+
+    // POST /api/futebol/odds/apostas
+    if (url === '/api/futebol/odds/apostas' && req.method === 'POST') {
+        readBody(req, body => {
+            const d = readFutebol();
+            const cpf = String(body.cpf || '').replace(/\D/g, '');
+            const matchId = Number(body.matchId);
+            const valor = Math.round((Number(body.valor) || 0) * 100) / 100;
+            const odd = Number(body.odd) || 0;
+            const linha = Number(body.linha) || 0;
+            const tipo = String(body.tipo || '');
+            const label = String(body.label || '').trim();
+
+            if (!cpf || cpf.length !== 11) { res.writeHead(400); res.end(JSON.stringify({ erro: 'CPF inválido' })); return; }
+            d.odds = d.odds || { usuarios: {}, apostas: [] };
+            d.odds.usuarios = d.odds.usuarios || {};
+            d.odds.apostas = Array.isArray(d.odds.apostas) ? d.odds.apostas : [];
+            const u = d.odds.usuarios[cpf];
+            if (!u) { res.writeHead(404); res.end(JSON.stringify({ erro: 'Usuário não encontrado' })); return; }
+
+            const p = (d.partidas || []).find(x => x.id === matchId);
+            if (!p) { res.writeHead(404); res.end(JSON.stringify({ erro: 'Partida não encontrada' })); return; }
+            if (p.status !== 'agendado') { res.writeHead(400); res.end(JSON.stringify({ erro: 'Apostas fechadas para esta partida' })); return; }
+
+            if (!valor || valor < 0.5) { res.writeHead(400); res.end(JSON.stringify({ erro: 'Valor mínimo: R$ 0,50' })); return; }
+            if (!odd || odd <= 1) { res.writeHead(400); res.end(JSON.stringify({ erro: 'Odd inválida' })); return; }
+            if ((u.saldo || 0) < valor) { res.writeHead(400); res.end(JSON.stringify({ erro: 'Saldo insuficiente' })); return; }
+
+            const jaApostou = d.odds.apostas.some(a => a.cpf === cpf && a.matchId === matchId);
+            if (jaApostou) { res.writeHead(400); res.end(JSON.stringify({ erro: 'Você já apostou nessa partida' })); return; }
+
+            const retorno = Math.round(valor * odd * 100) / 100;
+            const aposta = {
+                id: String(Date.now()) + Math.random().toString(36).slice(2, 8),
+                cpf,
+                nome: u.nome,
+                matchId,
+                tipo,
+                label,
+                odd,
+                valor,
+                retorno,
+                linha,
+                status: 'pendente',
+                ts: Date.now()
+            };
+            u.saldo = Math.round(((u.saldo || 0) - valor) * 100) / 100;
+            d.odds.apostas.unshift(aposta);
+
+            writeFutebol(d);
+            sendJSON(res, { aposta, usuario: u });
+            try { wss.clients.forEach(cl => { if (cl.readyState === 1) cl.send(JSON.stringify({ type: 'futebol-update', data: d })); }); } catch(_) {}
+        });
+        return;
+    }
+
+    // POST /api/futebol/odds/credito
+    if (url === '/api/futebol/odds/credito' && req.method === 'POST') {
+        readBody(req, body => {
+            const d = readFutebol();
+            const cpf = String(body.cpf || '').replace(/\D/g, '');
+            const valor = Math.round((Number(body.valor) || 0) * 100) / 100;
+            const origem = String(body.origem || '').trim();
+            if (!cpf || cpf.length !== 11) { res.writeHead(400); res.end(JSON.stringify({ erro: 'CPF inválido' })); return; }
+            if (!valor || valor <= 0) { res.writeHead(400); res.end(JSON.stringify({ erro: 'Valor inválido' })); return; }
+            d.odds = d.odds || { usuarios: {}, apostas: [] };
+            d.odds.usuarios = d.odds.usuarios || {};
+            const u = d.odds.usuarios[cpf];
+            if (!u) { res.writeHead(404); res.end(JSON.stringify({ erro: 'Usuário não encontrado' })); return; }
+
+            u.saldo = Math.round(((u.saldo || 0) + valor) * 100) / 100;
+            writeFutebol(d);
+            sendJSON(res, { usuario: u, valor, origem });
+            try { wss.clients.forEach(cl => { if (cl.readyState === 1) cl.send(JSON.stringify({ type: 'futebol-update', data: d })); }); } catch(_) {}
+        });
+        return;
+    }
+    // PUT /api/futebol/evento
+    if (url === '/api/futebol/evento' && req.method === 'PUT') {
+        readBody(req, body => { const d = readFutebol(); d.evento = { ...d.evento, ...body }; writeFutebol(d); sendJSON(res, d.evento); }); return;
+    }
+
+    // GET /api/futebol/quadras
+    if (url === '/api/futebol/quadras' && req.method === 'GET') {
+        sendJSON(res, readFutebol().quadras || []); return;
+    }
+    // POST /api/futebol/quadras
+    if (url === '/api/futebol/quadras' && req.method === 'POST') {
+        readBody(req, body => {
+            const d = readFutebol();
+            const nome = (body.nome || '').trim();
+            if (!nome) { res.writeHead(400); res.end(JSON.stringify({ erro: 'Nome obrigatório' })); return; }
+            const maxId = (d.quadras || []).reduce((m, q) => Math.max(m, q.id), 0);
+            const q = { id: maxId + 1, nome };
+            d.quadras = d.quadras || []; d.quadras.push(q);
+            writeFutebol(d); sendJSON(res, q);
+        }); return;
+    }
+    // DELETE /api/futebol/quadras/:id
+    if (url.startsWith('/api/futebol/quadras/') && req.method === 'DELETE') {
+        const id = parseInt(url.split('/').pop());
+        const d = readFutebol();
+        d.quadras = (d.quadras || []).filter(q => q.id !== id);
+        writeFutebol(d); sendJSON(res, { ok: true }); return;
+    }
+
+    // GET /api/futebol/categorias
+    if (url === '/api/futebol/categorias' && req.method === 'GET') {
+        sendJSON(res, readFutebol().categorias || []); return;
+    }
+    // POST /api/futebol/categorias
+    if (url === '/api/futebol/categorias' && req.method === 'POST') {
+        readBody(req, body => {
+            const d = readFutebol();
+            const nome = (body.nome || '').trim();
+            if (!nome) { res.writeHead(400); res.end(JSON.stringify({ erro: 'Nome obrigatório' })); return; }
+            const maxId = (d.categorias || []).reduce((m, c) => Math.max(m, c.id), 0);
+            const cat = { id: maxId + 1, nome, numChaves: body.numChaves || 1, classificadosPorChave: body.classificadosPorChave || 2 };
+            d.categorias = d.categorias || []; d.categorias.push(cat);
+            writeFutebol(d); sendJSON(res, cat);
+        }); return;
+    }
+    // PUT /api/futebol/categorias/:id
+    if (url.startsWith('/api/futebol/categorias/') && req.method === 'PUT') {
+        const id = parseInt(url.split('/').pop());
+        readBody(req, body => {
+            const d = readFutebol();
+            const idx = (d.categorias || []).findIndex(c => c.id === id);
+            if (idx < 0) { res.writeHead(404); res.end(JSON.stringify({ erro: 'Categoria não encontrada' })); return; }
+            const allowed = ['nome','numChaves','classificadosPorChave'];
+            allowed.forEach(k => { if (body[k] !== undefined) d.categorias[idx][k] = body[k] !== '' ? Number(body[k]) || body[k] : body[k]; });
+            writeFutebol(d); sendJSON(res, d.categorias[idx]);
+        }); return;
+    }
+    // DELETE /api/futebol/categorias/:id
+    if (url.startsWith('/api/futebol/categorias/') && req.method === 'DELETE') {
+        const id = parseInt(url.split('/').pop());
+        const d = readFutebol();
+        d.categorias = (d.categorias || []).filter(c => c.id !== id);
+        d.inscricoes = (d.inscricoes || []).filter(i => i.categoriaId !== id);
+        d.partidas = (d.partidas || []).filter(p => p.categoriaId !== id);
+        writeFutebol(d); sendJSON(res, { ok: true }); return;
+    }
+
+    // POST /api/futebol/times
+    if (url === '/api/futebol/times' && req.method === 'POST') {
+        readBody(req, body => {
+            const d = readFutebol();
+            const nome = (body.nome || '').trim();
+            if (!nome) { res.writeHead(400); res.end(JSON.stringify({ erro: 'Nome obrigatório' })); return; }
+            const maxId = (d.times || []).reduce((m, j) => Math.max(m, j.id), 0);
+            const qtdJogadores = body.qtdJogadores !== undefined && body.qtdJogadores !== null && body.qtdJogadores !== ''
+                ? Math.max(1, parseInt(body.qtdJogadores, 10) || 1)
+                : null;
+            const jogadores = Array.isArray(body.jogadores)
+                ? body.jogadores
+                    .map((j, idx) => ({
+                        id: idx + 1,
+                        nome: String(j || '').trim(),
+                        gols: 0
+                    }))
+                    .filter(j => j.nome)
+                : [];
+            if (!jogadores.length) { res.writeHead(400); res.end(JSON.stringify({ erro: 'Cadastre ao menos 1 jogador no time' })); return; }
+            const jog = { id: maxId + 1, nome, qtdJogadores, jogadores };
+            d.times = d.times || []; d.times.push(jog);
+            writeFutebol(d); sendJSON(res, jog);
+        }); return;
+    }
+    // PUT /api/futebol/times/:id
+    if (url.startsWith('/api/futebol/times/') && req.method === 'PUT') {
+        const id = parseInt(url.split('/').pop());
+        readBody(req, body => {
+            const d = readFutebol();
+            const idx = (d.times || []).findIndex(j => j.id === id);
+            if (idx < 0) { res.writeHead(404); res.end(JSON.stringify({ erro: 'Time não encontrado' })); return; }
+            if (body.nome) d.times[idx].nome = body.nome.trim();
+            if (body.qtdJogadores !== undefined) {
+                d.times[idx].qtdJogadores = body.qtdJogadores === null || body.qtdJogadores === ''
+                    ? null
+                    : Math.max(1, parseInt(body.qtdJogadores, 10) || 1);
+            }
+            if (Array.isArray(body.jogadores)) {
+                const antigos = new Map((d.times[idx].jogadores || []).map(j => [String(j.nome || '').trim().toLowerCase(), j]));
+                const novosJogadores = body.jogadores
+                    .map((nome, i) => {
+                        const nm = String(nome || '').trim();
+                        if (!nm) return null;
+                        const antigo = antigos.get(nm.toLowerCase());
+                        return { id: i + 1, nome: nm, gols: antigo ? Math.max(0, parseInt(antigo.gols, 10) || 0) : 0 };
+                    })
+                    .filter(Boolean);
+                if (!novosJogadores.length) { res.writeHead(400); res.end(JSON.stringify({ erro: 'Cadastre ao menos 1 jogador no time' })); return; }
+                d.times[idx].jogadores = novosJogadores;
+            }
+            writeFutebol(d); sendJSON(res, d.times[idx]);
+        }); return;
+    }
+    // DELETE /api/futebol/times/:id
+    if (url.startsWith('/api/futebol/times/') && req.method === 'DELETE') {
+        const id = parseInt(url.split('/').pop());
+        const d = readFutebol();
+        d.times = (d.times || []).filter(j => j.id !== id);
+        d.inscricoes = (d.inscricoes || []).filter(i => i.timeId !== id);
+        writeFutebol(d); sendJSON(res, { ok: true }); return;
+    }
+
+    // GET /api/futebol/inscricoes
+    if (url === '/api/futebol/inscricoes' && req.method === 'GET') {
+        sendJSON(res, readFutebol().inscricoes || []); return;
+    }
+    // POST /api/futebol/inscricoes
+    if (url === '/api/futebol/inscricoes' && req.method === 'POST') {
+        readBody(req, body => {
+            const d = readFutebol();
+            const timeId = parseInt(body.timeId), categoriaId = parseInt(body.categoriaId);
+            if (!timeId || !categoriaId) { res.writeHead(400); res.end(JSON.stringify({ erro: 'timeId e categoriaId obrigatórios' })); return; }
+            // Evitar duplicata
+            const dup = (d.inscricoes || []).find(i => i.timeId === timeId && i.categoriaId === categoriaId);
+            if (dup) { res.writeHead(409); res.end(JSON.stringify({ erro: 'Time já inscrito nesta categoria' })); return; }
+            const maxId = (d.inscricoes || []).reduce((m, i) => Math.max(m, i.id), 0);
+            const insc = { id: maxId + 1, timeId, categoriaId };
+            d.inscricoes = d.inscricoes || []; d.inscricoes.push(insc);
+            writeFutebol(d); sendJSON(res, insc);
+        }); return;
+    }
+    // DELETE /api/futebol/inscricoes/:id
+    if (url.startsWith('/api/futebol/inscricoes/') && req.method === 'DELETE') {
+        const id = parseInt(url.split('/').pop());
+        const d = readFutebol();
+        d.inscricoes = (d.inscricoes || []).filter(i => i.id !== id);
+        writeFutebol(d); sendJSON(res, { ok: true }); return;
+    }
+
+    // POST /api/futebol/gerar-chave (por categoria, com N chaves/grupos)
+    if (url === '/api/futebol/gerar-chave' && req.method === 'POST') {
+        readBody(req, body => {
+            const d = readFutebol();
+            const categoriaId = parseInt(body.categoriaId);
+            if (!categoriaId) { res.writeHead(400); res.end(JSON.stringify({ erro: 'categoriaId obrigatório' })); return; }
+            const cat = (d.categorias || []).find(c => c.id === categoriaId);
+            if (!cat) { res.writeHead(404); res.end(JSON.stringify({ erro: 'Categoria não encontrada' })); return; }
+            const inscritos = (d.times || []).map(j => j.id);
+            if (inscritos.length < 2) { res.writeHead(400); res.end(JSON.stringify({ erro: 'Mínimo 2 Times cadastrados' })); return; }
+            // Remover partidas de grupos desta categoria
+            d.partidas = (d.partidas || []).filter(p => !(p.categoriaId === categoriaId && p.fase === 'grupos'));
+            const numChaves = cat.numChaves || 1;
+            const letters = 'ABCDEFGH';
+            let grupos;
+            if (body.grupos && Array.isArray(body.grupos) && body.grupos.length) {
+                // Distribuição manual: validar que todos são IDs válidos
+                const validIds = new Set(inscritos);
+                grupos = body.grupos.map(g => (g.timeIds || []).filter(id => validIds.has(id)));
+                // garantir tamanho correto
+                while (grupos.length < numChaves) grupos.push([]);
+                grupos = grupos.slice(0, numChaves);
+            } else {
+                // Distribuição automática round-robin
+                grupos = Array.from({length: numChaves}, () => []);
+                inscritos.forEach((id, i) => grupos[i % numChaves].push(id));
+            }
+            let pid = (d.partidas.reduce((m, p) => Math.max(m, p.id), 0)) + 1;
+            const novasPartidas = [];
+            for (let g = 0; g < numChaves; g++) {
+                const chaveId = letters[g];
+                const ids = grupos[g];
+                const arr = ids.length % 2 === 0 ? [...ids] : [...ids, null];
+                const numRounds = arr.length - 1;
+                const matchesPerRound = arr.length / 2;
+                for (let r = 0; r < numRounds; r++) {
+                    for (let m = 0; m < matchesPerRound; m++) {
+                        const j1 = arr[m], j2 = arr[arr.length - 1 - m];
+                        if (j1 !== null && j2 !== null) {
+                            novasPartidas.push({ id: pid++, categoriaId, chaveId, j1Id: j1, j2Id: j2, fase: 'grupos', rodada: r + 1, bracketPos: null, gols1: 0, gols2: 0, golsDetalhe1: [], golsDetalhe2: [], penaltis1: null, penaltis2: null, status: 'agendado', vencedorId: null });
+                        }
+                    }
+                    const last = arr.splice(arr.length - 1, 1)[0];
+                    arr.splice(1, 0, last);
+                }
+            }
+            d.partidas = [...d.partidas, ...novasPartidas];
+            d.fase = 'grupos';
+            writeFutebol(d);
+            sendJSON(res, { partidas: novasPartidas });
+            try { wss.clients.forEach(cl => { if (cl.readyState === 1) cl.send(JSON.stringify({ type: 'futebol-update', data: d })); }); } catch(_) {}
+        }); return;
+    }
+
+    // POST /api/futebol/gerar-mata-mata (por categoria)
+    if (url === '/api/futebol/gerar-mata-mata' && req.method === 'POST') {
+        readBody(req, body => {
+            const d = readFutebol();
+            const categoriaId = parseInt(body.categoriaId);
+            if (!categoriaId) { res.writeHead(400); res.end(JSON.stringify({ erro: 'categoriaId obrigatório' })); return; }
+            const cat = (d.categorias || []).find(c => c.id === categoriaId);
+            if (!cat) { res.writeHead(404); res.end(JSON.stringify({ erro: 'Categoria não encontrada' })); return; }
+            const pg = (d.partidas || []).filter(p => p.categoriaId === categoriaId && p.fase === 'grupos');
+            const numChaves = cat.numChaves || 1;
+            const classifPorChave = cat.classificadosPorChave || 2;
+            const letters = 'ABCDEFGH';
+
+            // Helper: calcula classificação completa de uma chave (Pts,PJ,V,E,D,GF,GC,SG)
+            function calcGroupStats(chaveId) {
+                const chavePartidas = pg.filter(p => p.chaveId === chaveId);
+                const playerIds = new Set();
+                chavePartidas.forEach(p => { if(p.j1Id) playerIds.add(p.j1Id); if(p.j2Id) playerIds.add(p.j2Id); });
+                const stats = {};
+                playerIds.forEach(id => { stats[id] = { id, v:0, e:0, d:0, pts:0, pj:0, gf:0, gc:0, sg:0 }; });
+                chavePartidas.filter(p => p.status === 'encerrado').forEach(p => {
+                    const s1 = stats[p.j1Id], s2 = stats[p.j2Id]; if(!s1||!s2) return;
+                    s1.pj++; s2.pj++;
+                    s1.gf += p.gols1; s2.gf += p.gols2;
+                    s1.gc += p.gols2; s2.gc += p.gols1;
+                    s1.sg += p.gols1 - p.gols2; s2.sg += p.gols2 - p.gols1;
+                    if (p.vencedorId === p.j1Id) { s1.v++; s2.d++; }
+                    else if (p.vencedorId === p.j2Id) { s2.v++; s1.d++; }
+                    else { s1.e++; s2.e++; }
+                });
+                Object.values(stats).forEach(s => { s.pts = s.v * 3 + s.e; });
+                return Object.values(stats).sort((a, b) =>
+                    b.pts - a.pts || b.pj - a.pj || b.v - a.v || b.e - a.e || a.d - b.d || b.gf - a.gf || a.gc - b.gc || b.sg - a.sg
+                );
+            }
+
+            // Classificação geral da categoria (somando todas as chaves) para definir:
+            // 1º x 2º = Final, 3º x 4º = Disputa de 3º Lugar.
+            const rankingGeral = [];
+            for (let g = 0; g < numChaves; g++) {
+                const chaveId = letters[g];
+                const sorted = calcGroupStats(chaveId);
+                sorted.forEach(s => rankingGeral.push({ ...s, chaveId }));
+            }
+            rankingGeral.sort((a, b) =>
+                b.pts - a.pts ||
+                b.sg  - a.sg  ||
+                b.gf  - a.gf  ||
+                a.gc  - b.gc  ||
+                b.v   - a.v   ||
+                b.e   - a.e   ||
+                a.d   - b.d
+            );
+
+            const classificados = rankingGeral.map(x => x.id);
+            const top4 = classificados.slice(0, 4);
+            if (top4.length < 2) { res.writeHead(400); res.end(JSON.stringify({ erro: 'Classificação insuficiente para gerar final' })); return; }
+
+            let wildcardInfo = null;
+            // Remover partidas de mata-mata antigas desta categoria
+            d.partidas = (d.partidas || []).filter(p => !(p.categoriaId === categoriaId && p.fase !== 'grupos'));
+            let pid = (d.partidas.reduce((m, p) => Math.max(m, p.id), 0)) + 1;
+            const partidasMM = [];
+
+            // Final: 1º x 2º
+            partidasMM.push({
+                id: pid++, categoriaId, chaveId: null,
+                j1Id: top4[0], j2Id: top4[1],
+                fase: 'final', bracketPos: 0,
+                gols1: 0, gols2: 0, golsDetalhe1: [], golsDetalhe2: [], penaltis1: null, penaltis2: null, status: 'agendado', vencedorId: null, rodada: null
+            });
+
+            // 3º lugar: 3º x 4º (se houver 4 classificados)
+            if (top4[2] && top4[3]) {
+                partidasMM.push({
+                    id: pid++, categoriaId, chaveId: null,
+                    j1Id: top4[2], j2Id: top4[3],
+                    fase: 'terceiro', bracketPos: 0,
+                    gols1: 0, gols2: 0, golsDetalhe1: [], golsDetalhe2: [], penaltis1: null, penaltis2: null, status: 'agendado', vencedorId: null, rodada: null
+                });
+            }
+            d.fase = 'mata-mata';
+            d.partidas = [...d.partidas, ...partidasMM];
+            writeFutebol(d);
+            sendJSON(res, { partidas: partidasMM, classificados, wildcard: wildcardInfo });
+        }); return;
+    }
+
+    // PUT /api/futebol/partidas/:id
+    if (url.startsWith('/api/futebol/partidas/') && req.method === 'PUT') {
+        const id = parseInt(url.split('/').pop());
+        readBody(req, body => {
+            const d = readFutebol();
+            const idx = (d.partidas || []).findIndex(p => p.id === id);
+            if (idx < 0) { res.writeHead(404); res.end(JSON.stringify({ erro: 'Partida não encontrada' })); return; }
+            const allowed = ['gols1','gols2','status','vencedorId','j1Id','j2Id','penaltis1','penaltis2'];
+            allowed.forEach(k => { if (body[k] !== undefined) d.partidas[idx][k] = body[k]; });
+            resolverApostasFutebol(d, id);
+            writeFutebol(d); sendJSON(res, d.partidas[idx]);
+            try { wss.clients.forEach(cl => { if (cl.readyState === 1) cl.send(JSON.stringify({ type: 'futebol-update', data: d })); }); } catch(_) {}
+        }); return;
+    }
+
+    // POST /api/futebol/partidas/:id/gol
+    const mGolFutebol = url.match(/^\/api\/futebol\/partidas\/(\d+)\/gol$/);
+    if (mGolFutebol && req.method === 'POST') {
+        const id = parseInt(mGolFutebol[1], 10);
+        readBody(req, body => {
+            const d = readFutebol();
+            const partida = (d.partidas || []).find(p => p.id === id);
+            if (!partida) { res.writeHead(404); res.end(JSON.stringify({ erro: 'Partida não encontrada' })); return; }
+            const lado = Number(body.lado);
+            const acao = body.acao === 'remove' ? 'remove' : 'add';
+            if (lado !== 1 && lado !== 2) { res.writeHead(400); res.end(JSON.stringify({ erro: 'lado deve ser 1 ou 2' })); return; }
+
+            const teamId = lado === 1 ? partida.j1Id : partida.j2Id;
+            const fieldGols = lado === 1 ? 'gols1' : 'gols2';
+            const fieldDetalhe = lado === 1 ? 'golsDetalhe1' : 'golsDetalhe2';
+            const time = (d.times || []).find(t => t.id === teamId);
+            if (!time) { res.writeHead(400); res.end(JSON.stringify({ erro: 'Time da partida não encontrado' })); return; }
+
+            partida[fieldDetalhe] = Array.isArray(partida[fieldDetalhe]) ? partida[fieldDetalhe] : [];
+            partida[fieldGols] = Math.max(0, parseInt(partida[fieldGols], 10) || 0);
+
+            if (acao === 'add') {
+                const jogadorId = Number(body.jogadorId);
+                const jogador = (time.jogadores || []).find(j => j.id === jogadorId);
+                if (!jogador) { res.writeHead(400); res.end(JSON.stringify({ erro: 'Jogador inválido para o time' })); return; }
+                jogador.gols = Math.max(0, parseInt(jogador.gols, 10) || 0) + 1;
+                partida[fieldGols] += 1;
+                partida[fieldDetalhe].push({ jogadorId: jogador.id, nome: jogador.nome, at: new Date().toISOString() });
+            } else {
+                if (partida[fieldGols] <= 0 || partida[fieldDetalhe].length === 0) {
+                    res.writeHead(400); res.end(JSON.stringify({ erro: 'Sem gols para remover deste lado' })); return;
+                }
+                const ultimo = partida[fieldDetalhe].pop();
+                partida[fieldGols] = Math.max(0, partida[fieldGols] - 1);
+                const jogador = (time.jogadores || []).find(j => j.id === Number(ultimo.jogadorId));
+                if (jogador) jogador.gols = Math.max(0, (parseInt(jogador.gols, 10) || 0) - 1);
+            }
+
+            writeFutebol(d);
+            sendJSON(res, { partida, time });
+            try { wss.clients.forEach(cl => { if (cl.readyState === 1) cl.send(JSON.stringify({ type: 'futebol-update', data: d })); }); } catch(_) {}
+        }); return;
+    }
+
+    // POST /api/futebol/partidas/:id/reabrir
+    const mReabrirFutebol = url.match(/^\/api\/futebol\/partidas\/(\d+)\/reabrir$/);
+    if (mReabrirFutebol && req.method === 'POST') {
+        const id = parseInt(mReabrirFutebol[1], 10);
+        const d = readFutebol();
+        const partida = (d.partidas || []).find(p => p.id === id);
+        if (!partida) { res.writeHead(404); res.end(JSON.stringify({ erro: 'Partida não encontrada' })); return; }
+
+        const rollback = (lado) => {
+            const teamId = lado === 1 ? partida.j1Id : partida.j2Id;
+            const fieldDetalhe = lado === 1 ? 'golsDetalhe1' : 'golsDetalhe2';
+            const time = (d.times || []).find(t => t.id === teamId);
+            const detalhes = Array.isArray(partida[fieldDetalhe]) ? partida[fieldDetalhe] : [];
+            detalhes.forEach(ev => {
+                if (!time || !Array.isArray(time.jogadores)) return;
+                const jog = time.jogadores.find(j => j.id === Number(ev.jogadorId));
+                if (jog) jog.gols = Math.max(0, (parseInt(jog.gols, 10) || 0) - 1);
+            });
+        };
+
+        rollback(1);
+        rollback(2);
+        partida.gols1 = 0;
+        partida.gols2 = 0;
+        partida.golsDetalhe1 = [];
+        partida.golsDetalhe2 = [];
+        partida.penaltis1 = null;
+        partida.penaltis2 = null;
+        partida.vencedorId = null;
+        partida.status = 'agendado';
+
+        reabrirApostasPartidaFutebol(d, id);
+
+        writeFutebol(d);
+        sendJSON(res, partida);
+        try { wss.clients.forEach(cl => { if (cl.readyState === 1) cl.send(JSON.stringify({ type: 'futebol-update', data: d })); }); } catch(_) {}
+        return;
+    }
+
+    // POST /api/futebol/partidas (nova partida bracket)
+    if (url === '/api/futebol/partidas' && req.method === 'POST') {
+        readBody(req, body => {
+            const d = readFutebol();
+            const pid = ((d.partidas || []).reduce((m, p) => Math.max(m, p.id), 0)) + 1;
+            const nova = { id: pid, categoriaId: body.categoriaId || null, chaveId: body.chaveId || null, j1Id: body.j1Id || null, j2Id: body.j2Id || null, fase: body.fase || 'grupos', rodada: body.rodada || null, bracketPos: body.bracketPos !== undefined ? body.bracketPos : null, gols1: 0, gols2: 0, golsDetalhe1: [], golsDetalhe2: [], penaltis1: null, penaltis2: null, status: body.status || 'agendado', vencedorId: body.vencedorId || null };
+            d.partidas = d.partidas || []; d.partidas.push(nova);
+            writeFutebol(d); sendJSON(res, nova);
+            try { wss.clients.forEach(cl => { if (cl.readyState === 1) cl.send(JSON.stringify({ type: 'futebol-update', data: d })); }); } catch(_) {}
+        }); return;
+    }
+    // PUT /api/futebol/fase
+    if (url === '/api/futebol/fase' && req.method === 'PUT') {
+        readBody(req, body => { const d = readFutebol(); d.fase = body.fase || d.fase; writeFutebol(d); sendJSON(res, { fase: d.fase }); }); return;
+    }
+    // POST /api/futebol/resetar
+    if (url === '/api/futebol/resetar' && req.method === 'POST') {
+        const dAtual = readFutebol();
+        const vazio = { evento: { nome: 'Grande Campeonato de Futebol - 1ª Edição', data: '', horaInicio: '09:00', local: '', descricao: '', status: 'agendado' }, quadras: [], categorias: dAtual.categorias || [], times: [], inscricoes: [], partidas: [], odds: { usuarios: {}, apostas: [] }, fase: 'cadastro' };
+        writeFutebol(vazio); sendJSON(res, vazio); return;
+    }
+    // ==================== FIM API CAMPEONATO FUTEBOL ====================
 
     // ==================== API POSITIONS ====================
     if (url === '/api/positions' && req.method === 'GET') {
@@ -2434,3 +3061,4 @@ server.listen(PORT, '0.0.0.0', () => {
     console.log('  Abra o link do Host no navegador para começar!');
     console.log('');
 });
+

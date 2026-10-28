@@ -1,0 +1,2178 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏆 Grande Campeonato de Futebol - 1ª Edição</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background: #0f0f1a; color: #fff; min-height: 100vh; }
+        .bg { position: fixed; inset: 0; z-index: 0; overflow: hidden; }
+        .bg .g { position: absolute; inset: 0; background: linear-gradient(135deg, #1a0a2e 0%, #0f0f1a 50%, #1a1a00 100%); }
+        .bg .o { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.15; animation: orbFloat 20s ease-in-out infinite; }
+        .bg .o:nth-child(2) { width: 450px; height: 450px; background: #8b0000; top: -100px; right: -100px; }
+        .bg .o:nth-child(3) { width: 500px; height: 500px; background: #b8860b; bottom: -150px; left: -150px; animation-delay: -8s; }
+        .bg .o:nth-child(4) { width: 300px; height: 300px; background: #4a0080; top: 50%; left: 40%; animation-delay: -14s; }
+        @keyframes orbFloat { 0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-40px) scale(1.05)} }
+        .wrap { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 20px; }
+        .hero { text-align: center; padding: 40px 20px; position:relative; overflow:hidden; }
+        .hero::before{content:'';position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 300' fill='none' stroke='white' stroke-width='1.5'%3E%3Crect x='4' y='4' width='492' height='292'/%3E%3Cline x1='250' y1='4' x2='250' y2='296'/%3E%3Ccircle cx='250' cy='150' r='55'/%3E%3Ccircle cx='250' cy='150' r='4' fill='white'/%3E%3Crect x='4' y='100' width='70' height='100'/%3E%3Crect x='426' y='100' width='70' height='100'/%3E%3Crect x='4' y='118' width='25' height='64'/%3E%3Crect x='471' y='118' width='25' height='64'/%3E%3C/svg%3E");background-size:110%;background-position:center;opacity:.06;pointer-events:none;z-index:0}
+        .hero .icon { font-size: 4rem; margin-bottom: 12px; }
+        .hero h1 { font-size: 2rem; font-weight: 900; background: linear-gradient(135deg, #ffd700, #ff6b00); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero .subtitle { font-size: 0.9rem; color: rgba(255,255,255,0.5); margin-top: 6px; }
+        .hero .evento-info { margin-top: 16px; display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
+        .evento-chip { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); border-radius: 20px; padding: 6px 16px; font-size: 0.82rem; color: rgba(255,255,255,0.7); }
+        .nav { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; justify-content: center; }
+        .nav-tab { padding: 10px 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.6); cursor: pointer; font-family: 'Poppins',sans-serif; font-size: 0.85rem; font-weight: 600; transition: all 0.2s; }
+        .nav-tab:hover { background: rgba(255,255,255,0.1); color: #fff; }
+        .nav-tab.active { background: linear-gradient(135deg, #8b0000, #b8860b); color: #fff; border-color: transparent; }
+        .nav-tab.odds-new { position: relative; }
+        .nav-tab.odds-new::after { content: ''; position: absolute; top: 5px; right: 5px; width: 9px; height: 9px; border-radius: 50%; background: #f87171; box-shadow: 0 0 6px rgba(248,113,113,.7); animation: pulseR 1s ease infinite; }
+        .panel { display: none; }
+        .panel.active { display: block; }
+        .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 24px; margin-bottom: 20px; }
+        .glass h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 16px; }
+        .partida-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 16px 20px; margin-bottom: 12px; }
+        .partida-card.em-jogo { border-color: rgba(239,68,68,0.5); background: rgba(239,68,68,0.05); }
+        .partida-card.encerrado { border-color: rgba(34,197,94,0.3); opacity: 0.85; }
+        .partida-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+        .partida-fase { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.4); }
+        .badge { padding: 3px 10px; border-radius: 12px; font-size: 0.72rem; font-weight: 700; }
+        .badge-agendado { background: rgba(59,130,246,0.2); color: #60a5fa; }
+        .badge-em_jogo { background: rgba(239,68,68,0.2); color: #f87171; animation: pulseR 1.5s ease infinite; }
+        .badge-encerrado { background: rgba(34,197,94,0.2); color: #4ade80; }
+        @keyframes pulseR { 0%,100%{opacity:1}50%{opacity:0.6} }
+        .partida-body { display: flex; align-items: center; gap: 12px; }
+        .pj { flex:1; text-align:center; }
+        .pj-nome { font-weight: 700; font-size: 0.95rem; }
+        .pj-gols { font-size: 2rem; font-weight: 900; color: #ffd700; line-height: 1; margin-top: 4px; }
+        .pj-win { font-size: 0.7rem; color: #4ade80; font-weight: 700; margin-top: 2px; }
+        .vs { font-size: 0.85rem; font-weight: 800; color: rgba(255,255,255,0.3); flex-shrink: 0; }
+        .classif-table { width: 100%; border-collapse: collapse; }
+        .classif-table th { font-size: 0.78rem; font-weight: 700; color: rgba(255,255,255,0.5); text-align: center; padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+        .classif-table th:first-child { text-align: left; }
+        .classif-table td { padding: 10px; text-align: center; font-size: 0.85rem; border-bottom: 1px solid rgba(255,255,255,0.06); }
+        .classif-table td:first-child { text-align: left; }
+        .pos { width: 28px; height: 28px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.85rem; }
+        .pos-1 { background: linear-gradient(135deg, #b8860b, #ffd700); color: #000; }
+        .pos-2 { background: rgba(192,192,192,0.3); }
+        .pos-3 { background: rgba(205,127,50,0.3); color: #cd7f32; }
+        .pos-other { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.5); }
+        .bracket { display: flex; gap: 40px; align-items: flex-start; min-width: max-content; overflow-x: auto; padding-bottom: 12px; }
+        .bracket-round { display: flex; flex-direction: column; gap: 8px; }
+        .bracket-round-title { font-size: 0.75rem; font-weight: 700; text-align: center; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.4); margin-bottom: 8px; }
+        .bracket-match { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; overflow: hidden; width: 200px; }
+        .bracket-match.em-jogo { border-color: rgba(239,68,68,0.5); }
+        .bracket-match.encerrado { border-color: rgba(34,197,94,0.3); }
+        .bm-row { padding: 8px 12px; display: flex; align-items: center; justify-content: space-between; font-size: 0.82rem; font-weight: 600; border-bottom: 1px solid rgba(255,255,255,0.06); }
+        .bm-row:last-child { border-bottom: none; }
+        .bm-row.win { background: rgba(34,197,94,0.1); color: #4ade80; }
+        .bm-gols { font-weight: 900; font-size: 1rem; color: #ffd700; }
+        .podio { display: flex; align-items: flex-end; justify-content: center; gap: 12px; padding: 20px 0; }
+        .podio-item { text-align: center; }
+        .pedestal { border-radius: 10px 10px 0 0; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+        .p1 { width: 120px; height: 120px; background: linear-gradient(135deg, #b8860b, #ffd700); }
+        .p2 { width: 100px; height: 90px; background: rgba(192,192,192,0.3); border: 1px solid rgba(192,192,192,0.4); }
+        .p3 { width: 100px; height: 70px; background: rgba(205,127,50,0.3); border: 1px solid rgba(205,127,50,0.4); }
+        .podio-nome { font-size: 0.85rem; font-weight: 700; margin-top: 8px; }
+        .podio-sub { font-size: 0.75rem; color: rgba(255,255,255,0.5); }
+        .empty { text-align: center; padding: 40px; color: rgba(255,255,255,0.3); font-size: 0.9rem; }
+        .times-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; }
+        .jog-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 12px 14px; display: flex; align-items: center; gap: 10px; }
+        .jog-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1rem; flex-shrink: 0; }
+        .jog-nome { font-size: 0.88rem; font-weight: 600; }
+        .live-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(239,68,68,0.2); border: 1px solid rgba(239,68,68,0.4); border-radius: 20px; padding: 4px 12px; font-size: 0.75rem; font-weight: 700; color: #f87171; margin-bottom: 16px; }
+        .live-dot { width: 8px; height: 8px; border-radius: 50%; background: #f87171; animation: pulseR 1s ease infinite; }
+
+        /* ===== GROUP CARDS (public) ===== */
+        .gc-cat-sel{display:flex;align-items:center;gap:10px;margin-bottom:18px;flex-wrap:wrap}
+        .gc-cat-sel label{font-size:.8rem;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.7px}
+        .gc-cat-sel select{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#fff;border-radius:10px;padding:7px 12px;font-family:'Poppins',sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;outline:none}
+        .gc-cat-sel select:focus{border-color:rgba(220,20,60,.5)}
+        .gc-classif-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:12px;margin-bottom:20px}
+        .gc-classif-grid .group-card{margin-bottom:0}
+        .gc-rounds-section{margin-top:0}
+        .gc-round-block{margin-bottom:14px}
+        .gc-round-hdr{display:flex;align-items:center;gap:8px;padding:8px 14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:11px;margin-bottom:8px;font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.9px;color:rgba(255,255,255,.45)}
+        .gc-round-hdr::before{content:'';display:inline-block;width:3px;height:14px;border-radius:2px;background:linear-gradient(180deg,#dc143c,#ffd700)}
+        .gc-chave-mini{display:flex;align-items:center;gap:7px;margin:8px 0 5px;padding-left:2px}
+        .gc-chave-mini .cl{width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#dc143c,#8b0000);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.68rem;color:#fff;flex-shrink:0;box-shadow:0 2px 6px rgba(220,20,60,.25)}
+        .gc-chave-mini .cl-label{font-size:.68rem;font-weight:700;color:rgba(255,255,255,.38);text-transform:uppercase;letter-spacing:.7px}
+        .group-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:16px;margin-bottom:14px;overflow:hidden;transition:border-color .3s}
+        .group-card:hover{border-color:rgba(255,255,255,.18)}
+        .group-hdr{display:flex;align-items:center;gap:10px;padding:12px 16px;background:rgba(255,255,255,.03);border-bottom:1px solid rgba(255,255,255,.06)}
+        .group-letter{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#dc143c,#8b0000);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.95rem;flex-shrink:0;color:#fff;box-shadow:0 3px 10px rgba(220,20,60,.3)}
+        .group-title{font-weight:800;font-size:.92rem;color:#ffd700;flex:1}
+        .group-prog{display:flex;align-items:center;gap:7px}
+        .group-prog-bar{width:80px;height:4px;background:rgba(255,255,255,.1);border-radius:10px;overflow:hidden}
+        .group-prog-fill{height:100%;border-radius:10px;transition:width .6s ease}
+        .group-prog-label{font-size:.64rem;color:rgba(255,255,255,.4);font-weight:600;white-space:nowrap}
+        .group-body{display:grid;grid-template-columns:1fr 1.35fr}
+        .gcside{padding:14px 16px}
+        .gcside-left{border-right:1px solid rgba(255,255,255,.06)}
+        .gcside-title{font-size:.61rem;font-weight:700;text-transform:uppercase;letter-spacing:.9px;color:rgba(255,255,255,.3);margin-bottom:8px}
+        .gct{width:100%;border-collapse:collapse}
+        .gct td{padding:5px 4px;font-size:.77rem;vertical-align:middle}
+        .gct td:first-child{padding-left:0;width:26px}
+        .gct tr:not(:last-child) td{border-bottom:1px solid rgba(255,255,255,.035)}
+        .gct .gpts{font-weight:900;color:#ffd700;font-size:.88rem;text-align:center;min-width:22px}
+        .gct .gsgp{color:#6ee7b7;font-size:.7rem;text-align:right}
+        .gct .gsgn{color:#f87171;font-size:.7rem;text-align:right}
+        .gct .gsg0{color:rgba(255,255,255,.3);font-size:.7rem;text-align:right}
+        .cp{width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:.72rem}
+        .cp-1{background:linear-gradient(135deg,#b8860b,#ffd700);color:#000}
+        .cp-2{background:rgba(192,192,192,.25);color:#e2e8f0}
+        .cp-3{background:rgba(205,127,50,.25);color:#cd7f32}
+        .cp-n{background:rgba(255,255,255,.08);color:rgba(255,255,255,.4)}
+        .round-sep{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:rgba(255,255,255,.28);margin:8px 0 4px;padding-top:7px;border-top:1px solid rgba(255,255,255,.05)}
+        .round-sep:first-child{border-top:none;margin-top:0;padding-top:0}
+        .mr{display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:9px;margin-bottom:3px;border:1px solid transparent}
+        .mr.em_jogo{background:rgba(239,68,68,.07);border-color:rgba(239,68,68,.25);animation:pulseGrp 2.5s ease infinite}
+        .mr.encerrado{opacity:.82}
+        @keyframes pulseGrp{0%,100%{border-color:rgba(239,68,68,.25)}50%{border-color:rgba(239,68,68,.55)}}
+        .mr-player{flex:1;min-width:0;overflow:hidden}
+        .mr-nome{font-size:.77rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;color:rgba(255,255,255,.7)}
+        .mr-nome.venc{color:#ffd700;font-weight:800}
+        .mr-left{text-align:right}
+        .mr-right{text-align:left}
+        .mr-score{display:flex;align-items:center;gap:4px;flex-shrink:0}
+        .mr-g{font-size:1rem;font-weight:900;color:#ffd700;min-width:14px;text-align:center}
+        .mr-sep{font-size:.7rem;color:rgba(255,255,255,.25);font-weight:700}
+        .mr-st{width:19px;height:19px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.52rem;font-weight:800;flex-shrink:0}
+        .mr-st.wait{background:rgba(251,191,36,.15);color:#fbbf24;border:1px solid rgba(251,191,36,.3)}
+        .mr-st.live{background:rgba(239,68,68,.2);color:#f87171;border:1px solid rgba(239,68,68,.4)}
+        .mr-st.done{background:rgba(56,239,125,.12);color:#6ee7b7;border:1px solid rgba(56,239,125,.25)}
+        .mr-st.draw{background:rgba(251,191,36,.12);color:#fbbf24;border:1px solid rgba(251,191,36,.25)}
+
+
+        /* ===== ODDS / CASA DE APOSTAS ===== */
+        .odds-panel-header{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+        .odds-live-badge{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(90deg,#00c853,#00e676);border-radius:20px;padding:4px 14px;font-size:.72rem;font-weight:800;color:#000;letter-spacing:1px}
+        .odds-live-dot{width:8px;height:8px;border-radius:50%;background:#000;animation:pulseR 1s ease infinite}
+        .bookmaker-badge{font-size:.68rem;color:rgba(255,255,255,.35);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:3px 10px}
+        .odds-card{background:rgba(0,0,0,.35);border:1px solid rgba(0,200,83,.2);border-radius:16px;margin-bottom:14px;overflow:hidden;transition:border-color .3s}
+        .odds-card:hover{border-color:rgba(0,200,83,.4)}
+        .odds-card.live{border-color:rgba(239,68,68,.5);background:rgba(239,68,68,.03)}
+        .odds-card-header{padding:10px 16px;display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.03);border-bottom:1px solid rgba(255,255,255,.06)}
+        .odds-fase{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.4)}
+        .odds-live-mini{font-size:.62rem;font-weight:800;color:#f87171;background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);border-radius:8px;padding:2px 8px;animation:pulseR 1.5s ease infinite}
+        .odds-hero-promo{background:linear-gradient(135deg,rgba(184,134,11,.14),rgba(220,20,60,.12));border:1px solid rgba(255,215,0,.22);border-radius:16px;padding:16px 18px;margin-bottom:18px;text-align:center;position:relative;overflow:hidden}
+        .odds-hero-promo::before{content:'🎰';position:absolute;font-size:6rem;opacity:.06;right:-10px;top:-10px;pointer-events:none}
+        .odds-promo-title{font-size:1.1rem;font-weight:900;color:#ffd700;margin-bottom:4px}
+        .odds-promo-sub{font-size:.75rem;color:rgba(255,255,255,.5);line-height:1.4}
+        .odds-promo-ticker{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+        .odds-promo-chip{background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.2);border-radius:20px;padding:4px 12px;font-size:.68rem;font-weight:700;color:#ffd700}
+        .odds-disclaimer{display:none}
+        .odds-empty-promo{text-align:center;padding:32px 16px;color:rgba(255,255,255,.3);font-size:.9rem}
+        .odds-empty-promo .big{font-size:3rem;display:block;margin-bottom:10px}
+        /* Bet buttons inside match card */
+        .odds-section-label{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.9px;color:rgba(255,255,255,.3);margin-bottom:7px}
+        .odds-bet-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+        .odds-bet-btn{display:flex;align-items:center;justify-content:space-between;padding:10px 13px;border:1.5px solid rgba(255,255,255,.12);border-radius:12px;background:rgba(255,255,255,.05);cursor:pointer;transition:all .2s;width:100%;font-family:'Poppins',sans-serif;gap:8px;text-align:left}
+        .odds-bet-btn:hover{background:rgba(0,200,83,.12);border-color:rgba(0,200,83,.45);transform:translateY(-1px);box-shadow:0 3px 12px rgba(0,200,83,.15)}
+        .odds-bet-btn:active{transform:translateY(0)}
+        .odds-bet-btn.fav{border-color:rgba(255,215,0,.32);background:rgba(255,215,0,.07)}
+        .odds-bet-btn.fav:hover{background:rgba(255,215,0,.16);border-color:rgba(255,215,0,.55)}
+        .odds-bet-label{font-size:.7rem;font-weight:600;color:rgba(255,255,255,.65);line-height:1.3;flex:1}
+        .odds-bet-label.fav-label{color:#ffd700}
+        .odds-bet-odd{font-size:1.15rem;font-weight:900;color:#00e676;flex-shrink:0;line-height:1}
+        .odds-bet-btn.fav .odds-bet-odd{color:#ffd700}
+        /* Sub-tabs odds */
+        .odds-subtabs{display:flex;gap:5px;margin-bottom:14px;background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:4px}
+        .odds-subtab{flex:1;padding:9px 6px;border:none;border-radius:11px;background:transparent;color:rgba(255,255,255,.4);font-family:'Poppins',sans-serif;font-size:.8rem;font-weight:700;cursor:pointer;transition:all .2s;line-height:1.2}
+        .odds-subtab.active{background:rgba(255,255,255,.12);color:#fff;box-shadow:0 1px 8px rgba(0,0,0,.4)}
+        .odds-subtab.cassino-tab.active{background:linear-gradient(135deg,rgba(184,134,11,.55),rgba(180,20,40,.4));color:#ffd700}
+        /* Casino machine */
+        .cassino-screen{background:linear-gradient(180deg,#08081a,#10102a);border:2px solid rgba(255,215,0,.3);border-radius:20px;padding:20px 16px 16px;margin-bottom:14px;text-align:center;position:relative;overflow:hidden}
+        .cassino-screen::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(255,215,0,.09),transparent 60%);pointer-events:none}
+        .cassino-marquee{font-size:.65rem;font-weight:800;letter-spacing:2.5px;color:rgba(255,215,0,.55);text-transform:uppercase;margin-bottom:16px}
+        .cassino-reels{display:flex;justify-content:center;gap:10px;margin-bottom:14px}
+        .cassino-reel{width:82px;height:92px;background:rgba(0,0,0,.65);border:2px solid rgba(255,215,0,.2);border-radius:14px;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:inset 0 2px 16px rgba(0,0,0,.7)}
+        .cassino-reel.spinning{border-color:rgba(255,215,0,.7);box-shadow:inset 0 2px 16px rgba(0,0,0,.7),0 0 14px rgba(255,215,0,.25)}
+        .cassino-reel-sym{font-size:3rem;line-height:1;user-select:none;display:block}
+        .cassino-reel.spinning .cassino-reel-sym{animation:reelBlur .12s linear infinite}
+        .cassino-reel.win-reel{border-color:#ffd700;animation:reelWin .5s ease;box-shadow:0 0 22px rgba(255,215,0,.55),inset 0 0 10px rgba(255,215,0,.08)}
+        @keyframes reelBlur{0%{transform:translateY(-10px) scaleY(.8);opacity:.3}50%{transform:translateY(0) scaleY(1.05);opacity:1}100%{transform:translateY(10px) scaleY(.8);opacity:.3}}
+        @keyframes reelWin{0%,100%{transform:scale(1)}30%{transform:scale(1.07)}70%{transform:scale(.97)}}
+        .cassino-result{min-height:38px;display:flex;align-items:center;justify-content:center;font-size:.9rem;font-weight:800;border-radius:12px;padding:7px 14px;transition:all .3s}
+        .cassino-result.idle{color:rgba(255,255,255,.3);font-size:.78rem;font-weight:600}
+        .cassino-result.spinning-msg{color:rgba(255,215,0,.7);font-size:.82rem;font-weight:700;letter-spacing:1px}
+        .cassino-result.win{background:rgba(52,211,153,.12);color:#34d399;border:1px solid rgba(52,211,153,.3)}
+        .cassino-result.jackpot{background:linear-gradient(135deg,rgba(255,215,0,.18),rgba(255,60,0,.12));color:#ffd700;border:1px solid rgba(255,215,0,.45);animation:jackpotPulse .6s ease infinite}
+        .cassino-result.lose{background:rgba(248,113,113,.07);color:rgba(248,113,113,.7);border:1px solid rgba(248,113,113,.2)}
+        @keyframes jackpotPulse{0%,100%{box-shadow:0 0 8px rgba(255,215,0,.2)}50%{box-shadow:0 0 24px rgba(255,215,0,.55)}}
+        .cassino-paytable{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;margin-top:10px}
+        .cassino-pay-chip{font-size:.62rem;font-weight:700;border-radius:8px;padding:3px 9px;background:rgba(255,255,255,.05);color:rgba(255,255,255,.4)}
+        .cassino-pay-chip.gold{background:rgba(255,215,0,.09);border:1px solid rgba(255,215,0,.18);color:rgba(255,215,0,.75)}
+        .cassino-controls{display:flex;flex-direction:column;gap:10px}
+        .cassino-bet-lbl{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:rgba(255,255,255,.35);margin-bottom:5px}
+        .cassino-amts{display:flex;gap:5px}
+        .cassino-amt{flex:1;padding:9px 2px;border:1.5px solid rgba(255,255,255,.14);border-radius:10px;background:rgba(255,255,255,.06);color:rgba(255,255,255,.5);font-family:'Poppins',sans-serif;font-size:.75rem;font-weight:700;cursor:pointer;transition:all .18s;text-align:center}
+        .cassino-amt:hover,.cassino-amt.active{background:rgba(255,215,0,.14);border-color:rgba(255,215,0,.45);color:#ffd700}
+        .cassino-custom{width:100%;background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.14);border-radius:12px;color:#fff;font-family:'Poppins',sans-serif;font-size:.92rem;font-weight:600;padding:10px 14px;outline:none;transition:border-color .2s;margin-top:6px;-webkit-text-size-adjust:100%}
+        .cassino-custom:focus{border-color:rgba(255,215,0,.5);background:rgba(255,215,0,.04)}
+        .cassino-spin-btn{width:100%;padding:14px;border:none;border-radius:14px;background:linear-gradient(135deg,#92400e,#b8860b,#ffd700);color:#000;font-family:'Poppins',sans-serif;font-size:1rem;font-weight:900;cursor:pointer;transition:all .2s;box-shadow:0 4px 20px rgba(184,134,11,.45)}
+        .cassino-spin-btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 28px rgba(184,134,11,.6)}
+        .cassino-spin-btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+        /* Countdown timer */
+        .game-countdown-wrap{margin-top:10px;font-size:.72rem;font-weight:700;color:rgba(255,215,0,.6);letter-spacing:.5px;text-align:center}
+        .game-countdown{font-size:.95rem;font-weight:900;color:#ffd700;font-variant-numeric:tabular-nums;margin-left:4px}
+        /* Roleta — Casino v2 */
+        .roleta-casino-wrap{background:linear-gradient(180deg,#0d0d1a,#0f0f22);border:2px solid rgba(200,168,75,.3);border-radius:22px;overflow:hidden}
+        .roleta-felt{background:radial-gradient(ellipse 140% 100% at 50% 0%,#0f3d2a 0%,#0a2618 55%,#071a10 100%);padding:20px 16px 14px;position:relative;text-align:center;display:flex;flex-direction:column;align-items:center}
+        .roleta-felt::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 4px,rgba(255,255,255,.013) 4px,rgba(255,255,255,.013) 5px);pointer-events:none}
+        .roleta-title-bar{font-size:.72rem;font-weight:900;letter-spacing:3.5px;text-transform:uppercase;color:#c8a84b;margin-bottom:14px}
+        .roleta-scene{position:relative;display:inline-flex;align-items:center;justify-content:center}
+        .roleta-outer-ring{width:240px;height:240px;border-radius:50%;background:conic-gradient(#d4a017 0deg,#8b6914 90deg,#c8a84b 180deg,#6b4f10 270deg,#d4a017 360deg);display:flex;align-items:center;justify-content:center;box-shadow:0 0 35px rgba(200,168,75,.35),0 0 70px rgba(0,0,0,.8),inset 0 2px 4px rgba(255,255,255,.15)}
+        .roleta-wheel-wrap{position:relative;width:218px;height:218px;border-radius:50%}
+        .roleta-wheel-wrap canvas{position:absolute;top:0;left:0;border-radius:50%;will-change:transform}
+        .roleta-ball{position:absolute;width:13px;height:13px;border-radius:50%;background:radial-gradient(circle at 33% 30%,#fff 0%,#e8e8e8 45%,#aaa 100%);box-shadow:0 2px 6px rgba(0,0,0,.9),inset 0 -1px 2px rgba(0,0,0,.4);z-index:20;pointer-events:none;top:0;left:0;transform:translate(102px,7px);will-change:transform}
+        .roleta-marker{position:absolute;top:-4px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-top:22px solid #ffd700;z-index:30;filter:drop-shadow(0 3px 6px rgba(255,200,0,.7))}
+        .roleta-bet-row{display:flex;align-items:center;justify-content:center;gap:8px;min-height:32px;margin:12px 0 4px;width:100%;box-sizing:border-box}
+        .rbd-label{font-size:.6rem;color:rgba(200,168,75,.65);font-weight:700;letter-spacing:1.5px;text-transform:uppercase}
+        .rbd-choice{font-size:.82rem;font-weight:900;padding:4px 16px;border-radius:20px;border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.4);background:rgba(255,255,255,.05);transition:all .3s}
+        .rbd-choice.red{background:rgba(192,57,43,.22);border-color:rgba(220,80,60,.5);color:#f07060}
+        .rbd-choice.black{background:rgba(20,20,20,.5);border-color:rgba(200,200,200,.3);color:#c8c8c8}
+        .roleta-result{min-height:46px;display:flex;align-items:center;justify-content:center;font-size:.9rem;font-weight:800;border-radius:14px;padding:10px 16px;transition:all .35s;margin:8px 0 6px;border:1px solid transparent;width:100%;box-sizing:border-box}
+        .roleta-result.idle{color:rgba(255,255,255,.22);font-size:.75rem;font-weight:600;border-color:rgba(255,255,255,.06);background:rgba(255,255,255,.025)}
+        .roleta-result.spinning-msg{color:rgba(180,150,255,.9);font-size:.82rem;letter-spacing:1px;background:rgba(100,70,200,.1);border-color:rgba(139,92,246,.3);animation:roletaPulse .75s ease infinite}
+        .roleta-result.win{background:rgba(52,211,153,.12);color:#34d399;border-color:rgba(52,211,153,.35);animation:roletaWinPulse .6s ease 3}
+        .roleta-result.lose{background:rgba(248,113,113,.07);color:rgba(248,113,113,.8);border-color:rgba(248,113,113,.25)}
+        .roleta-controls{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:14px 16px 10px;background:rgba(0,0,0,.2)}
+        .roleta-btn{width:100%;padding:17px 10px;border:none;border-radius:16px;font-family:'Poppins',sans-serif;font-size:1rem;font-weight:900;cursor:pointer;transition:transform .15s,box-shadow .15s;display:flex;align-items:center;justify-content:center;gap:9px;position:relative;overflow:hidden}
+        .roleta-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.14),transparent 50%);pointer-events:none}
+        .roleta-btn-red{background:linear-gradient(160deg,#c0392b 0%,#7b1c11 100%);color:#fff;box-shadow:0 4px 22px rgba(192,57,43,.55)}
+        .roleta-btn-red:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 7px 30px rgba(220,60,40,.7)}
+        .roleta-btn-black{background:linear-gradient(160deg,#2e2e2e 0%,#0d0d0d 100%);color:#fff;border:1px solid rgba(255,255,255,.18);box-shadow:0 4px 22px rgba(0,0,0,.7)}
+        .roleta-btn-black:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 7px 30px rgba(0,0,0,.9)}
+        .roleta-btn:disabled{opacity:.35;cursor:not-allowed;transform:none!important}
+        .roleta-btn:active:not(:disabled){transform:translateY(1px)!important}
+        .rbtn-dot{width:14px;height:14px;border-radius:50%;flex-shrink:0;border:2px solid rgba(255,255,255,.35)}
+        .rbtn-dot.rd{background:#e74c3c}
+        .rbtn-dot.bk{background:#111;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.3)}
+        .roleta-footer{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;padding:10px 16px 16px}
+        .roleta-chip{font-size:.62rem;font-weight:700;border-radius:8px;padding:3px 9px;background:rgba(255,255,255,.05);color:rgba(255,255,255,.35)}
+        .roleta-chip.green{background:rgba(0,200,83,.09);border:1px solid rgba(0,200,83,.22);color:rgba(0,200,83,.85)}
+        .roleta-chip.gold{background:rgba(200,168,75,.1);border:1px solid rgba(200,168,75,.25);color:rgba(200,168,75,.9)}
+        @keyframes roletaPulse{0%,100%{opacity:1}50%{opacity:.45}}
+        @keyframes roletaWinPulse{0%,100%{box-shadow:0 0 10px rgba(52,211,153,.2)}50%{box-shadow:0 0 35px rgba(52,211,153,.7)}}
+        .odds-subtab.roleta-tab.active{background:linear-gradient(135deg,rgba(139,92,246,.55),rgba(109,40,217,.4));color:#c4b5fd}
+        /* Claridade — tela de odds mais visível ao ar livre */
+        #odds-content .glass{background:rgba(255,255,255,.10);border-color:rgba(255,255,255,.18)}
+        #odds-content .odds-card{background:rgba(255,255,255,.08);border-color:rgba(0,200,83,.32)}
+        #odds-content .odds-card.live{background:rgba(239,68,68,.07);border-color:rgba(239,68,68,.55)}
+        #odds-content .odds-card-header{background:rgba(255,255,255,.07)}
+        #odds-content .user-balance-bar{background:rgba(255,255,255,.11);border-color:rgba(255,255,255,.2)}
+        #odds-content .cpf-card{background:rgba(255,255,255,.10);border-color:rgba(255,255,255,.2)}
+        #odds-content .odds-bet-btn{background:rgba(255,255,255,.10);border-color:rgba(255,255,255,.22)}
+        #odds-content .odds-bet-btn.fav{background:rgba(255,215,0,.11);border-color:rgba(255,215,0,.38)}
+        #odds-content .odds-bet-label{color:rgba(255,255,255,.82)}
+        #odds-content .aposta-pessoa-card{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.14)}
+        #odds-content .aposta-pessoa-header{background:rgba(255,255,255,.06)}
+        /* Bet slip modal */
+        .bet-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(6px);z-index:200;display:flex;align-items:flex-end;justify-content:center}
+        .bet-slip{background:linear-gradient(180deg,#1e1e32,#0f0f1a);border:1px solid rgba(255,255,255,.12);border-radius:24px 24px 0 0;width:100%;max-width:520px;max-height:92vh;overflow-y:auto;animation:slideUp .25s ease}
+        @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+        .bet-slip-handle{width:40px;height:4px;background:rgba(255,255,255,.18);border-radius:4px;margin:14px auto 0}
+        .bet-slip-header{display:flex;align-items:flex-start;justify-content:space-between;padding:16px 20px 14px;border-bottom:1px solid rgba(255,255,255,.08)}
+        .bet-slip-body{padding:18px 20px calc(20px + env(safe-area-inset-bottom))}
+        .bet-field{margin-bottom:16px}
+        .bet-label{display:block;font-size:.68rem;font-weight:700;color:rgba(255,255,255,.45);margin-bottom:6px;text-transform:uppercase;letter-spacing:.7px}
+        .bet-input{width:100%;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.15);border-radius:12px;color:#fff;font-family:'Poppins',sans-serif;font-size:.95rem;font-weight:600;padding:12px 14px;outline:none;transition:border-color .2s}
+        .bet-input:focus{border-color:rgba(0,200,83,.55);background:rgba(0,200,83,.05)}
+        .bet-input.error{border-color:rgba(248,113,113,.65);background:rgba(248,113,113,.05)}
+        .bet-amount-row{display:flex;gap:6px;margin-top:8px}
+        .bet-amount-pct{flex:1;padding:8px 4px;border-radius:10px;border:1.5px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:rgba(255,255,255,.55);font-family:'Poppins',sans-serif;font-size:.72rem;font-weight:700;cursor:pointer;transition:all .18s;text-align:center}
+        .bet-amount-pct:hover{background:rgba(0,200,83,.18);border-color:rgba(0,200,83,.45);color:#00e676}
+        /* CPF screen */
+        .cpf-screen{display:flex;align-items:flex-start;justify-content:center;padding:4px 0 40px}
+        .cpf-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:22px 18px 24px;width:100%;max-width:420px;text-align:center}
+        .cpf-card .bet-input{font-size:16px!important;-webkit-text-size-adjust:100%} /* previne zoom iOS */
+        .cpf-title{font-size:1.15rem;font-weight:900;color:#fff;margin-bottom:6px}
+        .cpf-sub{font-size:.78rem;color:rgba(255,255,255,.45);margin-bottom:10px;line-height:1.6}
+        .cpf-prize{background:linear-gradient(135deg,rgba(0,200,83,.15),rgba(0,200,83,.04));border:1px solid rgba(0,200,83,.28);border-radius:12px;padding:10px 14px;font-size:.85rem;font-weight:800;color:#00e676;margin-bottom:4px}
+        /* User balance bar */
+        .user-balance-bar{display:flex;align-items:center;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:12px 14px;margin-bottom:14px;gap:4px}
+        .user-balance-val{font-size:1.05rem;font-weight:900;color:#fff}
+        .user-balance-val.up{color:#34d399}
+        .user-balance-val.zero{color:#f87171}
+        /* aposta pessoa card highlight */
+        .aposta-pessoa-card.me{border-color:rgba(255,215,0,.22);background:rgba(255,215,0,.025)}
+        .bet-preview{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px 14px;margin-bottom:16px}
+        .bet-preview-row{font-size:.8rem;padding:4px 0;font-weight:600;line-height:1.4}
+        .bet-preview-val{font-weight:900;font-size:.88rem}
+        .bet-preview-row.win .bet-preview-val{color:#34d399}
+        .bet-preview-row.lose .bet-preview-val{color:#f87171}
+        .bet-confirm-btn{width:100%;padding:14px;border:none;border-radius:14px;background:linear-gradient(135deg,#00c853,#00e676);color:#000;font-family:'Poppins',sans-serif;font-size:.95rem;font-weight:800;cursor:pointer;margin-bottom:9px;transition:all .2s;box-shadow:0 4px 20px rgba(0,200,83,.3)}
+        .bet-confirm-btn:hover{transform:translateY(-2px);box-shadow:0 7px 28px rgba(0,200,83,.45)}
+        .bet-cancel-btn{width:100%;padding:11px;border:1px solid rgba(255,255,255,.14);border-radius:14px;background:transparent;color:rgba(255,255,255,.45);font-family:'Poppins',sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s}
+        .bet-cancel-btn:hover{border-color:rgba(255,255,255,.3);color:#fff}
+        /* Apostas histórico */
+        .aposta-pessoa-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;margin-bottom:10px;overflow:hidden}
+        .aposta-pessoa-header{display:flex;align-items:center;gap:10px;padding:12px 14px;background:rgba(255,255,255,.03);border-bottom:1px solid rgba(255,255,255,.05)}
+        .aposta-pessoa-avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.1rem;flex-shrink:0}
+        .aposta-pessoa-info{flex:1;min-width:0}
+        .aposta-pessoa-nome{font-size:.9rem;font-weight:700;margin-bottom:2px}
+        .aposta-pessoa-stats{display:flex;gap:8px;font-size:.72rem;font-weight:700}
+        .aposta-saldo{text-align:right;flex-shrink:0}
+        .aposta-saldo-val{display:block;font-size:1.05rem;font-weight:900}
+        .aposta-saldo-label{font-size:.58rem;color:rgba(255,255,255,.38);font-weight:600}
+        .aposta-saldo.pos .aposta-saldo-val{color:#34d399}
+        .aposta-saldo.neg .aposta-saldo-val{color:#f87171}
+        .aposta-lista{padding:4px 0}
+        .aposta-item{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;border-bottom:1px solid rgba(255,255,255,.04);gap:10px;transition:background .2s}
+        .aposta-item:last-child{border-bottom:none}
+        .aposta-item.ganhou{background:rgba(52,211,153,.04)}
+        .aposta-item.perdeu{background:rgba(248,113,113,.04)}
+        .aposta-item-left{flex:1;min-width:0}
+        .aposta-item-match{font-size:.63rem;color:rgba(255,255,255,.33);margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+        .aposta-item-bet{font-size:.8rem;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+        .aposta-item-right{display:flex;align-items:center;gap:7px;flex-shrink:0}
+        .aposta-item-odd{font-size:.68rem;color:rgba(255,255,255,.38);font-weight:700}
+        .aposta-item-valor{font-size:.75rem;font-weight:700}
+        .aposta-item-status{font-size:1rem}
+
+        @media (max-width: 680px) {
+            body { padding-bottom: 70px; }
+            .wrap { padding: 12px 12px 80px; }
+            .hero { padding: 20px 12px 16px; }
+            .hero .icon { font-size: 2.6rem; margin-bottom: 8px; }
+            .hero h1 { font-size: 1.35rem; }
+            .hero .subtitle { font-size: .78rem; }
+            .evento-chip { font-size: .72rem; padding: 4px 12px; }
+            .hero .evento-info { gap: 8px; margin-top: 10px; }
+            .glass { padding: 14px 14px; border-radius: 14px; margin-bottom: 14px; }
+            .glass h2 { font-size: .95rem; margin-bottom: 12px; }
+            /* Nav → barra fixa no rodapé */
+            .nav {
+                position: fixed;
+                bottom: 0; left: 0; right: 0;
+                margin: 0;
+                padding: 8px 8px calc(8px + env(safe-area-inset-bottom));
+                background: rgba(10,10,30,.97);
+                backdrop-filter: blur(20px);
+                border-top: 1px solid rgba(255,255,255,.1);
+                z-index: 50;
+                display: grid;
+                grid-template-columns: repeat(7, 1fr);
+                gap: 4px;
+            }
+            .nav-tab {
+                padding: 7px 4px 5px;
+                border-radius: 10px;
+                font-size: .6rem;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 2px;
+                border: none;
+                line-height: 1.2;
+            }
+            /* emojis maiores nas abas */
+            .nav-tab::first-line { font-size: .95rem; }
+            /* Tabela de classificação: esconder colunas menos importantes */
+            .classif-table th:nth-child(5),
+            .classif-table td:nth-child(5),
+            .classif-table th:nth-child(6),
+            .classif-table td:nth-child(6),
+            .classif-table th:nth-child(7),
+            .classif-table td:nth-child(7) { display: none; }
+            .classif-table th, .classif-table td { padding: 8px 5px; font-size: .75rem; }
+            /* Partida card */
+            .partida-card { padding: 12px 14px; border-radius: 12px; }
+            .pj-nome { font-size: .82rem; }
+            .pj-gols { font-size: 1.7rem; }
+            /* Scoreboard ao vivo */
+            .sb-player-nome { font-size: .78rem; }
+            .sb-gols { font-size: 2.4rem; }
+            /* Pódio */
+            .p1 { width: 90px; height: 90px; }
+            .p2 { width: 76px; height: 68px; }
+            .p3 { width: 76px; height: 54px; }
+            .podio-nome { font-size: .72rem; }
+            /* Bracket */
+            .bracket-match { width: 160px; }
+            /* times grid */
+            .times-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+            /* Group card body */
+            .group-body { grid-template-columns: 1fr; }
+            .gcside-left { border-right: none; border-bottom: 1px solid rgba(255,255,255,.06); }
+            /* Group prog bar */
+            .group-prog-bar { width: 50px; }
+            /* ===== ODDS MOBILE ===== */
+            .odds-hero-promo { padding: 12px 14px; margin-bottom: 12px; }
+            .odds-hero-promo::before { font-size: 4rem; }
+            .odds-promo-title { font-size: .95rem; }
+            .odds-promo-sub { font-size: .68rem; }
+            .odds-promo-ticker { margin-top: 8px; gap: 5px; }
+            .odds-promo-chip { font-size: .6rem; padding: 3px 8px; }
+            .user-balance-bar { padding: 10px 12px; gap: 8px; }
+            .user-balance-val { font-size: .95rem; }
+            .odds-panel-header { margin-bottom: 12px; gap: 7px; }
+            .odds-card { border-radius: 13px; margin-bottom: 10px; }
+            .odds-card-header { padding: 8px 12px; }
+            .odds-bet-grid { gap: 6px; }
+            .odds-bet-btn { padding: 10px 11px; border-radius: 11px; }
+            .odds-bet-odd { font-size: 1.05rem; }
+            .odds-bet-label { font-size: .67rem; }
+            .odds-section-label { font-size: .58rem; }
+            /* CPF screen */
+            .cpf-screen { padding: 4px 0 24px; }
+            .cpf-card { padding: 20px 14px 20px; border-radius: 16px; }
+            .cpf-title { font-size: 1.05rem; }
+            .cpf-sub { font-size: .73rem; }
+            .cpf-prize { font-size: .8rem; padding: 9px 12px; }
+            /* Apostas histórico */
+            .aposta-pessoa-header { padding: 10px 12px; gap: 8px; }
+            .aposta-pessoa-avatar { width: 32px; height: 32px; font-size: .9rem; }
+            .aposta-item { padding: 8px 12px; }
+            .aposta-item-bet { font-size: .76rem; }
+            .aposta-item-odd { font-size: .62rem; }
+            .aposta-saldo-val { font-size: .95rem; }
+            /* Casino mobile */
+            .cassino-reel { width: 70px; height: 78px; }
+            .cassino-reel-sym { font-size: 2.5rem; }
+            .cassino-spin-btn { font-size: .9rem; padding: 12px; }
+            .odds-subtab { font-size: .68rem; padding: 8px 3px; }
+            /* Roleta mobile */
+            .roleta-btn { font-size: .9rem; padding: 14px 8px; gap: 7px; }
+            .roleta-title-bar { letter-spacing: 2px; }
+            .roleta-controls { gap: 8px; padding: 10px 10px 8px; }
+            .roleta-footer { padding: 8px 10px 14px; }
+            .roleta-felt { padding: 14px 10px 10px; }
+        }
+        @media (max-width:380px){
+            .roleta-scene{transform:scale(.85);transform-origin:top center;margin-bottom:-28px}
+        }
+
+        /* ===== FOOTBALL BROADCAST ===== */
+        .partida-card.em-jogo{background:linear-gradient(180deg,#0e0e0e,#1a0000);border-color:rgba(239,68,68,.65);padding:0;box-shadow:0 0 28px rgba(239,68,68,.1)}
+        .sb-live-bar{background:linear-gradient(90deg,#dc143c,#8b0000);display:flex;align-items:center;justify-content:center;gap:8px;padding:6px 14px;font-size:.6rem;font-weight:800;letter-spacing:2px;text-transform:uppercase}
+        .sb-live-dot{width:7px;height:7px;border-radius:50%;background:#fff;animation:pulseR 1s ease infinite;flex-shrink:0}
+        .sb-live-fase{opacity:.6;font-size:.6rem;margin-left:4px}
+        .sb-score-row{display:grid;grid-template-columns:1fr 40px 1fr;align-items:center;padding:16px 12px 14px;gap:4px}
+        .sb-player{text-align:center}
+        .sb-player-nome{font-size:.9rem;font-weight:700;margin-bottom:8px;line-height:1.2}
+        .sb-player-nome.venc{color:#ffd700}
+        .sb-gols{font-size:3rem;font-weight:900;line-height:1;color:#fff;font-variant-numeric:tabular-nums;animation:golGlow 3s ease infinite}
+        @keyframes golGlow{0%,100%{text-shadow:0 2px 12px rgba(255,255,255,.15)}50%{text-shadow:0 2px 24px rgba(255,215,0,.45)}}
+        .sb-sep{font-size:.9rem;font-weight:900;color:rgba(255,255,255,.2);text-align:center}
+        /* Artilheiros */
+        .artilheiro-item{display:flex;align-items:center;gap:10px;padding:10px 12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:12px;margin-bottom:6px;transition:background .2s}
+        .artilheiro-item:hover{background:rgba(255,255,255,.07)}
+        .art-rank{font-size:1.1rem;flex-shrink:0;width:24px;text-align:center}
+        .art-nome{flex:1;font-size:.87rem;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+        .art-bar-wrap{flex:2;max-width:90px}
+        .art-bar{height:4px;border-radius:4px;background:linear-gradient(90deg,#dc143c,#ffd700);min-width:4px;transition:width .6s ease}
+        .art-gols{font-size:1.1rem;font-weight:900;color:#ffd700;flex-shrink:0}
+        /* Badge de partidas ao vivo na aba */
+        .tab-live-count{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:#dc143c;color:#fff;font-size:.6rem;font-weight:900;margin-left:5px;animation:pulseR 1.5s ease infinite;vertical-align:middle}
+    </style>
+</head>
+<body>
+<div class="bg"><div class="g"></div><div class="o"></div><div class="o"></div><div class="o"></div></div>
+<div class="wrap">
+    <div class="hero">
+        <div class="icon">🏆</div>
+        <h1 id="hero-nome">Grande Campeonato de Futebol</h1>
+        <div class="subtitle">1ª Edição</div>
+        <div class="evento-info" id="evento-info"></div>
+    </div>
+    <div class="nav">
+        <button class="nav-tab active" id="tab-aovivo" onclick="switchTab('aovivo')"><span style="font-size:1.1rem">🔴</span><span>Ao Vivo</span></button>
+        <button class="nav-tab" onclick="switchTab('grupos')"><span style="font-size:1.1rem">📊</span><span>Grupos</span></button>
+        <button class="nav-tab" onclick="switchTab('bracket')"><span style="font-size:1.1rem">⚔️</span><span>Mata-Mata</span></button>
+        <button class="nav-tab" onclick="switchTab('times')"><span style="font-size:1.1rem">👥</span><span>Times</span></button>
+        <button class="nav-tab" id="tab-odds" onclick="switchTab('odds')"><span style="font-size:1.1rem">📊</span><span>Odds Esportivas</span></button>
+        <button class="nav-tab" onclick="switchTab('qrcode')"><span style="font-size:1.1rem">📲</span><span>QR Code</span></button>
+    </div>
+
+    <div class="panel active" id="panel-aovivo">
+        <div class="glass">
+            <h2>🔴 Ao Vivo</h2>
+            <div id="aovivo-content"></div>
+        </div>
+        <div class="glass" id="aovivo-bracket-inline" style="display:none"></div>
+        <div class="glass">
+            <h2>⏳ Próximas Partidas</h2>
+            <div id="proximas-content"></div>
+        </div>
+        <div class="glass">
+            <h2>✅ Últimos Resultados</h2>
+            <div id="ultimos-content"></div>
+        </div>
+    </div>
+
+    <div class="panel" id="panel-grupos">
+        <div class="glass">
+            <div class="gc-cat-sel">
+                <label>Categoria</label>
+                <select id="pub-grupos-cat" onchange="renderGrupos()"></select>
+            </div>
+            <div id="pub-grupos-container"><div class="empty">Carregando...</div></div>
+        </div>
+    </div>
+
+    <div class="panel" id="panel-bracket">
+        <div class="glass">
+            <h2>⚔️ Chave do Mata-Mata</h2>
+            <div style="overflow-x:auto;" id="bracket-content"></div>
+        </div>
+    </div>
+
+    <div class="panel" id="panel-odds">
+        <div id="odds-content"></div>
+    </div>
+    <!-- Modal de aposta (fora do scroll do panel) -->
+    <div id="bet-modal" class="bet-modal-overlay" style="display:none" onclick="if(event.target===this)closeBetModal()">
+        <div class="bet-slip">
+            <div class="bet-slip-handle"></div>
+            <div class="bet-slip-header">
+                <div style="flex:1;min-width:0">
+                    <div id="bet-match-label" style="font-size:.72rem;color:rgba(255,255,255,.38);margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></div>
+                    <div id="bet-type-label" style="font-size:1rem;font-weight:800;color:#ffd700;line-height:1.3"></div>
+                </div>
+                <div style="text-align:right;flex-shrink:0;margin-left:12px">
+                    <div style="font-size:.6rem;color:rgba(255,255,255,.38);margin-bottom:1px">ODD</div>
+                    <div id="bet-odd-display" style="font-size:1.7rem;font-weight:900;color:#00e676;line-height:1"></div>
+                </div>
+            </div>
+            <div class="bet-slip-body">
+                <div id="bet-user-info" style="font-size:.72rem;color:rgba(255,255,255,.45);margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.07)"></div>
+                <div class="bet-field">
+                    <label class="bet-label">💰 Valor da aposta (R$) <span style="color:#f87171">*</span></label>
+                    <input id="bet-amount" class="bet-input" type="number" min="1" step="0.5" placeholder="Ex: 10"
+                        oninput="this.classList.remove('error');document.getElementById('bet-amount-err').style.display='none';updateBetPreview()">
+                    <div id="bet-amount-err" style="display:none;color:#f87171;font-size:.7rem;margin-top:4px"></div>
+                    <div class="bet-amount-row">
+                        <button class="bet-amount-pct" onclick="setBetPct(0.25)">25%</button>
+                        <button class="bet-amount-pct" onclick="setBetPct(0.50)">50%</button>
+                        <button class="bet-amount-pct" onclick="setBetPct(0.75)">75%</button>
+                        <button class="bet-amount-pct" onclick="setBetPct(1)">Tudo in!</button>
+                    </div>
+                </div>
+                <div id="bet-preview" class="bet-preview"></div>
+                <button class="bet-confirm-btn" onclick="submitBet()">🎰 Confirmar Aposta</button>
+                <button class="bet-cancel-btn" onclick="closeBetModal()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel" id="panel-qrcode">
+        <div class="glass" style="text-align:center;padding:36px 24px">
+            <h2 style="justify-content:center;margin-bottom:6px">📲 Acesse pelo Celular</h2>
+            <p style="font-size:.85rem;color:rgba(255,255,255,.5);margin-bottom:28px">Aponte a câmera para o QR Code e acompanhe ao vivo</p>
+            <div id="qr-box" style="display:inline-block;padding:16px;background:#fff;border-radius:16px;box-shadow:0 0 40px rgba(255,215,0,.15)"></div>
+            <div id="qr-url" style="margin-top:18px;font-size:.78rem;color:rgba(255,255,255,.35);word-break:break-all;max-width:360px;margin-left:auto;margin-right:auto;letter-spacing:.3px"></div>
+            <button id="btn-copiar" onclick="copiarLink()" style="margin-top:20px;display:inline-flex;align-items:center;gap:8px;padding:13px 28px;border:none;border-radius:14px;font-family:'Poppins',sans-serif;font-size:.88rem;font-weight:700;cursor:pointer;background:linear-gradient(135deg,#b8860b,#ffd700);color:#000;box-shadow:0 4px 20px rgba(255,215,0,.25);transition:all .25s">
+                <span id="btn-copiar-icon">📋</span>
+                <span id="btn-copiar-txt">Copiar Link</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="panel" id="panel-times">
+        <div class="glass">
+            <h2>🏆 Classificação Final / Tabela</h2>
+            <div id="podio-pub"></div>
+            <table class="classif-table" style="margin-top:16px;">
+                <thead><tr><th>#</th><th>Time</th><th>Pts</th><th>PJ</th><th>V</th><th>E</th><th>D</th><th>GF</th><th>GC</th><th>SG</th></tr></thead>
+                <tbody id="tbody-pub"></tbody>
+            </table>
+        </div>
+        <div class="glass">
+            <h2>⚽ Artilheiros</h2>
+            <div id="artilheiros-pub"><div class="empty">Carregando...</div></div>
+        </div>
+        <div class="glass">
+            <h2>👥 Participantes</h2>
+            <div class="times-grid" id="jog-grid"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+let D = { evento: {}, times: [], partidas: [], fase: 'cadastro' };
+
+let activeTab = 'aovivo';
+let lastBettingRound = null;
+
+function getAvailableBettingRound() {
+    const ag = (D?.partidas || []).filter(p => p.status === 'agendado').sort((a,b) => (a.rodada||0)-(b.rodada||0));
+    return ag.length > 0 ? ag[0].rodada : null;
+}
+
+function switchTab(tab) {
+    activeTab = tab;
+    document.querySelectorAll('.nav-tab').forEach((t,i) => {
+        const tabs = ['aovivo','grupos','bracket','times','odds','qrcode'];
+        t.classList.toggle('active', tabs[i] === tab);
+    });
+    if (tab === 'odds') document.getElementById('tab-odds')?.classList.remove('odds-new');
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('panel-'+tab).classList.add('active');
+    if (tab === 'qrcode') renderQR();
+    renderTab(tab);
+}
+
+let qrRendered = false;
+function renderQR() {
+    if (qrRendered) return;
+    qrRendered = true;
+    const url = location.href.split('?')[0];
+    document.getElementById('qr-url').textContent = url;
+    new QRCode(document.getElementById('qr-box'), {
+        text: url,
+        width: 220,
+        height: 220,
+        colorDark: '#000000',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.H
+    });
+}
+
+function copiarLink() {
+    const url = location.href.split('?')[0];
+    const btn = document.getElementById('btn-copiar');
+    const icon = document.getElementById('btn-copiar-icon');
+    const txt  = document.getElementById('btn-copiar-txt');
+    navigator.clipboard.writeText(url).then(() => {
+        btn.style.background = 'linear-gradient(135deg,#059669,#38ef7d)';
+        btn.style.boxShadow  = '0 4px 20px rgba(56,239,125,.35)';
+        icon.textContent = '✅';
+        txt.textContent  = 'Copiado!';
+        setTimeout(() => {
+            btn.style.background = 'linear-gradient(135deg,#b8860b,#ffd700)';
+            btn.style.boxShadow  = '0 4px 20px rgba(255,215,0,.25)';
+            icon.textContent = '📋';
+            txt.textContent  = 'Copiar Link';
+        }, 2500);
+    }).catch(() => {
+        prompt('Copie o link:', url);
+    });
+}
+
+async function load() {
+    try {
+        const r = await fetch('/api/futebol');
+        D = await r.json();
+        lastBettingRound = getAvailableBettingRound();
+        render();
+    } catch {}
+}
+
+function render() {
+    renderHero();
+    renderAoVivo();
+    loadDados();
+    resolverApostas();
+    renderTab(activeTab);
+}
+
+function renderTab(tab) {
+    if (tab === 'grupos')   renderGrupos();
+    if (tab === 'bracket')  renderBracket();
+    if (tab === 'times') renderTimes();
+    if (tab === 'odds')     renderOdds();
+}
+
+function renderHero() {
+    const e = D.evento || {};
+    document.getElementById('hero-nome').textContent = e.nome || 'Grande Campeonato de Futebol';
+    const chips = [];
+    if (e.data) chips.push('📅 ' + formatDate(e.data));
+    if (e.horaInicio) chips.push('⏰ ' + e.horaInicio);
+    if (e.local) chips.push('📍 ' + e.local);
+    document.getElementById('evento-info').innerHTML = chips.map(c => `<span class="evento-chip">${esc(c)}</span>`).join('');
+}
+
+function renderAoVivo() {
+    const emJogo = D.partidas.filter(p => p.status === 'em_jogo');
+    const agendadas = D.partidas.filter(p => p.status === 'agendado');
+    const ultimas = D.partidas.filter(p => p.status === 'encerrado').slice(-6).reverse();
+
+    // ---- Ao Vivo ----
+    const aoVivoEl = document.getElementById('aovivo-content');
+    if (!emJogo.length) {
+        aoVivoEl.innerHTML = '<div class="empty">Nenhuma partida em andamento</div>';
+    } else {
+        aoVivoEl.innerHTML = `<div class="live-badge"><span class="live-dot"></span>AO VIVO</div>` + emJogo.map(p => renderPub(p, true)).join('');
+    }
+    const liveTab = document.getElementById('tab-aovivo');
+    if (liveTab) {
+        const liveSpan = emJogo.length ? `<span class="tab-live-count">${emJogo.length}</span>` : '';
+        liveTab.innerHTML = `<span style="font-size:1.1rem">🔴</span><span>Ao Vivo${liveSpan}</span>`;
+    }
+
+    // ---- Bracket inline (aparece quando há mata-mata gerado) ----
+    const mmPartidas = (D.partidas||[]).filter(p => p.fase !== 'grupos');
+    const mmEl = document.getElementById('aovivo-bracket-inline');
+    if (mmPartidas.length) {
+        const fases = ['oitavas','quartas','semifinal','final','terceiro'];
+        const fp = fases.filter(f => mmPartidas.some(p => p.fase === f));
+        const fl = { oitavas:'Oitavas', quartas:'Quartas', semifinal:'Semifinal', final:'Final', terceiro:'3º Lugar' };
+        const bracketHtml = fp.map(f => {
+            const ps = mmPartidas.filter(p => p.fase === f).sort((a,b)=>(a.bracketPos||0)-(b.bracketPos||0));
+            return `<div class="bracket-round">
+                <div class="bracket-round-title">${fl[f]||f}</div>
+                ${ps.map(p => {
+                    const j1 = findJ(p.j1Id), j2 = findJ(p.j2Id);
+                    const cls = p.status==='em_jogo'?'em-jogo':p.status==='encerrado'?'encerrado':'';
+                    return `<div class="bracket-match ${cls}">
+                        <div class="bm-row${p.vencedorId===p.j1Id?' win':''}">${esc(j1?.nome||'A definir')}<span class="bm-gols">${p.status!=='agendado'?p.gols1:'-'}</span></div>
+                        <div class="bm-row${p.vencedorId===p.j2Id?' win':''}">${esc(j2?.nome||'A definir')}<span class="bm-gols">${p.status!=='agendado'?p.gols2:'-'}</span></div>
+                    </div>`;
+                }).join('')}
+            </div>`;
+        }).join('');
+        mmEl.innerHTML = `
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap">
+                <h2 style="margin:0;font-size:1.05rem">⚔️ Chaveamento — Mata-Mata</h2>
+                <span style="font-size:.72rem;color:rgba(255,255,255,.4);background:rgba(255,255,255,.06);padding:3px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.1)">${mmPartidas.filter(p=>p.status==='encerrado').length}/${mmPartidas.length} jogos</span>
+            </div>
+            <div style="overflow-x:auto;padding-bottom:8px"><div class="bracket">${bracketHtml}</div></div>`;
+        mmEl.style.display = 'block';
+    } else {
+        mmEl.style.display = 'none';
+    }
+
+    const prox = document.getElementById('proximas-content');
+    if (!agendadas.length) {
+        prox.innerHTML = '<div class="empty">Sem partidas agendadas</div>';
+    } else {
+        // Separar grupos (intercalar rodada×chave) de mata-mata (ordem simples)
+        const grupos = agendadas.filter(p => p.fase === 'grupos');
+        const outros = agendadas.filter(p => p.fase !== 'grupos');
+        let html = '';
+        if (grupos.length) {
+            const porChave = {};
+            grupos.forEach(p => { const c = p.chaveId||'A'; if(!porChave[c]) porChave[c]=[]; porChave[c].push(p); });
+            const chaveKeys = Object.keys(porChave).sort();
+            const allRounds = new Set(grupos.map(p => p.rodada||1));
+            Array.from(allRounds).sort((a,b)=>+a-+b).forEach(r => {
+                const hasAny = chaveKeys.some(ck => porChave[ck].some(p=>(p.rodada||1)===+r));
+                if (!hasAny) return;
+                html += `<div class="gc-round-hdr">Rodada ${r}</div>`;
+                chaveKeys.forEach(ck => {
+                    const matches = porChave[ck].filter(p=>(p.rodada||1)===+r);
+                    if (!matches.length) return;
+                    html += `<div class="gc-chave-mini"><span class="cl">${ck}</span><span class="cl-label">Chave ${ck}</span></div>`;
+                    html += matches.map(p => renderPub(p)).join('');
+                });
+            });
+        }
+        if (outros.length) {
+            html += outros.map(p => renderPub(p)).join('');
+        }
+        prox.innerHTML = html;
+    }
+
+    const ult = document.getElementById('ultimos-content');
+    ult.innerHTML = ultimas.length ? ultimas.map(p => renderPub(p)).join('') : '<div class="empty">Nenhum resultado ainda</div>';
+}
+
+function renderGrupos() {
+    // populate category select
+    const sel = document.getElementById('pub-grupos-cat');
+    const cats = (D.categorias||[]);
+    if (sel.options.length !== cats.length) {
+        const prev = sel.value;
+        sel.innerHTML = cats.map(c => `<option value="${c.id}">${esc(c.nome)}</option>`).join('');
+        if (prev && cats.find(c=>String(c.id)===prev)) sel.value = prev;
+    }
+    const catId = parseInt(sel.value);
+    const container = document.getElementById('pub-grupos-container');
+    if (!catId) { container.innerHTML = '<div class="empty">Nenhuma categoria encontrada</div>'; return; }
+    const cat = cats.find(c => c.id === catId);
+    const partidas = (D.partidas||[]).filter(p => p.categoriaId === catId && p.fase === 'grupos');
+    if (!partidas.length) { container.innerHTML = '<div class="empty">Fase de grupos ainda não iniciada</div>'; return; }
+    const classif = cat?.classificadosPorChave || 2;
+
+    // Agrupar por chave
+    const chaves = {};
+    partidas.forEach(p => { const k = p.chaveId||'A'; if(!chaves[k]) chaves[k]=[]; chaves[k].push(p); });
+    const chaveKeys = Object.keys(chaves).sort();
+
+    // ===== SECTION 1: cards de classificação (um por chave) =====
+    const classifCards = chaveKeys.map(k => {
+        const ps = chaves[k];
+        const done = ps.filter(p=>p.status==='encerrado').length;
+        const total = ps.length;
+        const pct = total ? Math.round(done/total*100) : 0;
+        const progColor = pct===100 ? 'linear-gradient(90deg,#059669,#38ef7d)' : pct>0 ? 'linear-gradient(90deg,#dc143c,#ffd700)' : 'rgba(255,255,255,.2)';
+        const playerIds = new Set();
+        ps.forEach(p => { if(p.j1Id) playerIds.add(p.j1Id); if(p.j2Id) playerIds.add(p.j2Id); });
+        const st = {};
+        playerIds.forEach(id => { st[id]={id,v:0,e:0,d:0,pts:0,pj:0,gf:0,gc:0,sg:0}; });
+        ps.filter(p=>p.status==='encerrado').forEach(p => {
+            const s1=st[p.j1Id], s2=st[p.j2Id]; if(!s1||!s2) return;
+            s1.pj++;s2.pj++;
+            s1.gf+=p.gols1||0;s1.gc+=p.gols2||0;s2.gf+=p.gols2||0;s2.gc+=p.gols1||0;
+            s1.sg+=(p.gols1||0)-(p.gols2||0);s2.sg+=(p.gols2||0)-(p.gols1||0);
+            if(p.vencedorId===p.j1Id){s1.v++;s2.d++;}
+            else if(p.vencedorId===p.j2Id){s2.v++;s1.d++;}
+            else{s1.e++;s2.e++;}
+        });
+        Object.values(st).forEach(s => { s.pts = s.v*3 + s.e; });
+        const sorted = Object.values(st).sort((a,b)=>b.pts-a.pts||b.sg-a.sg||b.gf-a.gf);
+        const rows = sorted.map((s,i) => {
+            const posC = i<1?'cp-1':i<2?'cp-2':i<3?'cp-3':'cp-n';
+            const sgC = s.sg>0?'gsgp':s.sg<0?'gsgn':'gsg0';
+            return `<tr>
+                <td><span class="cp ${posC}">${i+1}</span></td>
+                <td style="max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:4px">${esc(findJ(s.id)?.nome||'?')}${i<classif?' <span style="font-size:.52rem;color:#6ee7b7;vertical-align:middle">✓</span>':''}</td>
+                <td class="gpts">${s.pts}</td>
+                <td style="font-size:.68rem;color:rgba(255,255,255,.4);text-align:center">${s.pj}</td>
+                <td style="font-size:.68rem;color:rgba(255,255,255,.4);text-align:center">${s.v}</td>
+                <td style="font-size:.68rem;color:rgba(255,255,255,.4);text-align:center">${s.e}</td>
+                <td style="font-size:.68rem;color:rgba(255,255,255,.4);text-align:center">${s.d}</td>
+                <td style="font-size:.68rem;color:rgba(255,255,255,.4);text-align:center">${s.gf}</td>
+                <td style="font-size:.68rem;color:rgba(255,255,255,.4);text-align:center">${s.gc}</td>
+                <td class="${sgC}">${s.sg>0?'+':''}${s.sg}</td>
+            </tr>`;
+        }).join('');
+        return `<div class="group-card">
+            <div class="group-hdr">
+                <div class="group-letter">${k}</div>
+                <span class="group-title">Chave ${k}</span>
+                <div class="group-prog">
+                    <div class="group-prog-bar"><div class="group-prog-fill" style="width:${pct}%;background:${progColor}"></div></div>
+                    <span class="group-prog-label">${done}/${total} jogos</span>
+                </div>
+            </div>
+            <div class="gcside">
+                <div class="gcside-title">&#128202; Classifica&ccedil;&atilde;o</div>
+                <div style="overflow-x:auto">
+                <table class="gct">
+                    <thead><tr>
+                        <th style="font-size:.58rem;color:rgba(255,255,255,.35);font-weight:700;padding:3px 4px;border-bottom:1px solid rgba(255,255,255,.08);text-align:center">#</th>
+                        <th style="font-size:.58rem;color:rgba(255,255,255,.35);font-weight:700;padding:3px 4px;border-bottom:1px solid rgba(255,255,255,.08);text-align:left">Time</th>
+                        <th style="font-size:.58rem;color:rgba(255,255,255,.35);font-weight:700;padding:3px 4px;border-bottom:1px solid rgba(255,255,255,.08);text-align:center">Pts</th>
+                        <th style="font-size:.58rem;color:rgba(255,255,255,.35);font-weight:700;padding:3px 4px;border-bottom:1px solid rgba(255,255,255,.08);text-align:center">PJ</th>
+                        <th style="font-size:.58rem;color:rgba(255,255,255,.35);font-weight:700;padding:3px 4px;border-bottom:1px solid rgba(255,255,255,.08);text-align:center">V</th>
+                        <th style="font-size:.58rem;color:rgba(255,255,255,.35);font-weight:700;padding:3px 4px;border-bottom:1px solid rgba(255,255,255,.08);text-align:center">E</th>
+                        <th style="font-size:.58rem;color:rgba(255,255,255,.35);font-weight:700;padding:3px 4px;border-bottom:1px solid rgba(255,255,255,.08);text-align:center">D</th>
+                        <th style="font-size:.58rem;color:rgba(255,255,255,.35);font-weight:700;padding:3px 4px;border-bottom:1px solid rgba(255,255,255,.08);text-align:center">GF</th>
+                        <th style="font-size:.58rem;color:rgba(255,255,255,.35);font-weight:700;padding:3px 4px;border-bottom:1px solid rgba(255,255,255,.08);text-align:center">GC</th>
+                        <th style="font-size:.58rem;color:rgba(255,255,255,.35);font-weight:700;padding:3px 4px;border-bottom:1px solid rgba(255,255,255,.08);text-align:center">SG</th>
+                    </tr></thead>
+                    <tbody>${rows}</tbody>
+                </table>
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+
+    // ===== SECTION 2: partidas intercaladas por rodada =====
+    const allRounds = new Set();
+    partidas.forEach(p => allRounds.add(p.rodada||1));
+    const roundBlocks = Array.from(allRounds).sort((a,b)=>+a-+b).map(r => {
+        const chaveBlocks = chaveKeys.map(k => {
+            const rMatches = chaves[k].filter(p => (p.rodada||1) === +r);
+            if (!rMatches.length) return '';
+            const matchRows = rMatches.map(p => {
+                const n1=findJ(p.j1Id)?.nome||'?', n2=findJ(p.j2Id)?.nome||'?';
+                const v1=p.vencedorId===p.j1Id, v2=p.vencedorId===p.j2Id;
+                const isDraw=p.status==='encerrado'&&!p.vencedorId;
+                const stEl = p.status==='em_jogo' ? '<span class="mr-st live">&#9679;</span>'
+                           : p.status==='encerrado' ? (isDraw ? '<span class="mr-st draw">=</span>' : '<span class="mr-st done">&#10003;</span>')
+                           : '<span class="mr-st wait">&hellip;</span>';
+                return `<div class="mr ${p.status}">
+                    <div class="mr-player mr-left"><span class="mr-nome${v1?' venc':''}">${esc(n1)}</span></div>
+                    <div class="mr-score"><span class="mr-g">${p.gols1||0}</span><span class="mr-sep">&times;</span><span class="mr-g">${p.gols2||0}</span></div>
+                    <div class="mr-player mr-right"><span class="mr-nome${v2?' venc':''}">${esc(n2)}</span></div>
+                    ${stEl}
+                </div>`;
+            }).join('');
+            return `<div class="gc-chave-mini"><span class="cl">${k}</span><span class="cl-label">Chave ${k}</span></div>${matchRows}`;
+        }).join('');
+        return `<div class="gc-round-block">
+            <div class="gc-round-hdr">Rodada ${r}</div>
+            ${chaveBlocks}
+        </div>`;
+    }).join('');
+
+    container.innerHTML = `<div class="gc-classif-grid">${classifCards}</div><div class="gc-rounds-section">${roundBlocks}</div>`;
+}
+
+function renderBracket() {
+    const mm = D.partidas.filter(p => p.fase !== 'grupos');
+    const el = document.getElementById('bracket-content');
+    if (!mm.length) { el.innerHTML = '<div class="empty">Mata-mata ainda não gerado</div>'; return; }
+    const fases = ['oitavas','quartas','semifinal','final','terceiro'];
+    const fp = fases.filter(f => mm.some(p => p.fase === f));
+    const fl = { oitavas:'Oitavas', quartas:'Quartas', semifinal:'Semifinal', final:'Final', terceiro:'3º Lugar' };
+    el.innerHTML = `<div class="bracket">` + fp.map(f => {
+        const ps = mm.filter(p => p.fase === f).sort((a,b)=>(a.bracketPos||0)-(b.bracketPos||0));
+        return `<div class="bracket-round"><div class="bracket-round-title">${fl[f]||f}</div>${ps.map(p => {
+            const j1 = findJ(p.j1Id), j2 = findJ(p.j2Id);
+            const cls = p.status==='em_jogo'?'em-jogo':p.status==='encerrado'?'encerrado':'';
+            return `<div class="bracket-match ${cls}">
+                <div class="bm-row${p.vencedorId===p.j1Id?' win':''}">${esc(j1?.nome||'?')}<span class="bm-gols">${p.status!=='agendado'?p.gols1:'-'}</span></div>
+                <div class="bm-row${p.vencedorId===p.j2Id?' win':''}">${esc(j2?.nome||'?')}<span class="bm-gols">${p.status!=='agendado'?p.gols2:'-'}</span></div>
+            </div>`;
+        }).join('')}</div>`;
+    }).join('') + `</div>`;
+}
+
+function renderTimes() {
+    const stats = calcStats();
+    const sorted = Object.values(stats).sort((a,b)=>b.pts-a.pts||(b.gf-b.gc)-(a.gf-a.gc)||b.gf-a.gf);
+
+    const final = D.partidas.find(p => p.fase === 'final' && p.status === 'encerrado');
+    const terceiro = D.partidas.find(p => p.fase === 'terceiro' && p.status === 'encerrado');
+    const podioEl = document.getElementById('podio-pub');
+    if (final) {
+        const camp = findJ(final.vencedorId);
+        const vice = findJ(final.vencedorId === final.j1Id ? final.j2Id : final.j1Id);
+        const t3 = terceiro ? findJ(terceiro.vencedorId) : null;
+        podioEl.innerHTML = `<div class="podio">
+            <div class="podio-item"><div class="pedestal p2">🥈</div><div class="podio-nome">${esc(vice?.nome||'?')}</div><div class="podio-sub">2º Lugar</div></div>
+            <div class="podio-item"><div class="pedestal p1">🏆</div><div class="podio-nome">${esc(camp?.nome||'?')}</div><div class="podio-sub">🥇 Campeão!</div></div>
+            ${t3?`<div class="podio-item"><div class="pedestal p3">🥉</div><div class="podio-nome">${esc(t3.nome)}</div><div class="podio-sub">3º Lugar</div></div>`:'<div class="podio-item"></div>'}
+        </div>`;
+    } else { podioEl.innerHTML = ''; }
+
+    document.getElementById('tbody-pub').innerHTML = sorted.map((s,i) => `
+        <tr><td><span class="pos ${i===0?'pos-1':i===1?'pos-2':i===2?'pos-3':'pos-other'}">${i+1}</span></td><td>${esc(s.nome)}</td><td style="color:#ffd700;font-weight:900">${s.pts}</td><td>${s.pj}</td><td>${s.v}</td><td>${s.e}</td><td>${s.d}</td><td>${s.gf}</td><td>${s.gc}</td><td style="color:${s.gf-s.gc>=0?'#4ade80':'#f87171'}">${s.gf-s.gc>=0?'+':''}${s.gf-s.gc}</td></tr>
+    `).join('');
+
+    const artEl = document.getElementById('artilheiros-pub');
+    if (artEl) artEl.innerHTML = renderArtilheirosList();
+    document.getElementById('jog-grid').innerHTML = D.times.map(j => `
+        <div class="jog-card"><div class="jog-avatar" style="background:${color(j.id)}">${esc(j.nome.charAt(0).toUpperCase())}</div><div class="jog-nome">${esc(j.nome)}</div></div>
+    `).join('');
+}
+
+function renderArtilheirosList() {
+    const gols = {};
+    D.times.forEach(j => { gols[j.id] = { nome: j.nome, g: 0 }; });
+    D.partidas.filter(p=>p.status==='encerrado').forEach(p => {
+        if (gols[p.j1Id]) gols[p.j1Id].g += (p.gols1||0);
+        if (gols[p.j2Id]) gols[p.j2Id].g += (p.gols2||0);
+    });
+    const sorted = Object.values(gols).filter(x=>x.g>0).sort((a,b)=>b.g-a.g).slice(0,8);
+    if (!sorted.length) return '<div class="empty">Nenhum gol marcado ainda</div>';
+    const max = sorted[0].g;
+    const medals = ['🥇','🥈','🥉'];
+    return sorted.map((s,i) => {
+        const pct = Math.round(s.g/max*100);
+        return `<div class="artilheiro-item">
+            <span class="art-rank">${medals[i]||'⚽'}</span>
+            <span class="art-nome">${esc(s.nome)}</span>
+            <div class="art-bar-wrap"><div class="art-bar" style="width:${pct}%"></div></div>
+            <span class="art-gols">${s.g}</span>
+            <span style="font-size:.65rem;color:rgba(255,255,255,.3);margin-left:1px">gol${s.g!==1?'s':''}</span>
+        </div>`;
+    }).join('');
+}
+
+function renderPub(p, live) {
+    const j1 = findJ(p.j1Id), j2 = findJ(p.j2Id);
+    const fl = { grupos:'Grupos', oitavas:'Oitavas', quartas:'Quartas', semifinal:'Semifinal', final:'Final', terceiro:'3º Lugar' };
+    const faseStr = `${fl[p.fase]||p.fase}${p.rodada?' · Rodada '+p.rodada:''}`;
+    const v1 = p.vencedorId===p.j1Id, v2 = p.vencedorId===p.j2Id;
+    if (p.status === 'em_jogo') {
+        return `<div class="partida-card em-jogo">
+            <div class="sb-live-bar"><span class="sb-live-dot"></span><span>AO VIVO</span><span class="sb-live-fase">&middot; ${faseStr}</span></div>
+            <div class="sb-score-row">
+                <div class="sb-player"><div class="sb-player-nome">${esc(j1?.nome||'?')}</div><div class="sb-gols">${p.gols1||0}</div></div>
+                <div class="sb-sep">&times;</div>
+                <div class="sb-player"><div class="sb-player-nome">${esc(j2?.nome||'?')}</div><div class="sb-gols">${p.gols2||0}</div></div>
+            </div>
+        </div>`;
+    }
+    const bc = { agendado:'badge-agendado', encerrado:'badge-encerrado' };
+    const sl = { agendado:'⏳ A Jogar', encerrado:'✅ Encerrado' };
+    const cc = p.status==='encerrado'?'encerrado':'';
+    return `<div class="partida-card ${cc}">
+        <div class="partida-header"><span class="partida-fase">${faseStr}</span><span class="badge ${bc[p.status]||'badge-agendado'}">${sl[p.status]||p.status}</span></div>
+        <div class="partida-body">
+            <div class="pj"><div class="pj-nome" style="color:${v1?'#4ade80':'#fff'}">${esc(j1?.nome||'?')}</div><div class="pj-gols">${p.status!=='agendado'?p.gols1:'-'}</div>${v1?'<div class="pj-win">🏆</div>':''}</div>
+            <div class="vs">&times;</div>
+            <div class="pj"><div class="pj-nome" style="color:${v2?'#4ade80':'#fff'}">${esc(j2?.nome||'?')}</div><div class="pj-gols">${p.status!=='agendado'?p.gols2:'-'}</div>${v2?'<div class="pj-win">🏆</div>':''}</div>
+        </div>
+    </div>`;
+}
+
+function calcStats() {
+    const stats = {};
+    D.times.forEach(j => { stats[j.id] = { id: j.id, nome: j.nome, pj: 0, v: 0, e: 0, d: 0, pts: 0, gf: 0, gc: 0 }; });
+    D.partidas.filter(p => p.status === 'encerrado').forEach(p => {
+        const s1 = stats[p.j1Id], s2 = stats[p.j2Id];
+        if (!s1 || !s2) return;
+        s1.pj++; s2.pj++;
+        s1.gf += p.gols1||0; s1.gc += p.gols2||0;
+        s2.gf += p.gols2||0; s2.gc += p.gols1||0;
+        if (p.vencedorId===p.j1Id)     { s1.v++; s2.d++; s1.pts+=3; }
+        else if (p.vencedorId===p.j2Id) { s2.v++; s1.d++; s2.pts+=3; }
+        else                            { s1.e++; s2.e++; s1.pts+=1; s2.pts+=1; }
+    });
+    return stats;
+}
+
+function findJ(id) { return D.times.find(j => j.id === id); }
+function color(id) { const c=['#e21b3c','#1368ce','#26890c','#d89e00','#9b59b6','#e67e22','#1abc9c','#e74c3c','#3498db','#2ecc71']; return c[id%c.length]; }
+function esc(t) { const d=document.createElement('div'); d.textContent=t||''; return d.innerHTML; }
+function formatDate(d) { if (!d) return ''; const [y,m,dd]=d.split('-'); return `${dd}/${m}/${y}`; }
+
+/* ============================================================
+   ODDS v2 — Casa de Apostas (apostas por resultado de partida)
+   ============================================================ */
+
+let apostas = [];
+let usuarios = {};      // { [cpf]: { cpf, nome, saldo, ts } }
+let currentCpf = null;
+let currentOddsMap = {};
+let betState = null;
+let oddsSubTab = 'apostas';
+let cassinoSpinning = false;
+const CASSINO_MAX_SPINS = 10;
+const ROLETA_MAX_SPINS  = 5;
+const CASSINO_WINDOW_MS = 5 * 60 * 1000; // 5 minutos
+let roletaSpinning = false;
+let roletaEscolha = null;
+const ROLETA_NUMS = [0,32,15,19,4,21,2,25,17,34,6,27,13,36,11,30,8,23,10,5,24,16,33,1,20,14,31,9,22,18,29,7,28,12,35,3,26];
+const ROLETA_RED  = new Set([1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36]);
+let cassinoTimerIv = null;
+
+function getCassinoSpins(cpf) {
+    try {
+        const data = JSON.parse(localStorage.getItem('cassino_spins_' + cpf) || 'null');
+        if (!data) return { count: 0, windowStart: Date.now() };
+        if (Date.now() - data.windowStart >= CASSINO_WINDOW_MS) return { count: 0, windowStart: Date.now() };
+        return data;
+    } catch { return { count: 0, windowStart: Date.now() }; }
+}
+function saveCassinoSpins(cpf, data) {
+    localStorage.setItem('cassino_spins_' + cpf, JSON.stringify(data));
+}
+
+function getRoletaSpins(cpf) {
+    try {
+        const data = JSON.parse(localStorage.getItem('roleta_spins_' + cpf) || 'null');
+        if (!data) return { count: 0, windowStart: Date.now() };
+        if (Date.now() - data.windowStart >= CASSINO_WINDOW_MS) return { count: 0, windowStart: Date.now() };
+        return data;
+    } catch { return { count: 0, windowStart: Date.now() }; }
+}
+function saveRoletaSpins(cpf, data) {
+    localStorage.setItem('roleta_spins_' + cpf, JSON.stringify(data));
+}
+function fmtCountdown(ms) {
+    const s = Math.max(0, Math.ceil(ms / 1000));
+    return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+}
+function startGameTimer(windowStart, countdownId, btnId, onExpire) {
+    if (cassinoTimerIv) clearInterval(cassinoTimerIv);
+    function tick() {
+        const left = Math.max(0, CASSINO_WINDOW_MS - (Date.now() - windowStart));
+        const cdEl = document.getElementById(countdownId);
+        const btnEl = document.getElementById(btnId);
+        if (cdEl) cdEl.textContent = fmtCountdown(left);
+        if (btnEl && btnEl.disabled) btnEl.textContent = `⏳ Aguarde ${fmtCountdown(left)}`;
+        if (left <= 0) {
+            clearInterval(cassinoTimerIv);
+            cassinoTimerIv = null;
+            onExpire();
+        }
+    }
+    tick();
+    cassinoTimerIv = setInterval(tick, 1000);
+}
+function stopGameTimer() {
+    if (cassinoTimerIv) { clearInterval(cassinoTimerIv); cassinoTimerIv = null; }
+}
+
+function fmtCpf(v) {
+    const d = v.replace(/\D/g,'').slice(0,11);
+    if (d.length <= 3)  return d;
+    if (d.length <= 6)  return d.slice(0,3)+'.'+d.slice(3);
+    if (d.length <= 9)  return d.slice(0,3)+'.'+d.slice(3,6)+'.'+d.slice(6);
+    return d.slice(0,3)+'.'+d.slice(3,6)+'.'+d.slice(6,9)+'-'+d.slice(9);
+}
+function cpfDigits(v) { return (v||'').replace(/\D/g,''); }
+
+function validarCpf(d) {
+    // Rejeita CPFs com todos dígitos iguais (ex: 111.111.111-11)
+    if (/^(\d)\1{10}$/.test(d)) return false;
+    // Primeiro dígito verificador
+    let soma = 0;
+    for (let i = 0; i < 9; i++) soma += parseInt(d[i]) * (10 - i);
+    let r = soma % 11;
+    if ((r < 2 ? 0 : 11 - r) !== parseInt(d[9])) return false;
+    // Segundo dígito verificador
+    soma = 0;
+    for (let i = 0; i < 10; i++) soma += parseInt(d[i]) * (11 - i);
+    r = soma % 11;
+    return (r < 2 ? 0 : 11 - r) === parseInt(d[10]);
+}
+
+function loadDados() {
+    apostas = Array.isArray(D?.odds?.apostas) ? D.odds.apostas : [];
+    usuarios = (D?.odds?.usuarios && typeof D.odds.usuarios === 'object') ? D.odds.usuarios : {};
+    currentCpf = localStorage.getItem('apostas_cpf') || null;
+}
+
+async function loadDadosApi() {
+    const r = await fetch('/api/futebol');
+    D = await r.json();
+    loadDados();
+}
+
+async function creditarSaldoOdds(cpf, valor, origem) {
+    const r = await fetch('/api/futebol/odds/credito', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cpf, valor, origem })
+    });
+    const out = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(out?.erro || 'Falha ao creditar saldo');
+    await loadDadosApi();
+    return out;
+}
+
+function salvarDados() {
+    // Persistência de apostas/usuários é server-side.
+}
+
+function getUsuario(cpf) { return usuarios[cpf] || null; }
+
+function criarUsuario(cpf, nome) {
+    usuarios[cpf] = { cpf, nome, saldo: 200, ts: Date.now() };
+    return usuarios[cpf];
+}
+
+function resolverApostas() {
+    // Resolução de apostas é server-side.
+}
+
+function calcOddsPartidas() {
+    const stats = calcStats();
+    const enc = D.partidas.filter(p => p.status === 'encerrado');
+    const avgGoals = enc.length > 0
+        ? enc.reduce((a,q) => a + (q.gols1||0) + (q.gols2||0), 0) / enc.length
+        : 2.8;
+    const drawBase = enc.length > 0
+        ? enc.filter(p => (p.gols1 || 0) === (p.gols2 || 0)).length / enc.length
+        : 0.26;
+    currentOddsMap = {};
+    // Configuração de dificuldade das odds (definida em futebol.html)
+    const ODDS_DIFF = {
+        'muito-facil':  { margin:0.03, priorPts:2.5, priorDenom:5,   cap:4.0,  floor:1.12, ouBase:1.85 },
+        'facil':        { margin:0.05, priorPts:1.5, priorDenom:3,   cap:6.0,  floor:1.06, ouBase:1.75 },
+        'medio':        { margin:0.07, priorPts:0.8, priorDenom:1.5, cap:10.0, floor:1.02, ouBase:1.65 },
+        'dificil':      { margin:0.13, priorPts:0.4, priorDenom:0.8, cap:12.0, floor:1.01, ouBase:1.50 },
+        'muito-dificil':{ margin:0.20, priorPts:0.1, priorDenom:0.2, cap:15.0, floor:1.01, ouBase:1.35 }
+    };
+    let _dk; try { _dk = localStorage.getItem('odds_dificuldade') || 'medio'; } catch { _dk = 'medio'; }
+    const cfg = ODDS_DIFF[_dk] || ODDS_DIFF['medio'];
+    const margin = cfg.margin;
+    const result = D.partidas.filter(p => p.status === 'agendado').map(p => {
+        const s1 = stats[p.j1Id] || { pj:0, pts:0 };
+        const s2 = stats[p.j2Id] || { pj:0, pts:0 };
+        // Suavização bayesiana configurável pela dificuldade
+        const aprv = (s) => (s.pts + cfg.priorPts) / (s.pj * 3 + cfg.priorDenom);
+        const a1 = aprv(s1), a2 = aprv(s2);
+        const total = a1 + a2;
+        const share1 = total > 0 ? (a1 / total) : 0.5;
+        const share2 = 1 - share1;
+        const delta = Math.abs(a1 - a2);
+        const probEmpate = Math.max(0.16, Math.min(0.34, drawBase + (0.14 - delta * 0.22)));
+        const probWinPool = Math.max(0.30, 1 - probEmpate);
+        const prob1 = probWinPool * share1;
+        const prob2 = probWinPool * share2;
+        const baseV1 = Math.min(cfg.cap, Math.max(cfg.floor, +((1/(prob1*(1+margin))).toFixed(2))));
+        const baseV2 = Math.min(cfg.cap, Math.max(cfg.floor, +((1/(prob2*(1+margin))).toFixed(2))));
+        const baseEmpate = Math.min(cfg.cap, Math.max(cfg.floor, +((1/(probEmpate*(1+margin))).toFixed(2))));
+        // Pressão de mercado: blend odds pelo dinheiro apostado em cada lado
+        const betsM = apostas.filter(a => a.matchId === p.id && a.status === 'pendente');
+        const moneyV1    = betsM.filter(a => a.tipo === 'vitoria_j1').reduce((s,a) => s+a.valor, 0);
+        const moneyV2    = betsM.filter(a => a.tipo === 'vitoria_j2').reduce((s,a) => s+a.valor, 0);
+        const moneyEmpate= betsM.filter(a => a.tipo === 'empate').reduce((s,a) => s+a.valor, 0);
+        const moneyOver  = betsM.filter(a => a.tipo === 'over').reduce((s,a) => s+a.valor, 0);
+        const moneyUnder = betsM.filter(a => a.tipo === 'under').reduce((s,a) => s+a.valor, 0);
+        const totalV = moneyV1 + moneyV2 + moneyEmpate;
+        let oddV1 = baseV1, oddV2 = baseV2, oddEmpate = baseEmpate;
+        if (totalV >= 20) {
+            const mktV1 = moneyV1 > 0 ? Math.max(cfg.floor, (totalV*(1-margin))/moneyV1) : baseV1;
+            const mktV2 = moneyV2 > 0 ? Math.max(cfg.floor, (totalV*(1-margin))/moneyV2) : baseV2;
+            const mktEmp = moneyEmpate > 0 ? Math.max(cfg.floor, (totalV*(1-margin))/moneyEmpate) : baseEmpate;
+            const w = Math.min(0.20, totalV / 500);
+            oddV1 = Math.max(cfg.floor, parseFloat((baseV1*(1-w) + mktV1*w).toFixed(2)));
+            oddV2 = Math.max(cfg.floor, parseFloat((baseV2*(1-w) + mktV2*w).toFixed(2)));
+            oddEmpate = Math.max(cfg.floor, parseFloat((baseEmpate*(1-w) + mktEmp*w).toFixed(2)));
+        }
+        const totalOU = moneyOver + moneyUnder;
+        const linha = avgGoals >= 3.1 ? 3.5 : 2.5;
+        const pOver = Math.max(0.28, Math.min(0.72, 0.5 + (avgGoals - linha) / 2.2));
+        const pUnder = 1 - pOver;
+        let overOdd  = Math.min(cfg.cap, Math.max(cfg.floor, +((1/(pOver*(1+margin))).toFixed(2))));
+        let underOdd = Math.min(cfg.cap, Math.max(cfg.floor, +((1/(pUnder*(1+margin))).toFixed(2))));
+        if (totalOU >= 20) {
+            const mktO = moneyOver  > 0 ? Math.max(cfg.floor, (totalOU*(1-margin))/moneyOver)  : overOdd;
+            const mktU = moneyUnder > 0 ? Math.max(cfg.floor, (totalOU*(1-margin))/moneyUnder) : underOdd;
+            const w = Math.min(0.20, totalOU / 500);
+            overOdd  = Math.max(cfg.floor, parseFloat((overOdd*(1-w)  + mktO*w).toFixed(2)));
+            underOdd = Math.max(cfg.floor, parseFloat((underOdd*(1-w) + mktU*w).toFixed(2)));
+        }
+        const item = {
+            partida: p,
+            j1: findJ(p.j1Id), j2: findJ(p.j2Id),
+            oddV1, oddV2, oddEmpate, prob1, prob2, probEmpate,
+            favorite: prob1 > prob2 ? 'j1' : 'j2',
+            linha, overOdd, underOdd,
+            moneyV1, moneyV2, moneyEmpate, moneyOver, moneyUnder
+        };
+        currentOddsMap[p.id] = item;
+        return item;
+    });
+    return result;
+}
+
+function openBetSlip(matchId, tipo, linha) {
+    if (!currentCpf || !getUsuario(currentCpf)) { renderOdds(); return; }
+    const o = currentOddsMap[matchId];
+    if (!o) { renderOdds(); return; }
+    loadDados();
+    const u = getUsuario(currentCpf);
+    if (!u || u.saldo <= 0) {
+        showToast('⚠️ Sem saldo! Recarregue seu crédito para continuar.');
+        return;
+    }
+    const jaApostouJogo = apostas.some(a => a.cpf === currentCpf && a.matchId === matchId);
+    if (jaApostouJogo) {
+        showToast('⛔ Você já apostou nessa partida!');
+        return;
+    }
+    const j1Nome = o.j1?.nome || '?', j2Nome = o.j2?.nome || '?';
+    const odd = tipo === 'vitoria_j1' ? o.oddV1
+              : tipo === 'vitoria_j2' ? o.oddV2
+              : tipo === 'empate'     ? o.oddEmpate
+              : tipo === 'over'       ? o.overOdd
+              : o.underOdd;
+    const labels = {
+        vitoria_j1: `🏆 ${j1Nome} vence`,
+        vitoria_j2: `🏆 ${j2Nome} vence`,
+        empate: `🤝 Empate`,
+        over:  `📈 Mais de ${o.linha} gols`,
+        under: `📉 Máx ${o.linha} gols`
+    };
+    const label = labels[tipo] || tipo;
+    betState = { matchId, tipo, label, odd, linha: linha||0 };
+    document.getElementById('bet-match-label').textContent = `${j1Nome} × ${j2Nome}`;
+    document.getElementById('bet-type-label').textContent  = label;
+    document.getElementById('bet-odd-display').textContent = odd.toFixed(2);
+    document.getElementById('bet-user-info').textContent   = `${u.nome}  ·  Saldo disponível: R$ ${u.saldo.toFixed(2)}`;
+    const amountEl = document.getElementById('bet-amount');
+    amountEl.value = '';
+    amountEl.max   = u.saldo;
+    amountEl.classList.remove('error');
+    document.getElementById('bet-amount-err').style.display = 'none';
+    document.getElementById('bet-preview').innerHTML = '';
+    document.getElementById('bet-modal').style.display = 'flex';
+    setTimeout(() => amountEl.focus(), 150);
+}
+
+function setBetPct(pct) {
+    const u = currentCpf ? getUsuario(currentCpf) : null;
+    if (!u) return;
+    const val = Math.max(1, Math.floor(u.saldo * pct * 100) / 100);
+    const el = document.getElementById('bet-amount');
+    if (el) { el.value = val; el.classList.remove('error'); }
+    document.getElementById('bet-amount-err').style.display = 'none';
+    updateBetPreview();
+}
+
+function updateBetPreview() {
+    const val = parseFloat(document.getElementById('bet-amount')?.value || 0);
+    const odd = betState?.odd || 1;
+    if (!val || val <= 0) { document.getElementById('bet-preview').innerHTML = ''; return; }
+    const retorno = Math.round(val * odd * 100) / 100;
+    const lucro   = Math.round((retorno - val) * 100) / 100;
+    const el = document.getElementById('bet-preview');
+    if (el) el.innerHTML = `
+        <div class="bet-preview-row win">✅ Se <strong>ganhar</strong>: +<span class="bet-preview-val">R$ ${lucro.toFixed(2)}</span> <span style="font-size:.65rem;color:rgba(255,255,255,.28)">(recebe R$ ${retorno.toFixed(2)})</span></div>
+        <div class="bet-preview-row lose">❌ Se <strong>perder</strong>: -<span class="bet-preview-val">R$ ${val.toFixed(2)}</span></div>`;
+}
+
+function closeBetModal() {
+    document.getElementById('bet-modal').style.display = 'none';
+    betState = null;
+}
+
+function submitBet() {
+    if (!betState || !currentCpf) return;
+    loadDados();
+    const u = getUsuario(currentCpf);
+    if (!u) return;
+    const val = parseFloat(document.getElementById('bet-amount')?.value || 0);
+    const amountEl = document.getElementById('bet-amount');
+    const errEl    = document.getElementById('bet-amount-err');
+    if (!val || val < 0.5) {
+        amountEl.classList.add('error');
+        errEl.textContent = '⚠️ Valor mínimo: R$ 0,50';
+        errEl.style.display = 'block';
+        amountEl.focus();
+        return;
+    }
+    if (val > u.saldo) {
+        amountEl.classList.add('error');
+        errEl.textContent = `⚠️ Saldo insuficiente — disponível: R$ ${u.saldo.toFixed(2)}`;
+        errEl.style.display = 'block';
+        amountEl.focus();
+        return;
+    }
+    const retorno = Math.round(val * betState.odd * 100) / 100;
+    fetch('/api/futebol/odds/apostas', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            cpf: currentCpf,
+            matchId: betState.matchId,
+            tipo: betState.tipo,
+            label: betState.label,
+            odd: betState.odd,
+            valor: val,
+            linha: betState.linha
+        })
+    })
+    .then(async r => {
+        const out = await r.json().catch(() => ({}));
+        if (!r.ok) throw new Error(out?.erro || 'Não foi possível registrar a aposta');
+        return out;
+    })
+    .then(() => loadDadosApi().then(() => {
+        closeBetModal();
+        renderOdds();
+        showToast(`🎰 R$ ${val.toFixed(2)} apostados! Retorno potencial: R$ ${retorno.toFixed(2)}`);
+    }))
+    .catch(err => {
+        const msg = String(err?.message || 'Falha ao apostar');
+        if (/fechadas/i.test(msg) || /já apostou/i.test(msg)) {
+            closeBetModal();
+            renderOdds();
+        }
+        showToast(`⚠️ ${esc(msg)}`);
+    });
+}
+
+function showToast(msg) {
+    let t = document.getElementById('bet-toast');
+    if (!t) {
+        t = document.createElement('div');
+        t.id = 'bet-toast';
+        t.style.cssText = 'position:fixed;bottom:85px;left:50%;transform:translateX(-50%) translateZ(0);background:rgba(0,200,83,.93);color:#000;font-weight:700;padding:10px 20px;border-radius:30px;font-size:.82rem;z-index:400;transition:opacity .4s;pointer-events:none;white-space:nowrap;box-shadow:0 4px 20px rgba(0,200,83,.4);max-width:90vw;text-align:center';
+        document.body.appendChild(t);
+    }
+    t.innerHTML = msg;
+    t.style.opacity = '1';
+    clearTimeout(t._to);
+    t._to = setTimeout(() => { t.style.opacity = '0'; }, 3200);
+}
+
+// -------- CPF screen --------
+function renderCpfScreen() {
+    return `<div class="cpf-screen" id="cpf-screen">
+        <div class="cpf-card">
+            <div style="font-size:2.6rem;margin-bottom:6px">📊</div>
+            <div class="cpf-title">Odds Esportivas Futebol™</div>
+            <div id="cpf-card-sub" class="cpf-sub">Preencha os campos abaixo para receber seu bônus e começar a apostar!</div>
+            <div id="cpf-card-prize" class="cpf-prize">🎁 R$ 200,00 fictícios de bônus!</div>
+            <!-- Retorno: banner de boas-vindas (oculto por padrão) -->
+            <div id="cpf-welcome-back" style="display:none;background:linear-gradient(135deg,rgba(74,222,128,.13),rgba(74,222,128,.04));border:1px solid rgba(74,222,128,.35);border-radius:12px;padding:11px 14px;font-size:.85rem;font-weight:700;color:#4ade80;margin-bottom:4px;text-align:left"></div>
+            <div class="bet-field" style="margin-top:18px;text-align:left">
+                <label class="bet-label">📋 Seu CPF <span style="color:#f87171">*</span></label>
+                <input id="cpf-input" class="bet-input" type="tel" inputmode="numeric"
+                    placeholder="000.000.000-00" maxlength="14"
+                    autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+                    oninput="this.value=fmtCpf(this.value);this.classList.remove('error');document.getElementById('cpf-err').style.display='none';checkCpfReturning()"
+                    onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('cpf-nome')?.focus()}">
+                <div id="cpf-err" style="display:none;color:#f87171;font-size:.72rem;margin-top:5px"></div>
+            </div>
+            <div id="cpf-nome-row" class="bet-field" style="text-align:left">
+                <label class="bet-label">👤 Como te chamam? <span style="color:#f87171">*</span></label>
+                <input id="cpf-nome" class="bet-input" type="text" inputmode="text"
+                    placeholder="Seu apelido ou nome" maxlength="30"
+                    autocomplete="nickname" autocorrect="off" autocapitalize="words" spellcheck="false"
+                    oninput="this.classList.remove('error');document.getElementById('cpf-nome-err').style.display='none'"
+                    onkeydown="if(event.key==='Enter'){event.preventDefault();submitCpf()}">
+                <div id="cpf-nome-err" style="display:none;color:#f87171;font-size:.72rem;margin-top:5px"></div>
+            </div>
+            <button type="button" class="bet-confirm-btn" style="margin-top:10px"
+                onpointerdown="event.preventDefault()"
+                onclick="submitCpf()">Entrar nas Odds Esportivas →</button>
+            <div style="font-size:.6rem;color:rgba(255,255,255,.2);margin-top:14px;line-height:1.6">
+                CPF usado apenas para identificação no torneio.<br>Dados ficam no servidor local deste campeonato.
+            </div>
+        </div>
+    </div>`;
+}
+
+function checkCpfReturning() {
+    const d = cpfDigits(document.getElementById('cpf-input')?.value || '');
+    const nomeRow    = document.getElementById('cpf-nome-row');
+    const welcomeEl  = document.getElementById('cpf-welcome-back');
+    const subEl      = document.getElementById('cpf-card-sub');
+    const prizeEl    = document.getElementById('cpf-card-prize');
+    if (d.length === 11) {
+        loadDados();
+        if (!validarCpf(d)) {
+            const errEl = document.getElementById('cpf-err');
+            if (errEl) { errEl.textContent = '⚠️ CPF inválido — verifique os dígitos'; errEl.style.display = 'block'; }
+            if (welcomeEl) welcomeEl.style.display = 'none';
+            if (nomeRow)   nomeRow.style.display   = 'block';
+            if (subEl)     subEl.textContent       = 'Preencha os campos abaixo para receber seu bônus e começar a apostar!';
+            if (prizeEl)   prizeEl.style.display   = 'block';
+            return;
+        }
+        const ex = getUsuario(d);
+        if (ex) {
+            const minhasPend = apostas.filter(a => a.cpf === d && a.status === 'pendente').length;
+            const pendStr = minhasPend > 0 ? ` · ${minhasPend} aposta${minhasPend>1?'s':''} em aberto` : '';
+            if (welcomeEl) { welcomeEl.style.display = 'block'; welcomeEl.innerHTML = `👋 Bem-vindo de volta, <strong>${esc(ex.nome)}</strong>!<br><span style="font-size:.75rem;color:rgba(74,222,128,.7);font-weight:400">Saldo: R$ ${ex.saldo.toFixed(2)}${pendStr}</span>`; }
+            if (nomeRow)   nomeRow.style.display   = 'none';
+            if (subEl)     subEl.textContent        = 'CPF reconhecido — clique em Entrar para continuar.';
+            if (prizeEl)   prizeEl.style.display    = 'none';
+            return;
+        }
+    }
+    // CPF incompleto ou não cadastrado: estado padrão
+    if (welcomeEl) welcomeEl.style.display = 'none';
+    if (nomeRow)   nomeRow.style.display   = 'block';
+    if (subEl)     subEl.textContent       = 'Preencha os campos abaixo para receber seu bônus e começar a apostar!';
+    if (prizeEl)   prizeEl.style.display   = 'block';
+}
+
+function submitCpf() {
+    const cpfEl    = document.getElementById('cpf-input');
+    const errEl    = document.getElementById('cpf-err');
+    const nomeEl   = document.getElementById('cpf-nome');
+    const nomeErrEl= document.getElementById('cpf-nome-err');
+    const d    = cpfDigits(cpfEl?.value || '');
+    const nome = nomeEl?.value?.trim() || '';
+    loadDados();
+    // Valida CPF
+    if (d.length !== 11) {
+        cpfEl.classList.add('error');
+        errEl.textContent = '⚠️ CPF deve ter 11 dígitos';
+        errEl.style.display = 'block';
+        return;
+    }
+    if (!validarCpf(d)) {
+        cpfEl.classList.add('error');
+        errEl.textContent = '⚠️ CPF inválido — verifique os dígitos';
+        errEl.style.display = 'block';
+        return;
+    }
+    errEl.style.display = 'none';
+    fetch('/api/futebol/odds/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cpf: d, nome })
+    })
+    .then(async r => {
+        const out = await r.json().catch(() => ({}));
+        if (!r.ok) throw new Error(out?.erro || 'Falha ao entrar nas odds');
+        return out;
+    })
+    .then(loginOut => loadDadosApi().then(() => {
+        currentCpf = d;
+        try { localStorage.setItem('apostas_cpf', d); } catch {}
+        renderOdds();
+        const atual = getUsuario(d);
+        const minhasPend = apostas.filter(a => a.cpf === d && a.status === 'pendente').length;
+        const pendStr = minhasPend > 0 ? ` | ${minhasPend} aposta${minhasPend>1?'s':''} em aberto` : '';
+        if (loginOut?.created) {
+            if (loginOut?.autoNamed) {
+                showToast(`🎉 Conta criada! Defina um apelido na próxima entrada para personalizar.`);
+            } else {
+                showToast(`🎉 Bem-vindo, ${esc(atual?.nome || nome)}! Você recebeu R$ 200,00 fictícios!`);
+            }
+        } else {
+            showToast(`👋 Bem-vindo de volta, ${esc(atual?.nome || '')}! Saldo: R$ ${(atual?.saldo || 0).toFixed(2)}${pendStr}`);
+        }
+    }))
+    .catch(err => {
+        const msg = String(err?.message || 'Falha ao entrar');
+        if (/Nome obrigatório/i.test(msg)) {
+            nomeEl.classList.add('error');
+            nomeErrEl.textContent = '⚠️ Informe seu nome ou apelido';
+            nomeErrEl.style.display = 'block';
+        }
+        showToast(`⚠️ ${esc(msg)}`);
+    });
+}
+
+function logoutCpf() {
+    currentCpf = null;
+    try { localStorage.removeItem('apostas_cpf'); } catch {}
+    renderOdds();
+}
+
+// -------- Match card --------
+function renderOddsMatchCard(o, fl, live, bloqueado = false) {
+    const p = o.partida;
+    const faseStr = `${fl[p.fase]||p.fase}${p.rodada?' · R'+p.rodada:''}`;
+    const j1Nome = o.j1?.nome || '?';
+    const j2Nome = o.j2?.nome || '?';
+    const fav = o.favorite;
+    const btnStyle = bloqueado ? 'opacity:.35;pointer-events:none;cursor:not-allowed' : '';
+    const totalApostado = apostas.filter(a => a.matchId === p.id).reduce((s,a) => s + a.valor, 0);
+    const p1pct = Math.round(o.prob1 * 100);
+    const p2pct = 100 - p1pct;
+    // Barra de distribuição de dinheiro V1 vs V2
+    const totalV = o.moneyV1 + o.moneyV2;
+    const barHtml = totalV > 0 ? `
+        <div style="margin:4px 16px 0">
+            <div style="display:flex;height:5px;border-radius:4px;overflow:hidden">
+                <div style="flex:${Math.max(0.05,o.moneyV1)};background:rgba(0,200,83,.5)"></div>
+                <div style="flex:${Math.max(0.05,o.moneyV2)};background:rgba(248,113,113,.5)"></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:3px 0 0;font-size:.55rem;color:rgba(255,255,255,.25)">
+                <span>R$${o.moneyV1.toFixed(0)}</span>
+                <span style="color:rgba(255,215,0,.3)">R$${totalV.toFixed(0)} no pool</span>
+                <span>R$${o.moneyV2.toFixed(0)}</span>
+            </div>
+        </div>` : '';
+    return `<div class="odds-card${live?' live':''}">
+        <div class="odds-card-header">
+            <span class="odds-fase">${esc(faseStr)}</span>
+            <div style="display:flex;align-items:center;gap:6px">
+                ${totalApostado > 0 ? `<span style="font-size:.62rem;color:rgba(255,215,0,.7);background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.2);border-radius:8px;padding:2px 8px">R$ ${totalApostado.toFixed(0)} apostados</span>` : ''}
+                ${live ? '<span class="odds-live-mini">🔴 AO VIVO</span>' : '<span style="display:inline-flex;align-items:center;gap:5px;font-size:.65rem;font-weight:800;color:#4ade80;background:rgba(74,222,128,.13);border:1px solid rgba(74,222,128,.4);border-radius:8px;padding:3px 10px"><span style="width:7px;height:7px;border-radius:50%;background:#4ade80;box-shadow:0 0 5px rgba(74,222,128,.7);animation:pulseR 1.4s ease infinite;flex-shrink:0"></span>Apostas Abertas</span>'}
+            </div>
+        </div>
+        ${live ? `<div style="display:flex;align-items:center;justify-content:center;gap:16px;padding:10px 16px 6px">
+            <span style="font-size:.85rem;font-weight:700">${esc(j1Nome)}</span>
+            <span style="font-size:2rem;font-weight:900;color:#ffd700;animation:golGlow 3s ease infinite">${p.gols1||0}</span>
+            <span style="color:rgba(255,255,255,.25);font-size:.8rem">×</span>
+            <span style="font-size:2rem;font-weight:900;color:#ffd700;animation:golGlow 3s ease infinite">${p.gols2||0}</span>
+            <span style="font-size:.85rem;font-weight:700">${esc(j2Nome)}</span>
+        </div>` : `<div style="display:flex;align-items:center;padding:12px 16px 4px;gap:4px">
+            <div style="flex:1;text-align:center">
+                <div style="font-size:.95rem;font-weight:800;color:${fav==='j1'?'#ffd700':'rgba(255,255,255,.85)'};line-height:1.2">${esc(j1Nome)}</div>
+                <div style="font-size:.62rem;margin-top:3px;color:${fav==='j1'?'rgba(255,215,0,.55)':'rgba(255,255,255,.25)'}">${p1pct}% favorito</div>
+            </div>
+            <div style="padding:0 10px;font-size:.7rem;font-weight:800;color:rgba(255,255,255,.15);flex-shrink:0">VS</div>
+            <div style="flex:1;text-align:center">
+                <div style="font-size:.95rem;font-weight:800;color:${fav==='j2'?'#ffd700':'rgba(255,255,255,.85)'};line-height:1.2">${esc(j2Nome)}</div>
+                <div style="font-size:.62rem;margin-top:3px;color:${fav==='j2'?'rgba(255,215,0,.55)':'rgba(255,255,255,.25)'}">${p2pct}% favorito</div>
+            </div>
+        </div>`}
+        ${barHtml}
+        <div style="padding:10px 16px 4px">
+            <div class="odds-section-label">⚽ Mercado 1X2 (Tempo Normal)</div>
+            <div class="odds-bet-grid" style="grid-template-columns:1fr 1fr 1fr">
+                <button class="odds-bet-btn${fav==='j1'?' fav':''}" onclick="openBetSlip(${p.id},'vitoria_j1',0)" style="${btnStyle}">
+                    <div style="flex:1">
+                        <span class="odds-bet-label${fav==='j1'?' fav-label':''}">${fav==='j1'?'🏆 ':''}${esc(j1Nome)}</span>
+                        <div style="font-size:.55rem;color:rgba(255,255,255,.2);margin-top:2px">retorna R$ ${o.oddV1.toFixed(2)} por R$1</div>
+                    </div>
+                    <span class="odds-bet-odd">${o.oddV1.toFixed(2)}</span>
+                </button>
+                <button class="odds-bet-btn" onclick="openBetSlip(${p.id},'empate',0)" style="${btnStyle}">
+                    <div style="flex:1">
+                        <span class="odds-bet-label">🤝 Empate</span>
+                        <div style="font-size:.55rem;color:rgba(255,255,255,.2);margin-top:2px">retorna R$ ${o.oddEmpate.toFixed(2)} por R$1</div>
+                    </div>
+                    <span class="odds-bet-odd">${o.oddEmpate.toFixed(2)}</span>
+                </button>
+                <button class="odds-bet-btn${fav==='j2'?' fav':''}" onclick="openBetSlip(${p.id},'vitoria_j2',0)" style="${btnStyle}">
+                    <div style="flex:1">
+                        <span class="odds-bet-label${fav==='j2'?' fav-label':''}">${fav==='j2'?'🏆 ':''}${esc(j2Nome)}</span>
+                        <div style="font-size:.55rem;color:rgba(255,255,255,.2);margin-top:2px">retorna R$ ${o.oddV2.toFixed(2)} por R$1</div>
+                    </div>
+                    <span class="odds-bet-odd">${o.oddV2.toFixed(2)}</span>
+                </button>
+            </div>
+            <div class="odds-section-label">🥅 Total de Gols (linha: ${o.linha})</div>
+            <div class="odds-bet-grid" style="margin-bottom:14px">
+                <button class="odds-bet-btn" onclick="openBetSlip(${p.id},'over',${o.linha})" style="${btnStyle}">
+                    <div style="flex:1">
+                        <span class="odds-bet-label">📈 Mais de ${o.linha}</span>
+                        <div style="font-size:.55rem;color:rgba(255,255,255,.2);margin-top:2px">retorna R$ ${o.overOdd.toFixed(2)} por R$1</div>
+                    </div>
+                    <span class="odds-bet-odd">${o.overOdd.toFixed(2)}</span>
+                </button>
+                <button class="odds-bet-btn" onclick="openBetSlip(${p.id},'under',${o.linha})" style="${btnStyle}">
+                    <div style="flex:1">
+                        <span class="odds-bet-label">📉 Máx ${o.linha} gols</span>
+                        <div style="font-size:.55rem;color:rgba(255,255,255,.2);margin-top:2px">retorna R$ ${o.underOdd.toFixed(2)} por R$1</div>
+                    </div>
+                    <span class="odds-bet-odd">${o.underOdd.toFixed(2)}</span>
+                </button>
+            </div>
+        </div>
+    </div>`;
+}
+
+function renderApostasHistorico() {
+    if (!apostas.length) return '';
+    // Agrupa por CPF (ou nome como fallback para apostas antigas)
+    const porCpf = {};
+    apostas.forEach(a => {
+        const key = a.cpf || a.nome;
+        if (!porCpf[key]) porCpf[key] = [];
+        porCpf[key].push(a);
+    });
+    const statusIcon  = { ganhou:'✅', perdeu:'❌', pendente:'⏳' };
+    const statusColor = { ganhou:'rgba(52,211,153,.8)', perdeu:'rgba(248,113,113,.8)', pendente:'rgba(251,191,36,.7)' };
+    // Ordena: usuário atual primeiro, depois por saldo
+    const entries = Object.entries(porCpf).sort(([ka], [kb]) => {
+        if (ka === currentCpf) return -1;
+        if (kb === currentCpf) return 1;
+        const ua = usuarios[ka], ub = usuarios[kb];
+        return (ub?.saldo||0) - (ua?.saldo||0);
+    });
+    const statsHtml = entries.map(([key, aps]) => {
+        const u = usuarios[key] || null;
+        const nome = u?.nome || aps[0]?.nome || key;
+        const isMe = key === currentCpf;
+        const gan  = aps.filter(a => a.status==='ganhou');
+        const per  = aps.filter(a => a.status==='perdeu');
+        const pen  = aps.filter(a => a.status==='pendente');
+        const saldo = u ? u.saldo : 200;
+        const emRisco = pen.reduce((s,a) => s + (a.valor||0), 0);
+        const avatarColor = color(nome.charCodeAt(0));
+        const saldoClass = saldo >= 200 ? 'pos' : saldo > 0 ? '' : 'neg';
+        return `<div class="aposta-pessoa-card${isMe?' me':''}">
+            <div class="aposta-pessoa-header">
+                <div class="aposta-pessoa-avatar" style="background:${avatarColor}">${esc(nome.charAt(0).toUpperCase())}</div>
+                <div class="aposta-pessoa-info">
+                    <div class="aposta-pessoa-nome">${esc(nome)}${isMe?'<span style="font-size:.55rem;color:#ffd700;margin-left:6px;background:rgba(255,215,0,.12);border:1px solid rgba(255,215,0,.25);border-radius:6px;padding:1px 5px;font-weight:700">VOCÊ</span>':''}</div>
+                    <div class="aposta-pessoa-stats">
+                        <span style="color:#34d399">${gan.length}✅</span>
+                        <span style="color:#f87171">${per.length}❌</span>
+                        ${pen.length?`<span style="color:#fbbf24">${pen.length}⏳</span>`:''}
+                        ${emRisco>0?`<span style="color:rgba(255,255,255,.3);font-size:.62rem">R$${emRisco.toFixed(0)} em risco</span>`:''}
+                    </div>
+                </div>
+                <div class="aposta-saldo ${saldoClass}">
+                    <span class="aposta-saldo-val">R$ ${saldo.toFixed(2)}</span>
+                    <span class="aposta-saldo-label">${saldo>=200?'↑ lucro':'saldo atual'}</span>
+                </div>
+            </div>
+            <div class="aposta-lista">
+                ${aps.map(a => {
+                    const pMatch = D.partidas.find(p => p.id === a.matchId);
+                    const j1 = pMatch ? findJ(pMatch.j1Id) : null, j2 = pMatch ? findJ(pMatch.j2Id) : null;
+                    const matchStr = j1&&j2 ? `${j1.nome} × ${j2.nome}` : 'Partida';
+                    const lucro = a.status==='ganhou' ? a.retorno - a.valor : 0;
+                    const resultStr = a.status==='ganhou'
+                        ? `<span style="font-size:.6rem;color:#34d399;font-weight:700;margin-left:2px">+R$${lucro.toFixed(2)}</span>`
+                        : a.status==='perdeu'
+                            ? `<span style="font-size:.6rem;color:#f87171;font-weight:700;margin-left:2px">-R$${(a.valor||0).toFixed(2)}</span>`
+                            : '';
+                    return `<div class="aposta-item ${a.status}">
+                        <div class="aposta-item-left">
+                            <div class="aposta-item-match">${esc(matchStr)}</div>
+                            <div class="aposta-item-bet">${esc(a.label)}</div>
+                        </div>
+                        <div class="aposta-item-right">
+                            <span class="aposta-item-odd">@${a.odd.toFixed(2)}</span>
+                            <span class="aposta-item-valor">R$${(a.valor||0).toFixed(2)}</span>
+                            ${resultStr}
+                            <span class="aposta-item-status" style="color:${statusColor[a.status]}">${statusIcon[a.status]}</span>
+                        </div>
+                    </div>`;
+                }).join('')}
+            </div>
+        </div>`;
+    }).join('');
+    return `<div class="glass" style="margin-bottom:14px">
+        <h2>🏆 Ranking de Apostadores</h2>
+        <p style="font-size:.75rem;color:rgba(255,255,255,.4);margin-bottom:14px">Dinheiro fictício — saldo compartilhado entre usuários</p>
+        ${statsHtml}
+    </div>`;
+}
+
+function renderOdds() {
+    if (cassinoSpinning) return;
+    loadDados();
+    resolverApostas();
+    const content = document.getElementById('odds-content');
+    if (!content) return;
+    // Sem usuário: mostrar tela de CPF
+    if (!currentCpf || !getUsuario(currentCpf)) {
+        // Não re-renderizar se o usuário está digitando nos campos de CPF (evita fechar teclado)
+        const active = document.activeElement;
+        if (content.contains(active) && active.tagName === 'INPUT') return;
+        content.innerHTML = renderCpfScreen();
+        return;
+    }
+    const u = getUsuario(currentCpf);
+    const oddsData = calcOddsPartidas();
+    const fl = { grupos:'Grupos', oitavas:'Oitavas', quartas:'Quartas', semifinal:'Semifinal', final:'Final', terceiro:'3º Lugar' };
+    const totalA      = apostas.length;
+    const pendCount   = apostas.filter(a => a.status==='pendente').length;
+    const poolTotal   = apostas.filter(a => a.status==='pendente').reduce((s,a) => s+(a.valor||0), 0);
+    const minhasPend  = apostas.filter(a => a.cpf===currentCpf && a.status==='pendente').length;
+    const _delta = +(u.saldo - 200).toFixed(0);
+    const _deltaColor = _delta >= 0 ? 'rgba(52,211,153,.65)' : 'rgba(248,113,113,.65)';
+    const _deltaStr = minhasPend > 0 ? `${minhasPend} em aberto` : (_delta >= 0 ? `▲ R$ ${_delta} ganho` : `▼ R$ ${Math.abs(_delta)} perdido`);
+    let html = `<div class="user-balance-bar">
+        <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0">
+            <div style="width:36px;height:36px;border-radius:50%;background:${color(u.nome.charCodeAt(0))};display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.1rem;flex-shrink:0">${esc(u.nome.charAt(0).toUpperCase())}</div>
+            <div style="min-width:0">
+                <div style="font-size:.82rem;font-weight:700;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(u.nome)}</div>
+                <div style="font-size:.6rem;color:rgba(255,255,255,.3)">${fmtCpf(currentCpf)}</div>
+            </div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+            <div class="user-balance-val${u.saldo>200?' up':u.saldo<=0?' zero':''}"">R$ ${u.saldo.toFixed(2)}</div>
+            <div style="font-size:.56rem;color:${_deltaColor}">${_deltaStr}</div>
+        </div>
+    </div>`;
+    html += `<div class="odds-subtabs">
+        <button class="odds-subtab${oddsSubTab==='apostas'?' active':''}" onclick="switchOddsTab('apostas')">🎲 Apostas</button>
+        <button class="odds-subtab cassino-tab${oddsSubTab==='cassino'?' active':''}" onclick="switchOddsTab('cassino')">🎰 Caça-Níquel</button>
+        <button class="odds-subtab roleta-tab${oddsSubTab==='roleta'?' active':''}" onclick="switchOddsTab('roleta')">🎡 Roleta</button>
+    </div>`;
+    if (oddsSubTab === 'apostas') {
+    const preJogo = oddsData.filter(o => o.partida.status === 'agendado')
+        .sort((a,b) => (a.partida.rodada||0) - (b.partida.rodada||0));
+    if (preJogo.length > 0) {
+        const rodadaAtual = preJogo[0].partida.rodada;
+        const jogosRodada = preJogo.filter(o => o.partida.rodada === rodadaAtual);
+        const apostasFeitas = jogosRodada.filter(o => apostas.some(a => a.cpf === currentCpf && a.matchId === o.partida.id)).length;
+        html += `<div class="glass" style="margin-bottom:14px;border-color:rgba(74,222,128,.45);box-shadow:0 0 22px rgba(74,222,128,.14)">
+            <div class="odds-panel-header">
+                <div class="odds-live-badge"><span class="odds-live-dot"></span>APOSTAS ABERTAS</div>
+                <div style="display:flex;align-items:center;gap:8px">
+                    <span class="bookmaker-badge">${rodadaAtual ? `Rodada ${rodadaAtual}` : 'Pré-jogo'}</span>
+                    ${apostasFeitas > 0 ? `<span class="bookmaker-badge" style="color:rgba(52,211,153,.75);border-color:rgba(52,211,153,.25)">${apostasFeitas}/${jogosRodada.length} ✅</span>` : ''}
+                </div>
+            </div>`;
+        jogosRodada.forEach(o => {
+            const jaApostouJogo = apostas.some(a => a.cpf === currentCpf && a.matchId === o.partida.id);
+            if (jaApostouJogo) {
+                html += `<div style="margin:0 0 8px;padding:7px 12px;background:rgba(52,211,153,.07);border:1px solid rgba(52,211,153,.2);border-radius:10px;font-size:.73rem;color:rgba(52,211,153,.85);font-weight:600">✅ Aposta registrada — aguardando resultado.</div>`;
+            }
+            html += renderOddsMatchCard(o, fl, false, jaApostouJogo);
+        });
+        html += `</div>`;
+    } else {
+        html += `<div class="glass" style="margin-bottom:14px"><div class="odds-empty-promo"><span class="big">⏳</span>Nenhuma partida agendada no momento<br><span style="font-size:.75rem">As apostas fecham quando o jogo começa!</span></div></div>`;
+    }
+    html += renderApostasHistorico();
+    } else if (oddsSubTab === 'cassino') {
+        html += renderCassino();
+    } else {
+        html += renderRoleta();
+    }
+    content.innerHTML = html;
+    if (oddsSubTab === 'roleta') initRoletaCanvas(-1);
+    if (currentCpf) {
+        if (oddsSubTab === 'cassino') {
+            const _sp = getCassinoSpins(currentCpf);
+            if (CASSINO_MAX_SPINS - _sp.count <= 0) startGameTimer(_sp.windowStart, 'cassino-countdown', 'cassino-spin-btn', renderOdds);
+        } else if (oddsSubTab === 'roleta') {
+            const _sp = getRoletaSpins(currentCpf);
+            if (ROLETA_MAX_SPINS - _sp.count <= 0 && !roletaSpinning) startGameTimer(_sp.windowStart, 'roleta-countdown', 'roleta-play-btn', renderOdds);
+        }
+    }
+}
+
+
+
+function switchOddsTab(tab) {
+    stopGameTimer();
+    oddsSubTab = tab;
+    renderOdds();
+}
+
+function renderCassino() {
+    const spins = getCassinoSpins(currentCpf);
+    const remaining = CASSINO_MAX_SPINS - spins.count;
+    const timeLeft = Math.max(0, CASSINO_WINDOW_MS - (Date.now() - spins.windowStart));
+    const canSpin = remaining > 0;
+    const cdStr = fmtCountdown(timeLeft);
+    return `<div class="glass" style="margin-bottom:14px">
+        <div class="cassino-screen">
+            <div class="cassino-marquee">🎰 Caça-Níquel Futebol™</div>
+            <div class="cassino-reels">
+                <div class="cassino-reel" id="reel-0"><span class="cassino-reel-sym" id="rsym-0">🍒</span></div>
+                <div class="cassino-reel" id="reel-1"><span class="cassino-reel-sym" id="rsym-1">🍋</span></div>
+                <div class="cassino-reel" id="reel-2"><span class="cassino-reel-sym" id="rsym-2">🍇</span></div>
+            </div>
+            <div class="cassino-result idle" id="cassino-result">${canSpin ? 'Gire e concorra a R$ 10!' : '⏳ Sem jogadas restantes'}</div>
+            <div class="cassino-paytable">
+                <span class="cassino-pay-chip gold">🎉 Prêmio: R$ 10,00</span>
+                <span class="cassino-pay-chip" id="cassino-spins-chip">${remaining}/${CASSINO_MAX_SPINS} jogadas restantes</span>
+                <span class="cassino-pay-chip">Renova a cada 5 min</span>
+            </div>
+            ${!canSpin ? `<div class="game-countdown-wrap" id="cassino-countdown-wrap">⏳ Novas jogadas em <span class="game-countdown" id="cassino-countdown">${cdStr}</span></div>` : ''}
+        </div>
+        <div class="cassino-controls">
+            <button class="cassino-spin-btn" id="cassino-spin-btn" onclick="spinCassino()" ${canSpin ? '' : 'disabled'}>
+                🎰 ${canSpin ? `GIRAR — ${remaining} jogada${remaining !== 1 ? 's' : ''} restante${remaining !== 1 ? 's' : ''}` : `⏳ Aguarde ${cdStr}`}
+            </button>
+        </div>
+    </div>`;
+}
+
+function spinCassino() {
+    if (cassinoSpinning) return;
+    const spins = getCassinoSpins(currentCpf);
+    const remaining = CASSINO_MAX_SPINS - spins.count;
+    if (remaining <= 0) {
+        const timeLeft = Math.max(0, CASSINO_WINDOW_MS - (Date.now() - spins.windowStart));
+        const minutesLeft = Math.ceil(timeLeft / 60000);
+        showToast(`⏳ Sem jogadas restantes. Volte em ${minutesLeft} min`); return;
+    }
+    const newSpins = { count: spins.count + 1, windowStart: spins.windowStart };
+    saveCassinoSpins(currentCpf, newSpins);
+    const newRemaining = CASSINO_MAX_SPINS - newSpins.count;
+    const WIN_SYMS = ['🍒','🍋','🍇','⭐','🔔','🎯'];
+    const ALL_SYMS = ['🍒','🍋','🍇','⭐','🔔','🎯','💎'];
+    const win = Math.random() < 0.30;
+    const jackpot = win && Math.random() < 0.12;
+    let finals;
+    if (win) {
+        const sym = jackpot ? '💎' : WIN_SYMS[Math.floor(Math.random() * WIN_SYMS.length)];
+        finals = [sym, sym, sym];
+    } else {
+        do { finals = WIN_SYMS.map(() => WIN_SYMS[Math.floor(Math.random() * WIN_SYMS.length)]); }
+        while (finals[0] === finals[1] && finals[1] === finals[2]);
+    }
+    cassinoSpinning = true;
+    const spinBtn = document.getElementById('cassino-spin-btn');
+    if (spinBtn) spinBtn.disabled = true;
+    const resEl = document.getElementById('cassino-result');
+    if (resEl) { resEl.className = 'cassino-result spinning-msg'; resEl.textContent = '🎰 Girando...'; }
+    [0,1,2].forEach(i => document.getElementById('reel-' + i)?.classList.add('spinning'));
+    let elapsed = 0;
+    const TICK = 80, SPIN_MS = 1400;
+    const iv = setInterval(() => {
+        [0,1,2].forEach(i => {
+            const s = document.getElementById('rsym-' + i);
+            if (s) s.textContent = ALL_SYMS[Math.floor(Math.random() * ALL_SYMS.length)];
+        });
+        elapsed += TICK;
+        if (elapsed >= SPIN_MS) {
+            clearInterval(iv);
+            [0,1,2].forEach(i => {
+                const reel = document.getElementById('reel-' + i);
+                const sym = document.getElementById('rsym-' + i);
+                reel?.classList.remove('spinning'); reel?.classList.add('landed');
+                if (sym) sym.textContent = finals[i];
+            });
+            const uf = getUsuario(currentCpf);
+            if (win) {
+                const premio = 10;
+                creditarSaldoOdds(uf.cpf, premio, 'cassino').then(() => {
+                    const bvSync = document.querySelector('#odds-content .user-balance-val');
+                    const uSync = getUsuario(currentCpf);
+                    if (bvSync && uSync) {
+                        bvSync.textContent = `R$ ${uSync.saldo.toFixed(2)}`;
+                        bvSync.className = `user-balance-val${uSync.saldo > 200 ? ' up' : uSync.saldo <= 0 ? ' zero' : ''}`;
+                    }
+                }).catch(() => {});
+                [0,1,2].forEach(i => document.getElementById('reel-' + i)?.classList.add('win-reel'));
+                if (resEl) { resEl.className = 'cassino-result ' + (jackpot ? 'jackpot' : 'win'); resEl.textContent = jackpot ? `💎 JACKPOT! +R$ ${premio.toFixed(2)}` : `🎉 Ganhou R$ ${premio.toFixed(2)}!`; }
+                showToast(jackpot ? `💎 JACKPOT! Você ganhou R$ ${premio.toFixed(2)}!` : `🎉 +R$ ${premio.toFixed(2)} no caça-níquel!`);
+            } else {
+                if (resEl) { resEl.className = 'cassino-result lose'; resEl.textContent = `😔 Sem sorte desta vez... Tente de novo!`; }
+                showToast(`😔 Quase lá! Sem sorte desta vez.`);
+            }
+            const bv = document.querySelector('#odds-content .user-balance-val');
+            const uf2 = getUsuario(currentCpf);
+            if (bv && uf2) { bv.textContent = `R$ ${uf2.saldo.toFixed(2)}`; bv.className = `user-balance-val${uf2.saldo > 200 ? ' up' : uf2.saldo <= 0 ? ' zero' : ''}`; }
+            cassinoSpinning = false;
+            const spinsChip = document.getElementById('cassino-spins-chip');
+            if (spinsChip) spinsChip.textContent = `${newRemaining}/${CASSINO_MAX_SPINS} jogadas restantes`;
+            if (spinBtn) {
+                const tl2 = Math.max(0, CASSINO_WINDOW_MS - (Date.now() - newSpins.windowStart));
+                spinBtn.disabled = newRemaining <= 0;
+                spinBtn.textContent = newRemaining > 0
+                    ? `🎰 GIRAR — ${newRemaining} jogada${newRemaining !== 1 ? 's' : ''} restante${newRemaining !== 1 ? 's' : ''}`
+                    : `⏳ Aguarde ${fmtCountdown(tl2)}`;
+            }
+            if (newRemaining <= 0) {
+                const screen = document.querySelector('.cassino-screen');
+                if (screen && !document.getElementById('cassino-countdown-wrap')) {
+                    const tl3 = Math.max(0, CASSINO_WINDOW_MS - (Date.now() - newSpins.windowStart));
+                    const wrap = document.createElement('div');
+                    wrap.className = 'game-countdown-wrap'; wrap.id = 'cassino-countdown-wrap';
+                    wrap.innerHTML = `⏳ Novas jogadas em <span class="game-countdown" id="cassino-countdown">${fmtCountdown(tl3)}</span>`;
+                    screen.appendChild(wrap);
+                }
+                startGameTimer(newSpins.windowStart, 'cassino-countdown', 'cassino-spin-btn', renderOdds);
+            }
+        }
+    }, TICK);
+}
+
+function initRoletaCanvas(highlightIdx) {
+    const canvas = document.getElementById('roleta-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const cx = 109, cy = 109;
+    const segR = 93, trackR = 106, hubR = 20;
+    const n = ROLETA_NUMS.length;
+    const segAngle = (2 * Math.PI) / n;
+    ctx.clearRect(0, 0, 218, 218);
+    // Background
+    ctx.beginPath(); ctx.arc(cx, cy, trackR, 0, Math.PI*2);
+    ctx.fillStyle = '#110800'; ctx.fill();
+    // Track ring (dark wood)
+    ctx.beginPath(); ctx.arc(cx, cy, (segR + trackR) / 2, 0, Math.PI*2);
+    ctx.strokeStyle = '#2c1200'; ctx.lineWidth = trackR - segR; ctx.stroke();
+    // Fret dots
+    for (let i = 0; i < n; i++) {
+        const a = i * segAngle - Math.PI/2, r = (segR + trackR) / 2;
+        ctx.beginPath(); ctx.arc(cx + r*Math.cos(a), cy + r*Math.sin(a), 2, 0, Math.PI*2);
+        ctx.fillStyle = 'rgba(200,168,75,.5)'; ctx.fill();
+    }
+    // Segments
+    for (let i = 0; i < n; i++) {
+        const startA = i * segAngle - Math.PI/2, endA = startA + segAngle;
+        const num = ROLETA_NUMS[i], hl = (highlightIdx === i);
+        const base = num === 0 ? '#1a6b30' : ROLETA_RED.has(num) ? '#a82b1a' : '#181818';
+        ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, segR-1, startA, endA);
+        ctx.fillStyle = hl ? '#b89030' : base; ctx.fill();
+        if (hl) {
+            ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, segR-1, startA, endA);
+            ctx.fillStyle = 'rgba(255,215,0,.35)'; ctx.fill();
+        }
+        // Divider
+        ctx.beginPath();
+        ctx.moveTo(cx + hubR*Math.cos(startA), cy + hubR*Math.sin(startA));
+        ctx.lineTo(cx + (segR-1)*Math.cos(startA), cy + (segR-1)*Math.sin(startA));
+        ctx.strokeStyle = 'rgba(180,140,50,.55)'; ctx.lineWidth = .7; ctx.stroke();
+        // Number
+        const midA = startA + segAngle/2, tr = segR * .72;
+        ctx.save();
+        ctx.translate(cx + tr*Math.cos(midA), cy + tr*Math.sin(midA));
+        ctx.rotate(midA + Math.PI/2);
+        ctx.fillStyle = hl ? '#000' : (num === 0 ? '#7ff07f' : '#fff');
+        ctx.shadowColor = 'rgba(0,0,0,.9)'; ctx.shadowBlur = 2;
+        ctx.font = 'bold 8.5px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(String(num), 0, 0); ctx.restore();
+    }
+    // Borders
+    ctx.beginPath(); ctx.arc(cx, cy, segR, 0, Math.PI*2);
+    ctx.strokeStyle = 'rgba(180,140,50,.6)'; ctx.lineWidth = 1.5; ctx.stroke();
+    ctx.beginPath(); ctx.arc(cx, cy, trackR, 0, Math.PI*2);
+    ctx.strokeStyle = 'rgba(200,168,75,.4)'; ctx.lineWidth = 2; ctx.stroke();
+    // Hub
+    const hg = ctx.createRadialGradient(cx-4, cy-4, 2, cx, cy, hubR);
+    hg.addColorStop(0, '#fffbe0'); hg.addColorStop(.35, '#ffd700');
+    hg.addColorStop(.7, '#b8860b'); hg.addColorStop(1, '#7a5a00');
+    ctx.beginPath(); ctx.arc(cx, cy, hubR, 0, Math.PI*2);
+    ctx.fillStyle = hg; ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,.5)'; ctx.lineWidth = 1.5; ctx.stroke();
+    ctx.beginPath(); ctx.arc(cx-5, cy-5, hubR*.35, 0, Math.PI*2);
+    ctx.fillStyle = 'rgba(255,255,255,.3)'; ctx.fill();
+}
+
+function renderRoleta() {
+    const spins = getRoletaSpins(currentCpf);
+    const remaining = ROLETA_MAX_SPINS - spins.count;
+    const timeLeft = Math.max(0, CASSINO_WINDOW_MS - (Date.now() - spins.windowStart));
+    const canPlay = remaining > 0 && !roletaSpinning;
+    const cdStr = fmtCountdown(timeLeft);
+    const cClass = roletaEscolha ? (roletaEscolha === 'vermelho' ? 'red' : 'black') : '';
+    const cText  = roletaEscolha ? (roletaEscolha === 'vermelho' ? '🔴 VERMELHO' : '⚫ PRETO') : '—';
+    return `<div class="glass" style="margin-bottom:14px;padding:0;overflow:hidden">
+        <div class="roleta-casino-wrap">
+            <div class="roleta-felt">
+                <div class="roleta-title-bar">🎡 ROLETA Futebol™</div>
+                <div class="roleta-scene">
+                    <div class="roleta-outer-ring">
+                        <div class="roleta-wheel-wrap">
+                            <canvas id="roleta-canvas" width="218" height="218"></canvas>
+                            <div id="roleta-ball" class="roleta-ball"></div>
+                        </div>
+                    </div>
+                    <div class="roleta-marker"></div>
+                </div>
+                <div class="roleta-bet-row">
+                    <span class="rbd-label">SUA APOSTA</span>
+                    <span class="rbd-choice ${cClass}" id="rbd-choice">${cText}</span>
+                </div>
+                <div class="roleta-result idle" id="roleta-result">${roletaSpinning ? '🎡 Rodando...' : canPlay ? 'Escolha uma cor e gire a roleta!' : '⏳ Sem jogadas restantes'}</div>
+                ${!canPlay && !roletaSpinning ? `<div class="game-countdown-wrap" id="roleta-countdown-wrap">⏳ Novas jogadas em <span class="game-countdown" id="roleta-countdown">${cdStr}</span></div>` : ''}
+            </div>
+            <div class="roleta-controls">
+                <button class="roleta-btn roleta-btn-red" id="roleta-btn-red" onclick="jogarRoleta('vermelho')" ${canPlay ? '' : 'disabled'}><span class="rbtn-dot rd"></span> VERMELHO</button>
+                <button class="roleta-btn roleta-btn-black" id="roleta-btn-black" onclick="jogarRoleta('preto')" ${canPlay ? '' : 'disabled'}><span class="rbtn-dot bk"></span> PRETO</button>
+            </div>
+            <div class="roleta-footer">
+                <span class="roleta-chip green">🎉 Prêmio: R$ 5,00</span>
+                <span class="roleta-chip gold" id="roleta-spins-chip">${remaining}/${ROLETA_MAX_SPINS} jogadas</span>
+                <span class="roleta-chip">Acerte a cor = ganhou!</span>
+                <span class="roleta-chip">Renova cada 5 min</span>
+            </div>
+        </div>
+    </div>`;
+}
+
+function jogarRoleta(escolha) {
+    if (roletaSpinning) return;
+    const spins = getRoletaSpins(currentCpf);
+    const remaining = ROLETA_MAX_SPINS - spins.count;
+    if (remaining <= 0) { showToast('⏳ Sem jogadas! Aguarde o timer.'); return; }
+    const newSpins = { count: spins.count + 1, windowStart: spins.windowStart };
+    saveRoletaSpins(currentCpf, newSpins);
+    const newRemaining = ROLETA_MAX_SPINS - newSpins.count;
+    const win = Math.random() < 0.50;
+    const corResultado = win ? escolha : (escolha === 'vermelho' ? 'preto' : 'vermelho');
+    roletaSpinning = true;
+    roletaEscolha = escolha;
+    const rdChoice = document.getElementById('rbd-choice');
+    if (rdChoice) { rdChoice.textContent = escolha === 'vermelho' ? '🔴 VERMELHO' : '⚫ PRETO'; rdChoice.className = 'rbd-choice ' + (escolha === 'vermelho' ? 'red' : 'black'); }
+    const btnR = document.getElementById('roleta-btn-red');
+    const btnB = document.getElementById('roleta-btn-black');
+    if (btnR) btnR.disabled = true;
+    if (btnB) btnB.disabled = true;
+    const resEl = document.getElementById('roleta-result');
+    if (resEl) { resEl.className = 'roleta-result spinning-msg'; resEl.textContent = '🎡 Rodando...'; }
+    const canvas = document.getElementById('roleta-canvas');
+    const ball = document.getElementById('roleta-ball');
+    // Pre-determine winning segment
+    const n = ROLETA_NUMS.length;
+    const sAngle = (2 * Math.PI) / n;
+    const matchSegs = [];
+    for (let i = 0; i < n; i++) {
+        const num = ROLETA_NUMS[i];
+        if (corResultado === 'vermelho' && ROLETA_RED.has(num)) matchSegs.push(i);
+        else if (corResultado === 'preto' && !ROLETA_RED.has(num) && num !== 0) matchSegs.push(i);
+    }
+    const targetSeg = matchSegs[Math.floor(Math.random() * matchSegs.length)];
+    // Segment center in canvas coords (before wheel rotation)
+    const segCenterCanvas = targetSeg * sAngle - Math.PI/2 + sAngle/2;
+    // Wheel: random total rotation (8–10 full turns)
+    const totalWheelDeg = 360 * 8 + Math.floor(Math.random() * 720);
+    const totalWheelRad = totalWheelDeg * Math.PI / 180;
+    // Ball target = wherever the winning segment ends up on screen, with slight scatter inside segment
+    const segOffset = (Math.random() - 0.5) * sAngle * 0.5;
+    const ballTargetAngle = segCenterCanvas + totalWheelRad + segOffset;
+    // Ball: 7+ CCW rotations from a random start angle
+    const ballStartAngle = Math.random() * Math.PI * 2;
+    const adjustAngle = ((ballStartAngle - ballTargetAngle) % (2*Math.PI) + 2*Math.PI) % (2*Math.PI);
+    const totalBallTravel = -(7 * 2 * Math.PI + adjustAngle);
+    // Phase constants: phase 2 (spiral inward) starts at SPLIT
+    const SPLIT = 0.70;        // fraction of total time where spiral begins
+    const spinDuration = 5500;
+    const start = performance.now();
+    let roletaRafId = null;
+    function roletaTick(now) {
+        const t = Math.min((now - start) / spinDuration, 1);
+        // Wheel: smooth gradual deceleration
+        const wheelEased = 1 - Math.pow(1 - t, 1.85);
+        const wheelDeg = totalWheelDeg * wheelEased;
+        // Ball angle: single continuous ease-out (no velocity jump between phases)
+        const ballEased = 1 - Math.pow(1 - t, 2.8);
+        const ballAngleNow = ballStartAngle + totalBallTravel * ballEased;
+        // Ball radius: stays on outer track, then spirals in smoothly after SPLIT
+        let ballR;
+        if (t < SPLIT) {
+            ballR = 100;
+        } else {
+            const t2 = (t - SPLIT) / (1 - SPLIT);
+            const e2 = Math.pow(t2, 1.4);  // ease-in: starts at 0 velocity (no jump)
+            ballR = 100 - 27 * e2;          // 100 → 73
+        }
+        if (canvas) canvas.style.transform = `rotate(${wheelDeg}deg)`;
+        if (ball) {
+            ball.style.transform = `translate(${109 + ballR * Math.cos(ballAngleNow) - 6.5}px,${109 + ballR * Math.sin(ballAngleNow) - 6.5}px)`;
+        }
+        if (t < 1) {
+            roletaRafId = requestAnimationFrame(roletaTick);
+            return;
+        }
+        roletaSpinning = false;
+        initRoletaCanvas(-1); // keep normal colors
+        if (canvas) canvas.style.transform = `rotate(${totalWheelDeg}deg)`;
+        const uf = getUsuario(currentCpf);
+        if (win) {
+            const premio = 5;
+            creditarSaldoOdds(uf.cpf, premio, 'roleta').then(() => {
+                const bvSync = document.querySelector('#odds-content .user-balance-val');
+                const uSync = getUsuario(currentCpf);
+                if (bvSync && uSync) {
+                    bvSync.textContent = `R$ ${uSync.saldo.toFixed(2)}`;
+                    bvSync.className = `user-balance-val${uSync.saldo > 200 ? ' up' : uSync.saldo <= 0 ? ' zero' : ''}`;
+                }
+            }).catch(() => {});
+            if (resEl) { resEl.className = 'roleta-result win'; resEl.textContent = `🎉 ${corResultado === 'vermelho' ? '🔴' : '⚫'} ${corResultado.toUpperCase()}! Ganhou R$ ${premio.toFixed(2)}!`; }
+            showToast(`🎡 +R$ ${premio.toFixed(2)} na Roleta!`);
+        } else {
+            if (resEl) { resEl.className = 'roleta-result lose'; resEl.textContent = `${corResultado === 'vermelho' ? '🔴' : '⚫'} ${corResultado.toUpperCase()} — Não foi dessa vez!`; }
+            showToast('🎡 Tente de novo na Roleta!');
+        }
+        const bv = document.querySelector('#odds-content .user-balance-val');
+        const uf2 = getUsuario(currentCpf);
+        if (bv && uf2) { bv.textContent = `R$ ${uf2.saldo.toFixed(2)}`; bv.className = `user-balance-val${uf2.saldo > 200 ? ' up' : uf2.saldo <= 0 ? ' zero' : ''}`; }
+        const chip = document.getElementById('roleta-spins-chip');
+        if (chip) chip.textContent = `${newRemaining}/${ROLETA_MAX_SPINS} jogadas`;
+        if (newRemaining > 0) {
+            if (btnR) btnR.disabled = false;
+            if (btnB) btnB.disabled = false;
+        } else {
+            const tl = Math.max(0, CASSINO_WINDOW_MS - (Date.now() - newSpins.windowStart));
+            const felt = document.querySelector('.roleta-felt');
+            if (felt && !document.getElementById('roleta-countdown-wrap')) {
+                const wrap = document.createElement('div');
+                wrap.className = 'game-countdown-wrap'; wrap.id = 'roleta-countdown-wrap';
+                wrap.innerHTML = `⏳ Novas jogadas em <span class="game-countdown" id="roleta-countdown">${fmtCountdown(tl)}</span>`;
+                felt.appendChild(wrap);
+            }
+            startGameTimer(newSpins.windowStart, 'roleta-countdown', 'roleta-play-btn', renderOdds);
+        }
+    }
+    roletaRafId = requestAnimationFrame(roletaTick);
+}
+
+load();
+
+// Polling de fallback (só se o WS estiver desconectado)
+let wsConnected = false;
+setInterval(() => { if (!wsConnected) load(); }, 3000);
+
+// WebSocket com reconexão automática
+let wsRetryDelay = 1000;
+function connectWS() {
+    try {
+        const wsProto = location.protocol === 'https:' ? 'wss://' : 'ws://';
+        const ws = new WebSocket(wsProto + location.host);
+        ws.onopen  = () => { wsConnected = true; wsRetryDelay = 1000; };
+        ws.onmessage = e => {
+            try {
+                const m = JSON.parse(e.data);
+                if (m.type === 'futebol-update') {
+                    const prevRound = lastBettingRound;
+                    D = m.data;
+                    const newRound = getAvailableBettingRound();
+                    if (newRound !== null && newRound !== prevRound && prevRound !== null) {
+                        // Nova rodada desbloqueada: troca de aba e notifica
+                        switchTab('odds');
+                        setTimeout(() => showToast(`🎰 Apostas abertas — Rodada ${newRound}! Faça suas apostas!`), 200);
+                    } else if (newRound !== null && activeTab !== 'odds') {
+                        // Ainda há jogos para apostar mas usuário está em outra aba
+                        document.getElementById('tab-odds')?.classList.add('odds-new');
+                    }
+                    lastBettingRound = newRound;
+                    render();
+                }
+            } catch {}
+        };
+        ws.onclose = ws.onerror = () => {
+            wsConnected = false;
+            setTimeout(connectWS, wsRetryDelay);
+            wsRetryDelay = Math.min(wsRetryDelay * 2, 15000);
+        };
+    } catch { setTimeout(connectWS, wsRetryDelay); }
+}
+connectWS();
+</script>
+</body>
+</html>
+
+
+
+

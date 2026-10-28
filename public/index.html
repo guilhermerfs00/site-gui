@@ -1629,6 +1629,41 @@
                     </div>
                 </div>
 
+                <!-- Campeonato de Futebol Card -->
+                <div class="cirrose-card" id="futebol-card">
+                    <div class="cirrose-card-inner">
+                        <div class="beach-card-header">
+                            <div class="beach-card-icon">⚽</div>
+                            <div>
+                                <div class="cirrose-card-title" id="futebol-event-name">Grande Campeonato de Futebol</div>
+                                <div class="cirrose-card-subtitle" id="futebol-event-subtitle">1ª Edição</div>
+                            </div>
+                        </div>
+                        <div class="beach-card-meta">
+                            <div class="beach-meta-item">
+                                <span class="meta-icon">📅</span>
+                                <span id="futebol-event-date">—</span>
+                            </div>
+                            <div class="beach-meta-item">
+                                <span class="meta-icon">⏰</span>
+                                <span id="futebol-event-time">09:00</span>
+                            </div>
+                        </div>
+                        <div class="beach-status-badge cirrose-status-agendado" id="futebol-status-badge">
+                            <span class="beach-status-dot"></span>
+                            <span id="futebol-status-text">Cadastro</span>
+                        </div>
+                        <div class="beach-actions">
+                            <button class="beach-btn cirrose-btn-manage" onclick="futebolOpenManage()">
+                                ⚽ Organizar Campeonato
+                            </button>
+                            <button class="beach-btn beach-btn-public" onclick="futebolOpenPublic()">
+                                👁️ Placar Público
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 </div><!-- /campeonatos-grid -->
             </div>
         </div>
@@ -2622,6 +2657,62 @@
         }
 
         cirroLoadEvent();
+
+        // ===== CAMPEONATO DE FUTEBOL MODULE =====
+        const futebolStatusMap = {
+            'cadastro':  { label: 'Cadastro',      css: 'cirrose-status-agendado' },
+            'agendado':  { label: 'Cadastro',      css: 'cirrose-status-agendado' },
+            'grupos':    { label: 'Fase de Grupos', css: 'cirrose-status-grupos' },
+            'mata-mata': { label: 'Mata-Mata 🔥',   css: 'cirrose-status-mata-mata' },
+            'encerrado': { label: 'Encerrado',      css: 'cirrose-status-encerrado' }
+        };
+
+        async function futebolLoadEvent() {
+            try {
+                const res = await fetch('/api/futebol');
+                if (!res.ok) return;
+                const data = await res.json();
+                const ev = data.evento || {};
+
+                document.getElementById('futebol-event-name').textContent = ev.nome || 'Grande Campeonato de Futebol';
+
+                if (ev.data) {
+                    const [y, m, d] = ev.data.split('-');
+                    document.getElementById('futebol-event-date').textContent = `${d}/${m}/${y}`;
+                }
+                if (ev.horaInicio) {
+                    document.getElementById('futebol-event-time').textContent = ev.horaInicio;
+                }
+
+                const fase = data.fase || 'cadastro';
+                const info = futebolStatusMap[fase] || futebolStatusMap['cadastro'];
+                const badge = document.getElementById('futebol-status-badge');
+                badge.className = 'beach-status-badge ' + info.css;
+                document.getElementById('futebol-status-text').textContent = info.label;
+
+                if (ev.local) {
+                    document.getElementById('futebol-event-subtitle').textContent = ev.local;
+                }
+
+                const nt = (data.times || []).length;
+                if (nt > 0) {
+                    const sub = document.getElementById('futebol-event-subtitle');
+                    sub.textContent = (ev.local || '1ª Edição') + ` · ${nt} times`;
+                }
+            } catch(e) {
+                console.error('Erro ao carregar Campeonato de Futebol:', e);
+            }
+        }
+
+        function futebolOpenManage() {
+            window.open('/futebol.html', '_blank');
+        }
+
+        function futebolOpenPublic() {
+            window.open('/futebol-publico.html', '_blank');
+        }
+
+        futebolLoadEvent();
     </script>
 </body>
 </html>
