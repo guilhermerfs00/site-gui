@@ -2,10 +2,28 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0">
+    <meta name="theme-color" content="#0f0f1a">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>🏆 Grande Campeonato de Futebol - 1ª Edição</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        .gate { display: none; position: fixed; inset: 0; z-index: 500; overflow-y: auto; -webkit-overflow-scrolling: touch; align-items: center; justify-content: center; padding: calc(16px + env(safe-area-inset-top)) 14px calc(16px + env(safe-area-inset-bottom)); background: linear-gradient(135deg,#1a0a2e 0%,#0f0f1a 55%,#1a1a00 100%); }
+        .gate.show { display: flex; }
+        .gate .cpf-screen { width: 100%; padding: 0; }
+        .gate .cpf-card { margin: auto; background: rgba(255,255,255,.10); border-color: rgba(255,255,255,.2); }
+        .aval-row { padding: 10px 4px; border-bottom: 1px solid rgba(255,255,255,.06); }
+        .aval-row:last-child { border-bottom: none; }
+        .aval-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 6px; }
+        .aval-nome { font-size: .9rem; font-weight: 700; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .aval-media { font-size: .68rem; color: #ffd700; font-weight: 700; flex-shrink: 0; }
+        .aval-stars { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+        .aval-star { min-height: 44px; border-radius: 10px; border: 1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.05); color: rgba(255,255,255,.25); font-size: 1.5rem; cursor: pointer; transition: all .15s; touch-action: manipulation; }
+        .aval-star.on { background: rgba(255,215,0,.18); border-color: rgba(255,215,0,.5); color: #ffd700; }
+    </style>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Poppins', sans-serif; background: #0f0f1a; color: #fff; min-height: 100vh; }
@@ -469,6 +487,42 @@
         .art-gols{font-size:1.1rem;font-weight:900;color:#ffd700;flex-shrink:0}
         /* Badge de partidas ao vivo na aba */
         .tab-live-count{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:#dc143c;color:#fff;font-size:.6rem;font-weight:900;margin-left:5px;animation:pulseR 1.5s ease infinite;vertical-align:middle}
+
+        /* ===== MOBILE: tela cheia, sem balanço lateral, toque facilitado ===== */
+        html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; overflow-x: hidden; width: 100%; }
+        body { width: 100%; max-width: 100vw; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
+        @media (max-width: 680px) {
+            html, body { overscroll-behavior-x: none; touch-action: pan-y; }
+            body { min-height: 100vh; min-height: 100dvh; padding-bottom: 0; }
+            .bg .o { display: none; }
+            .wrap {
+                width: 100%; max-width: 100%; min-height: 100dvh;
+                padding: calc(10px + env(safe-area-inset-top)) calc(10px + env(safe-area-inset-right)) calc(88px + env(safe-area-inset-bottom)) calc(10px + env(safe-area-inset-left));
+            }
+            img, svg, video, canvas, table { max-width: 100%; }
+            .glass, .partida-card, .odds-card, .group-card { max-width: 100%; }
+            .glass { backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(255,255,255,.06); }
+            /* áreas roláveis horizontalmente ficam contidas e com rolagem suave */
+            #bracket-content, .bracket-scroll, [style*="overflow-x:auto"] { max-width: 100%; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; touch-action: pan-x pan-y; }
+            .nav { padding-left: calc(6px + env(safe-area-inset-left)); padding-right: calc(6px + env(safe-area-inset-right)); box-shadow: 0 -6px 20px rgba(0,0,0,.4); }
+            .nav { grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 2px; padding-top: 6px; padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
+            .nav-tab { min-height: 56px; width: 100%; justify-content: center; touch-action: manipulation; padding: 6px 2px; font-size: .58rem; border-radius: 8px; overflow: hidden; }
+            .nav-tab span { max-width: 100%; text-align: center; overflow-wrap: anywhere; }
+            .nav-tab span:first-child { font-size: 1.25rem !important; line-height: 1; }
+            .nav-tab::first-line { font-size: 1.15rem; }
+            .nav-tab.active { box-shadow: 0 2px 10px rgba(184,134,11,.35); }
+            button, .odds-bet-btn, .odds-subtab, select { min-height: 44px; touch-action: manipulation; }
+            input, select, textarea { font-size: 16px !important; max-width: 100%; }
+            .classif-table { table-layout: auto; }
+            .gc-classif-grid { grid-template-columns: minmax(0, 1fr); }
+            .gc-cat-sel select { max-width: 100%; flex: 1; min-width: 0; }
+            .group-hdr { padding: 10px 12px; gap: 8px; min-width: 0; }
+            .group-title { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+            .group-prog { flex-shrink: 0; }
+            .gcside { padding: 12px; min-width: 0; overflow-x: auto; }
+            .group-body > * { min-width: 0; }
+            .bet-slip { max-height: 92dvh; padding-bottom: env(safe-area-inset-bottom); }
+        }
     </style>
 </head>
 <body>
@@ -486,7 +540,7 @@
         <button class="nav-tab" onclick="switchTab('bracket')"><span style="font-size:1.1rem">⚔️</span><span>Mata-Mata</span></button>
         <button class="nav-tab" onclick="switchTab('times')"><span style="font-size:1.1rem">👥</span><span>Times</span></button>
         <button class="nav-tab" id="tab-odds" onclick="switchTab('odds')"><span style="font-size:1.1rem">📊</span><span>Odds Esportivas</span></button>
-        <button class="nav-tab" onclick="switchTab('qrcode')"><span style="font-size:1.1rem">📲</span><span>QR Code</span></button>
+        <button class="nav-tab" onclick="switchTab('avaliar')"><span style="font-size:1.1rem">⭐</span><span>Avaliação</span></button>
     </div>
 
     <div class="panel active" id="panel-aovivo">
@@ -560,18 +614,15 @@
         </div>
     </div>
 
-    <div class="panel" id="panel-qrcode">
-        <div class="glass" style="text-align:center;padding:36px 24px">
-            <h2 style="justify-content:center;margin-bottom:6px">📲 Acesse pelo Celular</h2>
-            <p style="font-size:.85rem;color:rgba(255,255,255,.5);margin-bottom:28px">Aponte a câmera para o QR Code e acompanhe ao vivo</p>
-            <div id="qr-box" style="display:inline-block;padding:16px;background:#fff;border-radius:16px;box-shadow:0 0 40px rgba(255,215,0,.15)"></div>
-            <div id="qr-url" style="margin-top:18px;font-size:.78rem;color:rgba(255,255,255,.35);word-break:break-all;max-width:360px;margin-left:auto;margin-right:auto;letter-spacing:.3px"></div>
-            <button id="btn-copiar" onclick="copiarLink()" style="margin-top:20px;display:inline-flex;align-items:center;gap:8px;padding:13px 28px;border:none;border-radius:14px;font-family:'Poppins',sans-serif;font-size:.88rem;font-weight:700;cursor:pointer;background:linear-gradient(135deg,#b8860b,#ffd700);color:#000;box-shadow:0 4px 20px rgba(255,215,0,.25);transition:all .25s">
-                <span id="btn-copiar-icon">📋</span>
-                <span id="btn-copiar-txt">Copiar Link</span>
-            </button>
+    <div class="panel" id="panel-avaliar">
+        <div class="glass">
+            <h2>⭐ Avalie os Jogadores</h2>
+            <p style="font-size:.78rem;color:rgba(255,255,255,.5);margin-bottom:14px">Dê de 1 a 5 estrelas para cada jogador em cada partida finalizada.</p>
+            <div id="avaliar-content"></div>
         </div>
     </div>
+
+    <div id="gate" class="gate"></div>
 
     <div class="panel" id="panel-times">
         <div class="glass">
@@ -585,6 +636,14 @@
         <div class="glass">
             <h2>⚽ Artilheiros</h2>
             <div id="artilheiros-pub"><div class="empty">Carregando...</div></div>
+        </div>
+        <div class="glass">
+            <h2>🎯 Artilheiros por Time</h2>
+            <div id="artilheiros-time-pub"></div>
+        </div>
+        <div class="glass">
+            <h2>⭐ Avaliação dos Jogadores por Time</h2>
+            <div id="avaliacao-time-pub"></div>
         </div>
         <div class="glass">
             <h2>👥 Participantes</h2>
@@ -607,51 +666,90 @@ function getAvailableBettingRound() {
 function switchTab(tab) {
     activeTab = tab;
     document.querySelectorAll('.nav-tab').forEach((t,i) => {
-        const tabs = ['aovivo','grupos','bracket','times','odds','qrcode'];
+        const tabs = ['aovivo','grupos','bracket','times','odds','avaliar'];
         t.classList.toggle('active', tabs[i] === tab);
     });
     if (tab === 'odds') document.getElementById('tab-odds')?.classList.remove('odds-new');
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     document.getElementById('panel-'+tab).classList.add('active');
-    if (tab === 'qrcode') renderQR();
     renderTab(tab);
 }
 
-let qrRendered = false;
-function renderQR() {
-    if (qrRendered) return;
-    qrRendered = true;
-    const url = location.href.split('?')[0];
-    document.getElementById('qr-url').textContent = url;
-    new QRCode(document.getElementById('qr-box'), {
-        text: url,
-        width: 220,
-        height: 220,
-        colorDark: '#000000',
-        colorLight: '#ffffff',
-        correctLevel: QRCode.CorrectLevel.H
-    });
+function getAvaliacoes() { return (D && D.avaliacoes && typeof D.avaliacoes === 'object') ? D.avaliacoes : {}; }
+
+function statsAvaliacao(partidaId, timeId, jogId) {
+    const k = `${partidaId}:${timeId}:${jogId}`;
+    let soma = 0, n = 0;
+    Object.values(getAvaliacoes()).forEach(m => { if (m && m[k]) { soma += m[k]; n++; } });
+    return { media: n ? soma / n : 0, n };
 }
 
-function copiarLink() {
-    const url = location.href.split('?')[0];
-    const btn = document.getElementById('btn-copiar');
-    const icon = document.getElementById('btn-copiar-icon');
-    const txt  = document.getElementById('btn-copiar-txt');
-    navigator.clipboard.writeText(url).then(() => {
-        btn.style.background = 'linear-gradient(135deg,#059669,#38ef7d)';
-        btn.style.boxShadow  = '0 4px 20px rgba(56,239,125,.35)';
-        icon.textContent = '✅';
-        txt.textContent  = 'Copiado!';
-        setTimeout(() => {
-            btn.style.background = 'linear-gradient(135deg,#b8860b,#ffd700)';
-            btn.style.boxShadow  = '0 4px 20px rgba(255,215,0,.25)';
-            icon.textContent = '📋';
-            txt.textContent  = 'Copiar Link';
-        }, 2500);
-    }).catch(() => {
-        prompt('Copie o link:', url);
-    });
+function renderAvaliar() {
+    const el = document.getElementById('avaliar-content');
+    if (!el) return;
+    const fl = { grupos:'Grupos', oitavas:'Oitavas', quartas:'Quartas', semifinal:'Semifinal', final:'Final', terceiro:'3º Lugar' };
+    const partidas = (D.partidas || []).filter(p => p.status === 'encerrado');
+    if (!partidas.length) { el.innerHTML = '<div class="empty">As avaliações abrem quando as partidas forem finalizadas</div>'; return; }
+    const minhas = getAvaliacoes()[currentCpf] || {};
+    const ladoHtml = (p, t) => {
+        if (!t || !(t.jogadores || []).length) return '';
+        return `<div style="padding:8px 12px">
+            <div class="gc-chave-mini"><span class="cl" style="background:${color(t.id)}">${esc(t.nome.charAt(0).toUpperCase())}</span><span class="cl-label">${esc(t.nome)}</span></div>
+            ${t.jogadores.map(j => {
+                const mine = minhas[`${p.id}:${t.id}:${j.id}`] || 0;
+                const st = statsAvaliacao(p.id, t.id, j.id);
+                return `<div class="aval-row">
+                    <div class="aval-top"><span class="aval-nome">${esc(j.nome)}</span>
+                        <span class="aval-media">${st.n ? '★ ' + st.media.toFixed(1) + ' · ' + st.n : 'sem notas'}</span></div>
+                    <div class="aval-stars">${[1,2,3,4,5].map(n => `<button type="button" class="aval-star${n<=mine?' on':''}" onclick="avaliarJogador('${p.id}',${t.id},${j.id},${n})" aria-label="${n} estrelas">★</button>`).join('')}</div>
+                </div>`;
+            }).join('')}
+        </div>`;
+    };
+    el.innerHTML = partidas.slice().reverse().map(p => {
+        const t1 = findJ(p.j1Id), t2 = findJ(p.j2Id);
+        return `<div class="group-card">
+            <div class="group-hdr">
+                <div class="group-title">${esc(t1?.nome||'?')} ${p.gols1??0} x ${p.gols2??0} ${esc(t2?.nome||'?')}</div>
+                <span class="group-prog-label">${esc(fl[p.fase]||p.fase)}${p.rodada?' · R'+p.rodada:''}</span>
+            </div>
+            ${ladoHtml(p, t1)}${ladoHtml(p, t2)}
+        </div>`;
+    }).join('');
+}
+
+async function avaliarJogador(partidaId, timeId, jogId, nota) {
+    if (!currentCpf) return;
+    D.avaliacoes = getAvaliacoes();
+    (D.avaliacoes[currentCpf] = D.avaliacoes[currentCpf] || {})[`${partidaId}:${timeId}:${jogId}`] = nota;
+    renderAvaliar();
+    try {
+        const r = await fetch('/api/futebol/avaliacoes', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ cpf: currentCpf, partidaId, timeId, jogadorId: jogId, nota })
+        });
+        const out = await r.json().catch(() => ({}));
+        if (!r.ok) throw new Error(out?.erro || 'Falha ao salvar avaliação');
+    } catch (e) {
+        showToast(`⚠️ ${esc(e.message)}`);
+        load();
+    }
+}
+
+// Tela de identificação obrigatória (CPF + nome) ao acessar
+function ensureGate() {
+    const gate = document.getElementById('gate');
+    if (!gate) return;
+    if (currentCpf && getUsuario(currentCpf)) {
+        gate.classList.remove('show');
+        gate.innerHTML = '';
+        return;
+    }
+    if (!gate.classList.contains('show')) {
+        gate.innerHTML = renderCpfScreen();
+        gate.classList.add('show');
+    }
 }
 
 async function load() {
@@ -668,10 +766,12 @@ function render() {
     renderAoVivo();
     loadDados();
     resolverApostas();
+    ensureGate();
     renderTab(activeTab);
 }
 
 function renderTab(tab) {
+    if (tab === 'avaliar') renderAvaliar();
     if (tab === 'grupos')   renderGrupos();
     if (tab === 'bracket')  renderBracket();
     if (tab === 'times') renderTimes();
@@ -941,6 +1041,10 @@ function renderTimes() {
 
     const artEl = document.getElementById('artilheiros-pub');
     if (artEl) artEl.innerHTML = renderArtilheirosList();
+    const artTimeEl = document.getElementById('artilheiros-time-pub');
+    if (artTimeEl) artTimeEl.innerHTML = renderArtilheirosPorTime();
+    const avalTimeEl = document.getElementById('avaliacao-time-pub');
+    if (avalTimeEl) avalTimeEl.innerHTML = renderAvaliacaoPorTime();
     document.getElementById('jog-grid').innerHTML = D.times.map(j => `
         <div class="jog-card"><div class="jog-avatar" style="background:${color(j.id)}">${esc(j.nome.charAt(0).toUpperCase())}</div><div class="jog-nome">${esc(j.nome)}</div></div>
     `).join('');
@@ -967,6 +1071,70 @@ function renderArtilheirosList() {
             <span style="font-size:.65rem;color:rgba(255,255,255,.3);margin-left:1px">gol${s.g!==1?'s':''}</span>
         </div>`;
     }).join('');
+}
+
+function renderArtilheirosPorTime() {
+    const times = D.times.map(t => {
+        const jogs = (Array.isArray(t.jogadores) ? t.jogadores : [])
+            .map(j => ({ nome: j.nome, g: j.gols || 0 }))
+            .sort((a,b) => b.g - a.g || a.nome.localeCompare(b.nome));
+        return { id: t.id, nome: t.nome, jogs, total: jogs.reduce((s,j) => s + j.g, 0) };
+    }).filter(t => t.jogs.length).sort((a,b) => b.total - a.total);
+    if (!times.length) return '<div class="empty">Nenhum jogador cadastrado</div>';
+    return times.map(t => `
+        <div class="group-card">
+            <div class="group-hdr">
+                <div class="group-letter" style="background:${color(t.id)}">${esc(t.nome.charAt(0).toUpperCase())}</div>
+                <div class="group-title">${esc(t.nome)}</div>
+                <span class="group-prog-label">${t.total} gol${t.total!==1?'s':''}</span>
+            </div>
+            <div style="padding:8px 12px">
+                ${t.jogs.map(j => `<div class="artilheiro-item" style="margin-bottom:4px${j.g?'':';opacity:.5'}">
+                    <span class="art-rank">${j.g?'⚽':'·'}</span>
+                    <span class="art-nome">${esc(j.nome)}</span>
+                    <span class="art-gols">${j.g}</span>
+                </div>`).join('')}
+            </div>
+        </div>`).join('');
+}
+
+function renderAvaliacaoPorTime() {
+    // Agrega as notas de todas as partidas por jogador (chave partida:time:jogador)
+    const agg = {};
+    Object.values(getAvaliacoes()).forEach(m => {
+        Object.entries(m || {}).forEach(([k, nota]) => {
+            const [, tId, jId] = k.split(':');
+            const key = `${tId}:${jId}`;
+            const a = agg[key] || (agg[key] = { soma: 0, n: 0 });
+            a.soma += nota; a.n++;
+        });
+    });
+    const times = D.times.map(t => {
+        const jogs = (Array.isArray(t.jogadores) ? t.jogadores : []).map(j => {
+            const a = agg[`${t.id}:${j.id}`];
+            return { nome: j.nome, n: a ? a.n : 0, media: a ? a.soma / a.n : 0 };
+        }).sort((x, y) => y.media - x.media || x.nome.localeCompare(y.nome));
+        const com = jogs.filter(j => j.n);
+        const mediaTime = com.length ? com.reduce((s, j) => s + j.media, 0) / com.length : 0;
+        return { id: t.id, nome: t.nome, jogs, mediaTime };
+    }).filter(t => t.jogs.length).sort((a, b) => b.mediaTime - a.mediaTime);
+    if (!times.length) return '<div class="empty">Nenhum jogador cadastrado</div>';
+    const stars = m => '★'.repeat(Math.round(m)) + '☆'.repeat(5 - Math.round(m));
+    return times.map(t => `
+        <div class="group-card">
+            <div class="group-hdr">
+                <div class="group-letter" style="background:${color(t.id)}">${esc(t.nome.charAt(0).toUpperCase())}</div>
+                <div class="group-title">${esc(t.nome)}</div>
+                <span class="group-prog-label">${t.mediaTime ? '★ ' + t.mediaTime.toFixed(1) : 'sem notas'}</span>
+            </div>
+            <div style="padding:8px 12px">
+                ${t.jogs.map(j => `<div class="artilheiro-item" style="margin-bottom:4px${j.n ? '' : ';opacity:.5'}">
+                    <span class="art-nome">${esc(j.nome)}</span>
+                    <span style="color:#ffd700;letter-spacing:1px;font-size:.8rem;flex-shrink:0">${j.n ? stars(j.media) : '☆☆☆☆☆'}</span>
+                    <span class="art-gols" style="font-size:.9rem;min-width:62px;text-align:right">${j.n ? j.media.toFixed(1) + ' <span style="font-size:.6rem;color:rgba(255,255,255,.35);font-weight:600">(' + j.n + ')</span>' : '-'}</span>
+                </div>`).join('')}
+            </div>
+        </div>`).join('');
 }
 
 function renderPub(p, live) {
@@ -1377,10 +1545,10 @@ function showToast(msg) {
 function renderCpfScreen() {
     return `<div class="cpf-screen" id="cpf-screen">
         <div class="cpf-card">
-            <div style="font-size:2.6rem;margin-bottom:6px">📊</div>
-            <div class="cpf-title">Odds Esportivas Futebol™</div>
-            <div id="cpf-card-sub" class="cpf-sub">Preencha os campos abaixo para receber seu bônus e começar a apostar!</div>
-            <div id="cpf-card-prize" class="cpf-prize">🎁 R$ 200,00 fictícios de bônus!</div>
+            <div style="font-size:2.6rem;margin-bottom:6px">⚽</div>
+            <div class="cpf-title">Bem-vindo ao Campeonato!</div>
+            <div id="cpf-card-sub" class="cpf-sub">Informe seu CPF para entrar.</div>
+            <div id="cpf-card-prize" class="cpf-prize" style="display:none"></div>
             <!-- Retorno: banner de boas-vindas (oculto por padrão) -->
             <div id="cpf-welcome-back" style="display:none;background:linear-gradient(135deg,rgba(74,222,128,.13),rgba(74,222,128,.04));border:1px solid rgba(74,222,128,.35);border-radius:12px;padding:11px 14px;font-size:.85rem;font-weight:700;color:#4ade80;margin-bottom:4px;text-align:left"></div>
             <div class="bet-field" style="margin-top:18px;text-align:left">
@@ -1389,10 +1557,10 @@ function renderCpfScreen() {
                     placeholder="000.000.000-00" maxlength="14"
                     autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
                     oninput="this.value=fmtCpf(this.value);this.classList.remove('error');document.getElementById('cpf-err').style.display='none';checkCpfReturning()"
-                    onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('cpf-nome')?.focus()}">
+                    onkeydown="if(event.key==='Enter'){event.preventDefault();if(document.getElementById('cpf-nome-row').style.display==='block'){document.getElementById('cpf-nome')?.focus()}else{submitCpf()}}">
                 <div id="cpf-err" style="display:none;color:#f87171;font-size:.72rem;margin-top:5px"></div>
             </div>
-            <div id="cpf-nome-row" class="bet-field" style="text-align:left">
+            <div id="cpf-nome-row" class="bet-field" style="text-align:left;display:none">
                 <label class="bet-label">👤 Como te chamam? <span style="color:#f87171">*</span></label>
                 <input id="cpf-nome" class="bet-input" type="text" inputmode="text"
                     placeholder="Seu apelido ou nome" maxlength="30"
@@ -1403,7 +1571,7 @@ function renderCpfScreen() {
             </div>
             <button type="button" class="bet-confirm-btn" style="margin-top:10px"
                 onpointerdown="event.preventDefault()"
-                onclick="submitCpf()">Entrar nas Odds Esportivas →</button>
+                onclick="submitCpf()">Entrar →</button>
             <div style="font-size:.6rem;color:rgba(255,255,255,.2);margin-top:14px;line-height:1.6">
                 CPF usado apenas para identificação no torneio.<br>Dados ficam no servidor local deste campeonato.
             </div>
@@ -1423,9 +1591,9 @@ function checkCpfReturning() {
             const errEl = document.getElementById('cpf-err');
             if (errEl) { errEl.textContent = '⚠️ CPF inválido — verifique os dígitos'; errEl.style.display = 'block'; }
             if (welcomeEl) welcomeEl.style.display = 'none';
-            if (nomeRow)   nomeRow.style.display   = 'block';
-            if (subEl)     subEl.textContent       = 'Preencha os campos abaixo para receber seu bônus e começar a apostar!';
-            if (prizeEl)   prizeEl.style.display   = 'block';
+            if (nomeRow)   nomeRow.style.display   = 'none';
+            if (subEl)     subEl.textContent       = 'Informe seu CPF para entrar.';
+            if (prizeEl)   prizeEl.style.display   = 'none';
             return;
         }
         const ex = getUsuario(d);
@@ -1439,11 +1607,12 @@ function checkCpfReturning() {
             return;
         }
     }
-    // CPF incompleto ou não cadastrado: estado padrão
+    // CPF incompleto: só CPF. CPF novo e válido: pede o nome.
+    const novo = d.length === 11 && validarCpf(d);
     if (welcomeEl) welcomeEl.style.display = 'none';
-    if (nomeRow)   nomeRow.style.display   = 'block';
-    if (subEl)     subEl.textContent       = 'Preencha os campos abaixo para receber seu bônus e começar a apostar!';
-    if (prizeEl)   prizeEl.style.display   = 'block';
+    if (nomeRow)   nomeRow.style.display   = novo ? 'block' : 'none';
+    if (subEl)     subEl.textContent       = novo ? 'Primeiro acesso! Informe seu nome para finalizar o cadastro.' : 'Informe seu CPF para entrar.';
+    if (prizeEl)   prizeEl.style.display   = 'none';
 }
 
 function submitCpf() {
@@ -1468,6 +1637,14 @@ function submitCpf() {
         return;
     }
     errEl.style.display = 'none';
+    if (!getUsuario(d) && nome.length < 2) {
+        document.getElementById('cpf-nome-row').style.display = 'block';
+        nomeEl.classList.add('error');
+        nomeErrEl.textContent = '⚠️ Informe seu nome ou apelido';
+        nomeErrEl.style.display = 'block';
+        nomeEl.focus();
+        return;
+    }
     fetch('/api/futebol/odds/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -1481,7 +1658,9 @@ function submitCpf() {
     .then(loginOut => loadDadosApi().then(() => {
         currentCpf = d;
         try { localStorage.setItem('apostas_cpf', d); } catch {}
+        ensureGate();
         renderOdds();
+        renderTab(activeTab);
         const atual = getUsuario(d);
         const minhasPend = apostas.filter(a => a.cpf === d && a.status === 'pendente').length;
         const pendStr = minhasPend > 0 ? ` | ${minhasPend} aposta${minhasPend>1?'s':''} em aberto` : '';
@@ -1509,6 +1688,7 @@ function submitCpf() {
 function logoutCpf() {
     currentCpf = null;
     try { localStorage.removeItem('apostas_cpf'); } catch {}
+    ensureGate();
     renderOdds();
 }
 
@@ -1695,12 +1875,9 @@ function renderOdds() {
     resolverApostas();
     const content = document.getElementById('odds-content');
     if (!content) return;
-    // Sem usuário: mostrar tela de CPF
+    // Sem usuário: a tela de identificação global é exibida
     if (!currentCpf || !getUsuario(currentCpf)) {
-        // Não re-renderizar se o usuário está digitando nos campos de CPF (evita fechar teclado)
-        const active = document.activeElement;
-        if (content.contains(active) && active.tagName === 'INPUT') return;
-        content.innerHTML = renderCpfScreen();
+        ensureGate();
         return;
     }
     const u = getUsuario(currentCpf);

@@ -2143,6 +2143,7 @@ const server = http.createServer((req, res) => {
             if (!d.odds) d.odds = {};
             if (!d.odds.usuarios || typeof d.odds.usuarios !== 'object') d.odds.usuarios = {};
             if (!Array.isArray(d.odds.apostas)) d.odds.apostas = [];
+            if (!d.avaliacoes || typeof d.avaliacoes !== 'object' || Array.isArray(d.avaliacoes)) d.avaliacoes = {};
             if (!d.fase) d.fase = 'cadastro';
             if (d.categorias.length === 0) d.categorias = [{ ...FUTEBOL_CAT_PADRAO }];
 
@@ -2170,7 +2171,7 @@ const server = http.createServer((req, res) => {
             }));
             return d;
         } catch(e) {
-            return { evento: { nome: 'Grande Campeonato de Futebol - 1ª Edição', data: '', horaInicio: '09:00', local: '', descricao: '', status: 'agendado' }, quadras: [], categorias: [{ ...FUTEBOL_CAT_PADRAO }], times: [], inscricoes: [], partidas: [], odds: { usuarios: {}, apostas: [] }, fase: 'cadastro' };
+            return { evento: { nome: 'Grande Campeonato de Futebol - 1ª Edição', data: '', horaInicio: '09:00', local: '', descricao: '', status: 'agendado' }, quadras: [], categorias: [{ ...FUTEBOL_CAT_PADRAO }], times: [], inscricoes: [], partidas: [],             odds: { usuarios: {}, apostas: [] }, avaliacoes: {}, fase: 'cadastro' };
         }
     }
     function writeFutebol(d) { fs.writeFileSync(FUTEBOL_FILE, JSON.stringify(d, null, 2), 'utf8'); }
@@ -2254,6 +2255,33 @@ const server = http.createServer((req, res) => {
             }
             writeFutebol(d);
             sendJSON(res, { usuario: d.odds.usuarios[cpf], created, autoNamed });
+            try { wss.clients.forEach(cl => { if (cl.readyState === 1) cl.send(JSON.stringify({ type: 'futebol-update', data: d })); }); } catch(_) {}
+        });
+        return;
+    }
+
+    // POST /api/futebol/avaliacoes  { cpf, timeId, jogadorId, nota 1-5 }
+    if (url === '/api/futebol/avaliacoes' && req.method === 'POST') {
+        readBody(req, body => {
+            const d = readFutebol();
+            const cpf = String(body.cpf || '').replace(/\D/g, '');
+            const timeId = Number(body.timeId);
+            const jogadorId = Number(body.jogadorId);
+            const nota = Number(body.nota);
+            const erro = (msg) => { res.writeHead(400, { 'Content-Type': 'application/json' }); res.end(JSON.stringify({ erro: msg })); };
+            if (!d.odds.usuarios[cpf]) return erro('Identifique-se com CPF e nome antes de avaliar');
+            if (!Number.isInteger(nota) || nota < 1 || nota > 5) return erro('Nota deve ser de 1 a 5');
+            const partidaId = body.partidaId;
+            const partida = d.partidas.find(p => String(p.id) === String(partidaId));
+            const time = d.times.find(t => t.id === timeId);
+            const jogador = time && time.jogadores.find(j => j.id === jogadorId);
+            if (!partida || partida.status !== 'encerrado') return erro('Avaliação liberada após o fim da partida');
+            if (partida.j1Id !== timeId && partida.j2Id !== timeId) return erro('O time não jogou esta partida');
+            if (!jogador) return erro('Jogador não encontrado');
+            d.avaliacoes[cpf] = d.avaliacoes[cpf] || {};
+            d.avaliacoes[cpf][`${partida.id}:${timeId}:${jogadorId}`] = nota;
+            writeFutebol(d);
+            sendJSON(res, { ok: true, nota });
             try { wss.clients.forEach(cl => { if (cl.readyState === 1) cl.send(JSON.stringify({ type: 'futebol-update', data: d })); }); } catch(_) {}
         });
         return;
@@ -2750,7 +2778,7 @@ const server = http.createServer((req, res) => {
     // POST /api/futebol/resetar
     if (url === '/api/futebol/resetar' && req.method === 'POST') {
         const dAtual = readFutebol();
-        const vazio = { evento: { nome: 'Grande Campeonato de Futebol - 1ª Edição', data: '', horaInicio: '09:00', local: '', descricao: '', status: 'agendado' }, quadras: [], categorias: dAtual.categorias || [], times: [], inscricoes: [], partidas: [], odds: { usuarios: {}, apostas: [] }, fase: 'cadastro' };
+        const vazio = { evento: { nome: 'Grande Campeonato de Futebol - 1ª Edição', data: '', horaInicio: '09:00', local: '', descricao: '', status: 'agendado' }, quadras: [], categorias: dAtual.categorias || [], times: [], inscricoes: [],         partidas: [], odds: { usuarios: {}, apostas: [] }, avaliacoes: {}, fase: 'cadastro' };
         writeFutebol(vazio); sendJSON(res, vazio); return;
     }
     // ==================== FIM API CAMPEONATO FUTEBOL ====================

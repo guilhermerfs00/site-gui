@@ -2,13 +2,11 @@ SHELL = cmd.exe
 CLOUDFLARED = "C:\Program Files (x86)\cloudflared\cloudflared.exe"
 
 .PHONY: start stop restart
+.DEFAULT_GOAL := start
 
-## Inicia o servidor Node e o tunel Cloudflare
+## Derruba tudo e sobe de novo, exibindo a URL publica do Cloudflare
 start:
-	@echo [1/2] Iniciando servidor Node.js em background...
-	@start "Servidor Node" /B node server.js
-	@echo [2/2] Iniciando tunel Cloudflare...
-	@$(CLOUDFLARED) tunnel --url http://localhost:3000
+	@powershell -NoProfile -ExecutionPolicy Bypass -File up.ps1
 
 ## Encerra o servidor e o tunel
 stop:
