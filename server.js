@@ -1138,7 +1138,7 @@ function resetGame() {
 // ==================== HTTP SERVER ====================
 const server = http.createServer((req, res) => {
     let url = req.url.split('?')[0];
-    if (url === '/') url = '/namorados.html';
+    if (url === '/') url = '/futebol.html';
 
     // API to list fotos
     if (url === '/api/fotos') {
@@ -2797,19 +2797,6 @@ const server = http.createServer((req, res) => {
     }
     // ==================== FIM API POSITIONS ====================
 
-    // ==================== SERVIR IMAGENS KAMA ====================
-    if (url.startsWith('/kama/')) {
-        const kamaFile = path.join(__dirname, 'kama', decodeURIComponent(url.slice(6)));
-        const kamaExt  = path.extname(kamaFile).toLowerCase();
-        const kamaType = MIME_TYPES[kamaExt] || 'image/jpeg';
-        fs.readFile(kamaFile, (err, data) => {
-            if (err) { res.writeHead(404); res.end('Not found'); return; }
-            res.writeHead(200, { 'Content-Type': kamaType, 'Access-Control-Allow-Origin': '*' });
-            res.end(data);
-        });
-        return;
-    }
-    // ==================== FIM KAMA ====================
 
     // ==================== API NAMORADOS ====================
     const NAMORADOS_FILE = path.join(__dirname, 'data', 'namorados.json');
