@@ -2237,6 +2237,16 @@ const server = http.createServer((req, res) => {
         return;
     }
 
+    // POST /api/futebol/avaliacoes/resetar
+    if (url === '/api/futebol/avaliacoes/resetar' && req.method === 'POST') {
+        const d = readFutebol();
+        d.avaliacoes = {};
+        writeFutebol(d);
+        sendJSON(res, { ok: true });
+        try { wss.clients.forEach(cl => { if (cl.readyState === 1) cl.send(JSON.stringify({ type: 'futebol-update', data: d })); }); } catch(_) {}
+        return;
+    }
+
     // POST /api/futebol/odds/login
     if (url === '/api/futebol/odds/login' && req.method === 'POST') {
         readBody(req, body => {
@@ -3076,4 +3086,3 @@ server.listen(PORT, '0.0.0.0', () => {
     console.log('  Abra o link do Host no navegador para começar!');
     console.log('');
 });
-

@@ -197,11 +197,6 @@
         .odds-bet-label.fav-label{color:#ffd700}
         .odds-bet-odd{font-size:1.15rem;font-weight:900;color:#00e676;flex-shrink:0;line-height:1}
         .odds-bet-btn.fav .odds-bet-odd{color:#ffd700}
-        /* Sub-tabs odds */
-        .odds-subtabs{display:flex;gap:5px;margin-bottom:14px;background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:4px}
-        .odds-subtab{flex:1;padding:9px 6px;border:none;border-radius:11px;background:transparent;color:rgba(255,255,255,.4);font-family:'Poppins',sans-serif;font-size:.8rem;font-weight:700;cursor:pointer;transition:all .2s;line-height:1.2}
-        .odds-subtab.active{background:rgba(255,255,255,.12);color:#fff;box-shadow:0 1px 8px rgba(0,0,0,.4)}
-        .odds-subtab.cassino-tab.active{background:linear-gradient(135deg,rgba(184,134,11,.55),rgba(180,20,40,.4));color:#ffd700}
         /* Casino machine */
         .cassino-screen{background:linear-gradient(180deg,#08081a,#10102a);border:2px solid rgba(255,215,0,.3);border-radius:20px;padding:20px 16px 16px;margin-bottom:14px;text-align:center;position:relative;overflow:hidden}
         .cassino-screen::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(255,215,0,.09),transparent 60%);pointer-events:none}
@@ -1195,7 +1190,6 @@ let usuarios = {};      // { [cpf]: { cpf, nome, saldo, ts } }
 let currentCpf = null;
 let currentOddsMap = {};
 let betState = null;
-let oddsSubTab = 'apostas';
 let cassinoSpinning = false;
 const CASSINO_MAX_SPINS = 10;
 const ROLETA_MAX_SPINS  = 5;
@@ -1903,12 +1897,6 @@ function renderOdds() {
             <div style="font-size:.56rem;color:${_deltaColor}">${_deltaStr}</div>
         </div>
     </div>`;
-    html += `<div class="odds-subtabs">
-        <button class="odds-subtab${oddsSubTab==='apostas'?' active':''}" onclick="switchOddsTab('apostas')">🎲 Apostas</button>
-        <button class="odds-subtab cassino-tab${oddsSubTab==='cassino'?' active':''}" onclick="switchOddsTab('cassino')">🎰 Caça-Níquel</button>
-        <button class="odds-subtab roleta-tab${oddsSubTab==='roleta'?' active':''}" onclick="switchOddsTab('roleta')">🎡 Roleta</button>
-    </div>`;
-    if (oddsSubTab === 'apostas') {
     const preJogo = oddsData.filter(o => o.partida.status === 'agendado')
         .sort((a,b) => (a.partida.rodada||0) - (b.partida.rodada||0));
     if (preJogo.length > 0) {
@@ -1935,31 +1923,10 @@ function renderOdds() {
         html += `<div class="glass" style="margin-bottom:14px"><div class="odds-empty-promo"><span class="big">⏳</span>Nenhuma partida agendada no momento<br><span style="font-size:.75rem">As apostas fecham quando o jogo começa!</span></div></div>`;
     }
     html += renderApostasHistorico();
-    } else if (oddsSubTab === 'cassino') {
-        html += renderCassino();
-    } else {
-        html += renderRoleta();
-    }
     content.innerHTML = html;
-    if (oddsSubTab === 'roleta') initRoletaCanvas(-1);
-    if (currentCpf) {
-        if (oddsSubTab === 'cassino') {
-            const _sp = getCassinoSpins(currentCpf);
-            if (CASSINO_MAX_SPINS - _sp.count <= 0) startGameTimer(_sp.windowStart, 'cassino-countdown', 'cassino-spin-btn', renderOdds);
-        } else if (oddsSubTab === 'roleta') {
-            const _sp = getRoletaSpins(currentCpf);
-            if (ROLETA_MAX_SPINS - _sp.count <= 0 && !roletaSpinning) startGameTimer(_sp.windowStart, 'roleta-countdown', 'roleta-play-btn', renderOdds);
-        }
-    }
 }
 
 
-
-function switchOddsTab(tab) {
-    stopGameTimer();
-    oddsSubTab = tab;
-    renderOdds();
-}
 
 function renderCassino() {
     const spins = getCassinoSpins(currentCpf);
@@ -2349,7 +2316,5 @@ connectWS();
 </script>
 </body>
 </html>
-
-
 
 

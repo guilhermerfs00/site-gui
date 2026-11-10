@@ -284,7 +284,8 @@
         <div class="top-btns">
             <button class="btn btn-gold" onclick="window.open('/futebol-publico.html','_blank')">👁️ Placar Público</button>
             <button class="btn btn-p" onclick="window.location.href='/futebol-partidas.html'">⚔️ Partidas</button>
-            <button class="btn" style="background:rgba(139,92,246,.15);color:#a78bfa;border:1px solid rgba(139,92,246,.4)" onclick="goStep(6)">🎰 Odds</button>
+            <button class="btn" style="background:rgba(139,92,246,.15);color:#a78bfa;border:1px solid rgba(139,92,246,.4)" onclick="goStep(6)">📊 Odds</button>
+            <button class="btn btn-d" onclick="resetarAvaliacoes()">⭐ Resetar Avaliações</button>
             <button class="btn btn-d" onclick="resetarTudo()">🗑️ Resetar Tudo</button>
             <button class="btn btn-s" onclick="window.location.href='/'">← Início</button>
         </div>
@@ -1291,6 +1292,14 @@ function renderPronto() {
         ${rows.map(([i,l,v])=>`<div style="display:flex;justify-content:space-between;padding:8px 16px;background:rgba(255,255,255,.04);border-radius:10px"><span>${i} ${l}</span><strong style="color:#ffd700">${v}</strong></div>`).join('')}
     </div>`;
 }
+async function resetarAvaliacoes() {
+    if (!confirm('Isso apagará todas as avaliações dos jogadores. Os times, partidas, apostas e saldos serão mantidos. Confirmar?')) return;
+    try {
+        await api('/api/futebol/avaliacoes/resetar','POST');
+        D.avaliacoes = {};
+        toast('Avaliações dos jogadores resetadas','success');
+    } catch(e) { toast('Erro: '+e.message,'error'); }
+}
 async function resetarTudo() {
     if (!confirm('⚠️ ATENÇÃO: Isso apagará times, partidas, apostas e saldos do Campeonato de Futebol.\nAs categorias serão mantidas. Confirmar?')) return;
     try {
@@ -1361,7 +1370,5 @@ connectWS();
 </script>
 </body>
 </html>
-
-
 
 
