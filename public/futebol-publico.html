@@ -73,6 +73,13 @@
         .classif-table th:first-child { text-align: left; }
         .classif-table td { padding: 10px; text-align: center; font-size: 0.85rem; border-bottom: 1px solid rgba(255,255,255,0.06); }
         .classif-table td:first-child { text-align: left; }
+        .futebol-info-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+        .futebol-info-card { padding: 16px; border: 1px solid rgba(255,255,255,0.09); border-radius: 12px; background: rgba(255,255,255,0.035); }
+        .futebol-info-card h3 { font-size: .92rem; margin-bottom: 10px; color: #ffd700; }
+        .futebol-info-card p, .futebol-info-card li { font-size: .8rem; line-height: 1.65; color: rgba(255,255,255,.76); }
+        .futebol-info-card ul { list-style: none; display: grid; gap: 8px; }
+        .futebol-info-card li { padding-left: 16px; position: relative; }
+        .futebol-info-card li::before { content: '•'; position: absolute; left: 2px; color: #ffd700; }
         .pos { width: 28px; height: 28px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.85rem; }
         .pos-1 { background: linear-gradient(135deg, #b8860b, #ffd700); color: #000; }
         .pos-2 { background: rgba(192,192,192,0.3); }
@@ -358,6 +365,8 @@
             .hero .evento-info { gap: 8px; margin-top: 10px; }
             .glass { padding: 14px 14px; border-radius: 14px; margin-bottom: 14px; }
             .glass h2 { font-size: .95rem; margin-bottom: 12px; }
+            .futebol-info-grid { grid-template-columns: 1fr; gap: 10px; }
+            .futebol-info-card { padding: 13px; }
             /* Nav → barra fixa no rodapé */
             .nav {
                 position: fixed;
@@ -532,7 +541,7 @@
     <div class="nav">
         <button class="nav-tab active" id="tab-aovivo" onclick="switchTab('aovivo')"><span style="font-size:1.1rem">🔴</span><span>Ao Vivo</span></button>
         <button class="nav-tab" onclick="switchTab('grupos')"><span style="font-size:1.1rem">📊</span><span>Grupos</span></button>
-        <button class="nav-tab" onclick="switchTab('bracket')"><span style="font-size:1.1rem">⚔️</span><span>Mata-Mata</span></button>
+        <button class="nav-tab" onclick="switchTab('regulamento')"><span style="font-size:1.1rem">📋</span><span>Regulamento</span></button>
         <button class="nav-tab" onclick="switchTab('times')"><span style="font-size:1.1rem">👥</span><span>Times</span></button>
         <button class="nav-tab" id="tab-odds" onclick="switchTab('odds')"><span style="font-size:1.1rem">📊</span><span>Odds Esportivas</span></button>
         <button class="nav-tab" onclick="switchTab('avaliar')"><span style="font-size:1.1rem">⭐</span><span>Avaliação</span></button>
@@ -564,10 +573,52 @@
         </div>
     </div>
 
-    <div class="panel" id="panel-bracket">
+    <div class="panel" id="panel-regulamento">
         <div class="glass">
-            <h2>⚔️ Chave do Mata-Mata</h2>
-            <div style="overflow-x:auto;" id="bracket-content"></div>
+            <h2>⚽ Campeonato da Pelada — Novembro 2026</h2>
+            <div class="futebol-info-grid">
+                <section class="futebol-info-card">
+                    <h3>📅 Datas e horários</h3>
+                    <ul>
+                        <li>Quatro rodadas ao longo de quatro sábados</li>
+                        <li>14/11 — 1ª rodada</li>
+                        <li>21/11 — 2ª rodada</li>
+                        <li>28/11 — 3ª rodada</li>
+                        <li>05/12 — final e disputa de 3º lugar</li>
+                        <li>1º jogo às 9h00 e 2º jogo às 10h00</li>
+                    </ul>
+                </section>
+                <section class="futebol-info-card">
+                    <h3>⏱️ Formato dos jogos</h3>
+                    <ul>
+                        <li>2 tempos de 15 minutos, com intervalo rápido</li>
+                        <li>40 jogadores distribuídos em 4 times</li>
+                        <li>Cada time terá 9 jogadores de linha e 1 goleiro</li>
+                        <li>Nos três primeiros sábados, todos os times se enfrentam em pontos corridos</li>
+                        <li>No último sábado, acontecem a final e a disputa do 3º lugar</li>
+                    </ul>
+                </section>
+                <section class="futebol-info-card">
+                    <h3>⚖️ Arbitragem e valor</h3>
+                    <ul>
+                        <li>1 árbitro oficial em todos os jogos</li>
+                        <li>Não mensalistas: R$ 75,00</li>
+                        <li>Prazo para pagamento: 12/11</li>
+                    </ul>
+                </section>
+                <section class="futebol-info-card">
+                    <h3>📜 Regras do campeonato</h3>
+                    <ul>
+                        <li>Falta fora da área: lateral.</li>
+                        <li>Na 6ª falta: Shoot Out. A contagem não será reiniciada no intervalo.</li>
+                        <li>Falta dentro da área: penalidade máxima, com tiro direto da linha amarela.</li>
+                        <li>Cartão amarelo: 2 minutos fora de campo; o jogador pode ser substituído por um reserva.</li>
+                        <li>Cartão vermelho: suspenso da partida, mas poderá jogar o próximo jogo. O time fica com 1 jogador a menos até o fim da partida.</li>
+                        <li>Se o time tiver jogadores insuficientes no dia do confronto, a organização poderá autorizar jogadores de fora para completar somente os 6 de campo, buscando manter o equilíbrio.</li>
+                        <li>Cada time deverá escolher um capitão. Apenas o capitão conversa com o árbitro.</li>
+                    </ul>
+                </section>
+            </div>
         </div>
     </div>
 
@@ -661,7 +712,7 @@ function getAvailableBettingRound() {
 function switchTab(tab) {
     activeTab = tab;
     document.querySelectorAll('.nav-tab').forEach((t,i) => {
-        const tabs = ['aovivo','grupos','bracket','times','odds','avaliar'];
+        const tabs = ['aovivo','grupos','regulamento','times','odds','avaliar'];
         t.classList.toggle('active', tabs[i] === tab);
     });
     if (tab === 'odds') document.getElementById('tab-odds')?.classList.remove('odds-new');
@@ -768,7 +819,6 @@ function render() {
 function renderTab(tab) {
     if (tab === 'avaliar') renderAvaliar();
     if (tab === 'grupos')   renderGrupos();
-    if (tab === 'bracket')  renderBracket();
     if (tab === 'times') renderTimes();
     if (tab === 'odds')     renderOdds();
 }
@@ -2316,5 +2366,3 @@ connectWS();
 </script>
 </body>
 </html>
-
-
